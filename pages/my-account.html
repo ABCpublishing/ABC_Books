@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>My Account | ABC Books</title>
+    <meta name="description" content="Manage your ABC Books account, view orders, and update profile.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/components/account.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books, authors, ISBN...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="/pages/wishlist.html" class="action-btn" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                    </a>
+                    <a href="/index.html" class="action-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <aside class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" id="closeMobileNav"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-dropdown-item">
+                    <a href="#"><i class="fas fa-book"></i> Categories <i
+                            class="fas fa-chevron-down dropdown-arrow"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="#">English Books</a></li>
+                        <li><a href="#">Arabic Books</a></li>
+                        <li><a href="#">Urdu Books</a></li>
+                    </ul>
+                </li>
+                <li><a href="/pages/top-100.html"><i class="fas fa-crown"></i> Top 100</a></li>
+                <li><a href="/pages/search.html"><i class="fas fa-search"></i> Advanced Search</a></li>
+                <li><a href="/pages/about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                <li><a href="/pages/contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="mobile-nav-footer">
+            <a href="/pages/my-account.html" class="btn-mobile-auth"><i class="fas fa-user"></i> My Account</a>
+        </div>
+    </aside>
+
+    <!-- Account Section -->
+    <main class="account-main">
+        <div class="container">
+            <div class="account-grid">
+                <!-- Sidebar -->
+                <aside class="account-sidebar">
+                    <div class="user-card">
+                        <div class="user-avatar">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="user-info">
+                            <h3 id="userName">Welcome!</h3>
+                            <p id="userEmail">user@example.com</p>
+                        </div>
+                    </div>
+                    <nav class="account-nav">
+                        <a href="#" class="nav-item active" data-section="dashboard">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                        <a href="#" class="nav-item" data-section="orders">
+                            <i class="fas fa-box"></i> My Orders
+                        </a>
+                        <a href="#" class="nav-item" data-section="wishlist">
+                            <i class="fas fa-heart"></i> My Wishlist
+                        </a>
+                        <a href="#" class="nav-item" data-section="profile">
+                            <i class="fas fa-user-edit"></i> Edit Profile
+                        </a>
+                        <a href="#" class="nav-item" data-section="addresses">
+                            <i class="fas fa-map-marker-alt"></i> Saved Addresses
+                        </a>
+                        <a href="#" class="nav-item" data-section="password">
+                            <i class="fas fa-lock"></i> Change Password
+                        </a>
+                        <a href="#" class="nav-item logout-btn" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </nav>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="account-content">
+                    <!-- Dashboard Section -->
+                    <section id="dashboardSection" class="content-section active">
+                        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+
+                        <div class="stats-grid">
+                            <div class="stat-card">
+                                <div class="stat-icon orders-icon">
+                                    <i class="fas fa-box"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalOrders">0</h3>
+                                    <p>Total Orders</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon wishlist-icon">
+                                    <i class="fas fa-heart"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="wishlistItems">0</h3>
+                                    <p>Wishlist Items</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon cart-icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="cartItems">0</h3>
+                                    <p>Cart Items</p>
+                                </div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon spent-icon">
+                                    <i class="fas fa-rupee-sign"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h3 id="totalSpent">₹0</h3>
+                                    <p>Total Spent</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="recent-orders">
+                            <div class="section-header">
+                                <h3><i class="fas fa-clock"></i> Recent Orders</h3>
+                                <a href="my-orders.html" class="view-all">View All <i
+                                        class="fas fa-arrow-right"></i></a>
+                            </div>
+                            <div id="recentOrdersList" class="orders-list">
+                                <p class="no-data"><i class="fas fa-box-open"></i> No orders yet</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Orders Section -->
+                    <section id="ordersSection" class="content-section">
+                        <h2><i class="fas fa-box"></i> My Orders</h2>
+                        <div id="allOrdersList" class="orders-list">
+                            <p class="no-data"><i class="fas fa-box-open"></i> No orders yet</p>
+                        </div>
+                        <div class="section-footer">
+                            <a href="my-orders.html" class="btn-primary">View All Orders <i
+                                    class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </section>
+
+                    <!-- Wishlist Section -->
+                    <section id="wishlistSection" class="content-section">
+                        <h2><i class="fas fa-heart"></i> My Wishlist</h2>
+                        <div id="wishlistGrid" class="wishlist-grid">
+                            <p class="no-data"><i class="fas fa-heart-broken"></i> Your wishlist is empty</p>
+                        </div>
+                        <div class="section-footer">
+                            <a href="wishlist.html" class="btn-primary">View Full Wishlist <i
+                                    class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </section>
+
+                    <!-- Profile Section -->
+                    <section id="profileSection" class="content-section">
+                        <h2><i class="fas fa-user-edit"></i> Edit Profile</h2>
+                        <form id="profileForm" class="account-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="firstName">First Name</label>
+                                    <input type="text" id="firstName" placeholder="Enter first name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="lastName">Last Name</label>
+                                    <input type="text" id="lastName" placeholder="Enter last name">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email">Email Address</label>
+                                <input type="email" id="email" placeholder="email@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label for="dob">Date of Birth</label>
+                                <input type="date" id="dob">
+                            </div>
+                            <div class="form-group">
+                                <label>Gender</label>
+                                <div class="radio-group">
+                                    <label><input type="radio" name="gender" value="male"> Male</label>
+                                    <label><input type="radio" name="gender" value="female"> Female</label>
+                                    <label><input type="radio" name="gender" value="other"> Other</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </form>
+                    </section>
+
+                    <!-- Addresses Section -->
+                    <section id="addressesSection" class="content-section">
+                        <h2><i class="fas fa-map-marker-alt"></i> Saved Addresses</h2>
+                        <div id="addressesList" class="addresses-grid">
+                            <p class="no-data"><i class="fas fa-map-marker-alt"></i> No saved addresses</p>
+                        </div>
+                        <button class="btn-add-address" onclick="showAddAddressModal()">
+                            <i class="fas fa-plus"></i> Add New Address
+                        </button>
+                    </section>
+
+                    <!-- Change Password Section -->
+                    <section id="passwordSection" class="content-section">
+                        <h2><i class="fas fa-lock"></i> Change Password</h2>
+                        <form id="passwordForm" class="account-form">
+                            <div class="form-group">
+                                <label for="currentPassword">Current Password</label>
+                                <input type="password" id="currentPassword" placeholder="Enter current password"
+                                    autocomplete="current-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="newPassword">New Password</label>
+                                <input type="password" id="newPassword" placeholder="Enter new password"
+                                    autocomplete="new-password">
+                            </div>
+                            <div class="form-group">
+                                <label for="confirmPassword">Confirm New Password</label>
+                                <input type="password" id="confirmPassword" placeholder="Confirm new password"
+                                    autocomplete="new-password">
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-key"></i> Update Password
+                            </button>
+                        </form>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/services/api.js?v=2.3"></script>
+    <script src="/js/auth/user-auth-api.js?v=2.3"></script>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+    <script src="/js/pages/my-account.js?v=2.3"></script>
+</body>
+
+</html>

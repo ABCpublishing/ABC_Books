@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Search Results | ABC Books</title>
+    <meta name="description" content="Search results at ABC Books - India's premier online bookstore.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/user-ui.css">
+    <link rel="stylesheet" href="/css/components/search.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="Search books, authors...">
+                        <button class="search-btn" onclick="performSearch()">Search</button>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="/pages/wishlist.html" class="action-btn" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                    </a>
+                    <a href="/index.html" class="action-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-has-submenu">
+                    <a href="#" class="mobile-nav-link" onclick="toggleMobileSubmenu(this)">Categories <i
+                            class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="/pages/search.html?q=quran"><i class="fas fa-mosque"></i> Islamic Books</a></li>
+                        <li><a href="/pages/search.html?q=fiction"><i class="fas fa-book"></i> English Fiction</a></li>
+                        <li><a href="/pages/search.html?q=arabic"><i class="fas fa-language"></i> Arabic Books</a></li>
+                        <li><a href="/pages/search.html?q=children"><i class="fas fa-child"></i> Children's Books</a>
+                        </li>
+                        <li><a href="/pages/search.html?q=academic"><i class="fas fa-graduation-cap"></i> Academic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="/pages/search.html?section=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
+                        Bestsellers</a></li>
+                <li><a href="/pages/search.html?q=new" class="mobile-nav-link"><i class="fas fa-bolt"></i> New
+                        Arrivals</a>
+                </li>
+                <li><a href="/pages/about.html" class="mobile-nav-link"><i class="fas fa-info-circle"></i> About Us</a>
+                </li>
+                <li><a href="/pages/contact.html" class="mobile-nav-link"><i class="fas fa-envelope"></i> Contact</a>
+                </li>
+            </ul>
+            <div class="mobile-nav-footer">
+                <a href="#" class="btn-primary btn-block">Download App</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="/index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <span>Search Results</span>
+            </nav>
+            <h1><i class="fas fa-search"></i> Search Results</h1>
+            <p id="searchQuery" class="search-query"></p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="search-main">
+        <div class="container">
+            <div class="search-layout">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="filter-card">
+                        <h3><i class="fas fa-filter"></i> Filters</h3>
+
+                        <!-- Category Filter -->
+                        <div class="filter-group">
+                            <h4>Category</h4>
+                            <div class="filter-options">
+                                <label><input type="checkbox" name="category" value="all" checked> All
+                                    Categories</label>
+                                <label><input type="checkbox" name="category" value="urdu"> <i class="fas fa-book-open"
+                                        style="color:#8B0000;margin-right:4px;font-size:12px;"></i> Urdu Books</label>
+                                <label><input type="checkbox" name="category" value="english"> <i
+                                        class="fas fa-language"
+                                        style="color:#2c3e50;margin-right:4px;font-size:12px;"></i> English
+                                    Books</label>
+                                <label><input type="checkbox" name="category" value="arabic"> <i class="fas fa-quran"
+                                        style="color:#27ae60;margin-right:4px;font-size:12px;"></i> Arabic Books</label>
+                                <label><input type="checkbox" name="category" value="kashmiri"> <i
+                                        class="fas fa-mountain"
+                                        style="color:#8e44ad;margin-right:4px;font-size:12px;"></i> Kashmiri
+                                    Books</label>
+                            </div>
+                        </div>
+
+
+                        <!-- Price Filter -->
+                        <div class="filter-group">
+                            <h4>Price Range</h4>
+                            <div class="price-range">
+                                <input type="number" id="minPrice" placeholder="Min" min="0">
+                                <span>to</span>
+                                <input type="number" id="maxPrice" placeholder="Max" min="0">
+                            </div>
+                            <button class="btn-apply-price" onclick="applyPriceFilter()">Apply</button>
+                        </div>
+
+                        <!-- Rating Filter -->
+                        <div class="filter-group">
+                            <h4>Customer Rating</h4>
+                            <div class="filter-options">
+                                <label><input type="radio" name="rating" value="4"> 4★ & above</label>
+                                <label><input type="radio" name="rating" value="3"> 3★ & above</label>
+                                <label><input type="radio" name="rating" value="2"> 2★ & above</label>
+                                <label><input type="radio" name="rating" value="1"> 1★ & above</label>
+                            </div>
+                        </div>
+
+                        <button class="btn-clear-filters" onclick="clearFilters()">
+                            <i class="fas fa-times"></i> Clear All Filters
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Results Section -->
+                <div class="results-section">
+                    <!-- Results Header -->
+                    <div class="results-header">
+                        <p id="resultsCount">Showing 0 results</p>
+                        <div class="sort-options">
+                            <label>Sort by:</label>
+                            <select id="sortBy" onchange="sortResults()">
+                                <option value="relevance">Relevance</option>
+                                <option value="priceLow">Price: Low to High</option>
+                                <option value="priceHigh">Price: High to Low</option>
+                                <option value="rating">Customer Rating</option>
+                                <option value="newest">Newest First</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- View Toggle -->
+                    <div class="view-toggle">
+                        <button class="toggle-btn active" data-view="grid" onclick="toggleView('grid')">
+                            <i class="fas fa-th-large"></i>
+                        </button>
+                        <button class="toggle-btn" data-view="list" onclick="toggleView('list')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+
+                    <!-- Results Grid -->
+                    <div id="searchResults" class="results-grid">
+                        <div class="loading-state">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>Searching...</p>
+                        </div>
+                    </div>
+
+                    <!-- No Results -->
+                    <div id="noResults" class="no-results" style="display: none;">
+                        <div class="no-results-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h2>No Results Found</h2>
+                        <p>We couldn't find any books matching your search.</p>
+                        <div class="suggestions">
+                            <h4>Suggestions:</h4>
+                            <ul>
+                                <li>Check your spelling</li>
+                                <li>Try more general keywords</li>
+                                <li>Try different keywords</li>
+                            </ul>
+                        </div>
+                        <a href="/index.html" class="btn-browse">
+                            <i class="fas fa-shopping-bag"></i> Browse All Books
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Login Modal -->
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeLoginModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h2>Welcome Back!</h2>
+                <p>Login to your ABC Books account</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-error-banner" id="loginFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email address" required autocomplete="email">
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required
+                        autocomplete="current-password">
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgotModal(event)">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+
+                <div class="google-auth-separator" style="text-align: center; margin: 20px 0; position: relative;">
+                    <hr
+                        style="position: absolute; top: 50%; left: 0; right: 0; margin: 0; border: none; border-top: 1px solid #ddd; z-index: 0;">
+                    <span
+                        style="background: white; padding: 0 10px; color: #666; font-size: 14px; position: relative; z-index: 1;">or
+                        continue with</span>
+                </div>
+                <!-- Google Sign-In Button Container -->
+                <div id="googleSignInBtnLogin" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    <button type="button" class="btn-google"
+                        onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
+                        style="margin-bottom: 0;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        <span>Continue with Google</span>
+                    </button>
+                </div>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="auth-modal" id="forgotModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-key"></i>
+                <h2>Reset Password</h2>
+                <p>Enter your email to receive reset instructions</p>
+            </div>
+            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-error-banner" id="forgotFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-success-banner" id="forgotFormSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="forgotEmail" placeholder="Enter your registered email" required>
+                    <span class="error-message" id="forgotEmailError"></span>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-paper-plane"></i> Send Reset Link
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Back to <a href="#" onclick="switchToLoginReset()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div class="auth-modal" id="signupModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeSignupModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Create Account</h2>
+                <p>Join ABC Books today</p>
+            </div>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="form-error-banner" id="signupFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required autocomplete="name">
+                    <span class="error-message" id="signupNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required autocomplete="email">
+                    <span class="error-message" id="signupEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6"
+                        autocomplete="new-password">
+                    <span class="error-message" id="signupPasswordError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required
+                        autocomplete="new-password">
+                    <span class="error-message" id="signupConfirmPasswordError"></span>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+
+                <div class="google-auth-separator" style="text-align: center; margin: 20px 0; position: relative;">
+                    <hr
+                        style="position: absolute; top: 50%; left: 0; right: 0; margin: 0; border: none; border-top: 1px solid #ddd; z-index: 0;">
+                    <span
+                        style="background: white; padding: 0 10px; color: #666; font-size: 14px; position: relative; z-index: 1;">or
+                        sign up with</span>
+                </div>
+                <!-- Google Sign-Up Button Container -->
+                <div id="googleSignInBtnSignup" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    <button type="button" class="btn-google"
+                        onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
+                        style="margin-bottom: 0;">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                        <span>Sign up with Google</span>
+                    </button>
+                </div>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/services/api.js?v=2.3"></script>
+    <script src="/js/auth/user-auth-api.js?v=2.3"></script>
+    <script src="/js/data/books-data.js?v=2.3"></script>
+    <script src="/js/pages/search.js?v=2.3"></script>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+</body>
+
+</html>

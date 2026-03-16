@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Order Details | ABC Books</title>
+    <meta name="description" content="View your order details and tracking information.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/components/orders.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn"><i class="fas fa-bars"></i></button>
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books, authors, ISBN...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+                <div class="header-actions">
+                    <a href="/pages/my-account.html" class="action-btn" title="My Account">
+                        <i class="fas fa-user"></i>
+                        <span>Account</span>
+                    </a>
+                    <a href="/pages/my-orders.html" class="action-btn" title="My Orders">
+                        <i class="fas fa-box"></i>
+                        <span>Orders</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
+    <aside class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" id="closeMobileNav"><i class="fas fa-times"></i></button>
+        </div>
+
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-dropdown-item">
+                    <a href="#"><i class="fas fa-book"></i> Categories <i
+                            class="fas fa-chevron-down dropdown-arrow"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="#">English Books</a></li>
+                        <li><a href="#">Arabic Books</a></li>
+                        <li><a href="#">Urdu Books</a></li>
+                    </ul>
+                </li>
+                <li><a href="/pages/top-100.html"><i class="fas fa-crown"></i> Top 100</a></li>
+                <li><a href="/pages/search.html"><i class="fas fa-search"></i> Advanced Search</a></li>
+                <li><a href="/pages/about.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                <li><a href="/pages/contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+            </ul>
+        </div>
+
+        <div class="mobile-nav-footer">
+            <a href="/pages/my-account.html" class="btn-mobile-auth"><i class="fas fa-user"></i> My Account</a>
+        </div>
+    </aside>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <nav class="breadcrumb">
+                <a href="/index.html">Home</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="/pages/my-account.html">My Account</a>
+                <i class="fas fa-chevron-right"></i>
+                <a href="/pages/my-orders.html">My Orders</a>
+                <i class="fas fa-chevron-right"></i>
+                <span id="breadcrumbOrderId">Order Details</span>
+            </nav>
+            <div class="page-title-row">
+                <h1><i class="fas fa-box"></i> Order <span id="orderIdTitle">Details</span></h1>
+                <span id="orderStatusBadge" class="status-badge">Loading...</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="order-detail-main">
+        <div class="container">
+            <div class="order-detail-grid">
+                <!-- Left: Order Info -->
+                <div class="order-info-section">
+                    <!-- Order Timeline -->
+                    <div class="order-card timeline-card">
+                        <h3><i class="fas fa-route"></i> Order Timeline</h3>
+                        <div id="orderTimeline" class="timeline">
+                            <!-- Timeline steps will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Order Items -->
+                    <div class="order-card items-card">
+                        <h3><i class="fas fa-shopping-bag"></i> Order Items</h3>
+                        <div id="orderItems" class="order-items-list">
+                            <!-- Items will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Summary -->
+                <div class="order-summary-section">
+                    <!-- Shipping Address -->
+                    <div class="order-card">
+                        <h3><i class="fas fa-map-marker-alt"></i> Shipping Address</h3>
+                        <div id="shippingAddress" class="address-info">
+                            <!-- Address will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Payment Info -->
+                    <div class="order-card">
+                        <h3><i class="fas fa-credit-card"></i> Payment Details</h3>
+                        <div id="paymentInfo" class="payment-info">
+                            <!-- Payment info will be loaded here -->
+                        </div>
+                    </div>
+
+                    <!-- Order Summary -->
+                    <div class="order-card summary-card">
+                        <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+                        <div class="summary-rows">
+                            <div class="summary-row">
+                                <span>Subtotal</span>
+                                <span id="summarySubtotal">₹0</span>
+                            </div>
+                            <div class="summary-row">
+                                <span>Shipping</span>
+                                <span id="summaryShipping">FREE</span>
+                            </div>
+                            <div class="summary-row discount" id="discountRow" style="display: none;">
+                                <span>Discount</span>
+                                <span id="summaryDiscount">-₹0</span>
+                            </div>
+                            <div class="summary-divider"></div>
+                            <div class="summary-row total">
+                                <span>Total</span>
+                                <span id="summaryTotal">₹0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="order-actions">
+                        <button class="btn-secondary" onclick="printOrder()">
+                            <i class="fas fa-print"></i> Print Order
+                        </button>
+                        <button class="btn-secondary" onclick="downloadInvoice()">
+                            <i class="fas fa-download"></i> Download Invoice
+                        </button>
+                        <button id="cancelBtn" class="btn-danger" onclick="cancelOrder()" style="display: none;">
+                            <i class="fas fa-times"></i> Cancel Order
+                        </button>
+                        <a href="/pages/contact.html" class="btn-help">
+                            <i class="fas fa-headset"></i> Need Help?
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+    <script src="/js/pages/order-detail.js?v=2.3"></script>
+</body>
+
+</html>

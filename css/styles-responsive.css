@@ -1,0 +1,1677 @@
+/* =========================================
+   RESPONSIVE FIXES - COMPREHENSIVE UPDATE
+   For ABC Books Mobile Experience
+   ========================================= */
+
+/* ===== CRITICAL: GLOBAL OVERFLOW PREVENTION ===== */
+/* This MUST override all other styles to prevent horizontal scroll */
+html {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+body {
+    overflow-x: hidden !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    position: relative;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box !important;
+}
+
+/* Force ALL containers to respect viewport width */
+.container,
+.wrapper,
+.content-wrapper,
+section,
+main,
+header,
+footer,
+aside,
+article,
+div {
+    max-width: 100vw !important;
+}
+
+@media (max-width: 768px) {
+    .container {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        overflow: hidden !important;
+        margin: 0 auto !important;
+    }
+
+    /* Header container must NOT clip - navbar buttons need to be visible */
+    .header .container {
+        overflow: visible !important;
+    }
+
+    /* Force all sections to be contained */
+    section {
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    /* Force all grids and flexbox to wrap properly */
+    .content-grid,
+    .main-content-grid,
+    .footer-grid,
+    .trust-grid,
+    .categories-grid {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ===== HEADER & NAVIGATION MOBILE ===== */
+/* Prevent header from being clipped - critical for mobile */
+.header .container {
+    overflow: visible !important;
+}
+
+@media (max-width: 992px) {
+
+    /* Show hamburger, ensure header fits on small screens */
+    .header-content {
+        flex-wrap: nowrap;
+        min-height: 56px;
+    }
+
+    .header .container {
+        overflow: visible !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 8px 0;
+    }
+
+    .header .container {
+        overflow: visible !important;
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    .header-content {
+        padding: 0 4px;
+        gap: 8px;
+        flex-wrap: nowrap;
+    }
+
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+        width: 44px;
+        height: 44px;
+        min-width: 44px;
+        min-height: 44px;
+        margin-right: 4px;
+        padding: 10px;
+        font-size: 22px;
+        color: var(--primary);
+        flex-shrink: 0;
+    }
+
+    .logo {
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .logo-img {
+        height: 36px;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+
+    .logo-text .logo-sub {
+        font-size: 9px;
+    }
+
+    /* Hide button text on mobile, show only icons */
+    .header-actions .action-btn span,
+    .auth-buttons .action-btn span {
+        display: none !important;
+    }
+
+    .header-actions .action-btn,
+    .auth-buttons .action-btn {
+        min-width: 36px;
+        width: 36px;
+        height: 36px;
+        padding: 6px !important;
+        font-size: 16px;
+        flex-shrink: 0;
+    }
+
+    .header-actions,
+    .auth-buttons {
+        gap: 4px;
+        flex-shrink: 0;
+    }
+
+    /* Search wrapper mobile */
+    .search-wrapper {
+        display: none;
+    }
+
+    .mobile-nav-sidebar {
+        width: 280px;
+        max-width: 85vw;
+    }
+}
+
+/* Extra small screens (iPhone SE, etc.) */
+@media (max-width: 400px) {
+    .header-content {
+        gap: 4px;
+    }
+
+    .mobile-menu-btn {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        font-size: 20px;
+    }
+
+    .logo-img {
+        height: 32px;
+    }
+
+    .header-actions .action-btn,
+    .auth-buttons .action-btn {
+        min-width: 34px;
+        width: 34px;
+        height: 34px;
+        padding: 5px !important;
+        font-size: 14px;
+    }
+}
+
+/* ===== CATEGORY STRIP MOBILE ===== */
+@media (max-width: 768px) {
+    .category-strip {
+        padding: 10px 0;
+    }
+
+    .category-strip-container {
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .category-strip-item {
+        min-width: 70px;
+        flex-shrink: 0;
+    }
+
+    .category-strip-item .cat-icon {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .category-strip-item span {
+        font-size: 11px;
+    }
+}
+
+/* ===== HERO SECTION & BOOK SLIDERS ===== */
+@media (max-width: 768px) {
+
+    .hero-section,
+    .hero-modern {
+        padding: 15px 0;
+    }
+
+    .hero-title,
+    .hero-headline {
+        font-size: 24px !important;
+        line-height: 1.3;
+        text-align: center;
+    }
+
+    .hero-subtitle {
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* Slider container */
+    .hero-books-slider,
+    .trending-slider,
+    .new-releases-slider,
+    .children-books-slider {
+        position: relative;
+        padding: 0 40px;
+        overflow: hidden;
+    }
+
+    /* Slider viewport */
+    .slider-viewport {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    /* Books Track - prevent overflow */
+    .books-track,
+    .trending-books-track,
+    .new-releases-track,
+    .children-books-track {
+        display: flex;
+        gap: 10px;
+        overflow: hidden;
+        padding: 10px 0;
+    }
+
+    .books-track::-webkit-scrollbar,
+    .trending-books-track::-webkit-scrollbar,
+    .new-releases-track::-webkit-scrollbar,
+    .children-books-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Slider arrows */
+    .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+        z-index: 10;
+    }
+
+    .slider-arrow.prev {
+        left: 5px;
+    }
+
+    .slider-arrow.next {
+        right: 5px;
+    }
+
+    /* Book cards mobile sizing */
+    .book-card {
+        min-width: 120px !important;
+        max-width: 120px !important;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+
+    .book-card .book-cover {
+        height: 160px !important;
+    }
+
+    .book-card .book-info {
+        padding: 8px;
+    }
+
+    .book-card .book-title {
+        font-size: 12px;
+        line-height: 1.3;
+    }
+
+    .book-card .book-author {
+        font-size: 10px;
+    }
+
+    .book-card .book-price {
+        font-size: 12px;
+    }
+}
+
+/* ===== ISLAMIC BOOKS BANNER GRID ===== */
+@media (max-width: 1200px) {
+    .banner-books-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (max-width: 992px) {
+
+    .islamic-banner,
+    .banner-section {
+        padding: 20px 0;
+    }
+
+    .banner-wrapper {
+        flex-direction: column;
+        padding: 20px 15px;
+        min-height: auto;
+        gap: 20px;
+    }
+
+    .banner-books-grid {
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: auto;
+        max-width: 100%;
+        gap: 8px;
+    }
+
+    /* Reset all specific grid placements */
+    .banner-books-grid .book-cover-item:nth-child(n) {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+    }
+
+    .banner-badge {
+        position: relative;
+        right: auto;
+        top: auto;
+        transform: none;
+        margin-top: 20px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .badge-content {
+        min-width: 180px;
+        max-width: 280px;
+    }
+}
+
+@media (max-width: 576px) {
+    .banner-books-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+    }
+
+    .banner-books-grid .book-cover-item {
+        border-width: 1px;
+    }
+
+    .book-cover-item img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+    }
+}
+
+@media (max-width: 400px) {
+    .banner-books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 5px;
+    }
+}
+
+/* ===== SIDEBAR CARDS (Gift Banner, Author Spotlight, etc.) ===== */
+@media (max-width: 992px) {
+    .main-content-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .content-right {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .sidebar-card {
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .sidebar-card {
+        border-radius: 12px;
+        padding: 15px;
+    }
+
+    .sidebar-card h3 {
+        font-size: 16px;
+    }
+
+    .sidebar-card p {
+        font-size: 13px;
+    }
+}
+
+/* ===== PROMOTIONAL BANNERS ===== */
+@media (max-width: 768px) {
+
+    .promo-banner,
+    .gift-banner,
+    .box-sets-banner {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px 15px;
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .promo-banner h3,
+    .gift-banner h3,
+    .box-sets-content h2 {
+        font-size: 18px;
+    }
+
+    .promo-banner p,
+    .gift-banner p,
+    .box-sets-content p {
+        font-size: 13px;
+    }
+
+    .box-sets-banner {
+        flex-direction: column;
+    }
+
+    .box-sets-content {
+        text-align: center;
+        padding: 15px;
+    }
+
+    .box-sets-books {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding: 10px 0;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+}
+
+/* ===== SECTION HEADERS ===== */
+@media (max-width: 768px) {
+    .section-header-fancy {
+        padding: 0 10px;
+        justify-content: center;
+        /* Center the header when lines are hidden */
+    }
+
+    .section-header-fancy h2 {
+        font-size: 20px !important;
+        /* Slightly larger for readability */
+        white-space: normal !important;
+        /* Allow wrapping */
+        text-align: center;
+        line-height: 1.4;
+        width: 100%;
+    }
+
+    .section-header-fancy .header-line {
+        display: none;
+    }
+
+    .section-description {
+        font-size: 13px;
+        padding: 0 15px;
+        text-align: center;
+    }
+}
+
+/* ===== BOOK GRIDS (Indian Authors, Fiction, etc.) ===== */
+@media (max-width: 992px) {
+
+    .indian-authors-grid,
+    .fiction-books-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        padding: 0 10px;
+    }
+}
+
+@media (max-width: 576px) {
+
+    .indian-authors-grid,
+    .fiction-books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .indian-authors-grid .book-card,
+    .fiction-books-grid .book-card {
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* ===== CATEGORIES SHOWCASE ===== */
+@media (max-width: 768px) {
+    .categories-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+        padding: 0 10px;
+    }
+
+    .category-card {
+        padding: 15px 10px;
+    }
+
+    .category-card h3 {
+        font-size: 14px;
+    }
+
+    .category-card p {
+        font-size: 11px;
+    }
+}
+
+/* ===== TRUST BADGES ===== */
+@media (max-width: 768px) {
+    .trust-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 0 10px;
+    }
+
+    .trust-item {
+        padding: 12px;
+        text-align: center;
+    }
+
+    .trust-item h4 {
+        font-size: 13px;
+    }
+
+    .trust-item p {
+        font-size: 11px;
+    }
+
+    .trust-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 400px) {
+    .trust-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== FOOTER - MOBILE FIX ===== */
+@media (max-width: 768px) {
+
+    footer,
+    .footer,
+    .site-footer {
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .footer-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 25px !important;
+        text-align: center !important;
+        width: 100% !important;
+        padding: 0 15px !important;
+    }
+
+    .footer-col {
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    .footer-col ul {
+        padding-left: 0 !important;
+        list-style: none !important;
+    }
+
+    .footer-social {
+        display: flex !important;
+        justify-content: center !important;
+        gap: 15px !important;
+    }
+
+    .footer-bottom {
+        text-align: center !important;
+        padding: 15px !important;
+    }
+
+    .newsletter-form {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .newsletter-form input {
+        width: 100% !important;
+    }
+}
+
+/* ===== TOUCH TARGETS & ACCESSIBILITY ===== */
+@media (max-width: 768px) {
+
+    button,
+    a.btn,
+    .action-btn,
+    .nav-link,
+    .btn-primary,
+    .btn-secondary {
+        min-height: 44px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* ===== TYPOGRAPHY FLUIDITY ===== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 24px !important;
+    }
+
+    h2 {
+        font-size: 20px !important;
+    }
+
+    h3 {
+        font-size: 16px !important;
+    }
+
+    h4 {
+        font-size: 14px !important;
+    }
+
+    p {
+        font-size: 13px;
+    }
+}
+
+/* ===== ANNOUNCEMENT BAR ===== */
+@media (max-width: 576px) {
+    .announcement-bar {
+        padding: 6px 10px;
+        font-size: 11px;
+    }
+
+    .announcement-content span {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+}
+
+/* ===== MODALS & OVERLAYS ===== */
+@media (max-width: 576px) {
+
+    .modal-content,
+    .cart-sidebar,
+    .wishlist-sidebar {
+        max-width: 95vw;
+        margin: 10px;
+    }
+
+    .auth-modal-content {
+        padding: 20px 15px;
+        margin: 10px;
+        border-radius: 12px;
+    }
+}
+
+/* =========================================
+   ADDITIONAL MOBILE FIXES - v2
+   Promo Cards, Sidebar, Hero Slider, Banners
+   ========================================= */
+
+/* ===== HERO SECTION SLIDER - REDESIGNED ===== */
+@media (max-width: 768px) {
+
+    .hero-section,
+    .hero-modern {
+        padding: 20px 0;
+        background: linear-gradient(135deg, #fdf8f3 0%, #fef5ed 100%);
+    }
+
+    .hero-header,
+    .hero-text {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .hero-year {
+        display: inline-block;
+        background: var(--primary, #e42b26);
+        color: white;
+        padding: 6px 20px;
+        border-radius: 20px;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .hero-title,
+    .hero-headline {
+        font-size: 22px !important;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+
+    .hero-subtitle,
+    .hero-subhead {
+        font-size: 13px;
+        color: #666;
+    }
+
+    /* Hero Book Slider Container */
+    .hero-books-slider {
+        position: relative;
+        margin: 0 -15px;
+        padding: 0 35px;
+    }
+
+    /* Slider Arrows - positioned at edges */
+    .hero-books-slider .slider-arrow {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        border: none;
+        z-index: 10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .hero-books-slider .slider-arrow.prev {
+        left: 5px;
+    }
+
+    .hero-books-slider .slider-arrow.next {
+        right: 5px;
+    }
+
+    .hero-books-slider .slider-arrow i {
+        font-size: 14px;
+        color: var(--primary, #e42b26);
+    }
+
+    /* Slider Viewport */
+    .slider-viewport {
+        overflow: hidden;
+        margin: 0;
+    }
+
+    /* Books Track */
+    .books-track {
+        display: flex;
+        gap: 12px;
+        padding: 10px 5px;
+        scroll-behavior: smooth;
+    }
+
+    /* Book Cards in Hero */
+    .hero-books-slider .book-card,
+    .books-track .book-card {
+        min-width: 130px !important;
+        max-width: 130px !important;
+        flex-shrink: 0;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 3px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .hero-books-slider .book-cover,
+    .books-track .book-cover {
+        height: 170px !important;
+        position: relative;
+    }
+
+    .hero-books-slider .book-info,
+    .books-track .book-info {
+        padding: 10px 8px;
+    }
+
+    .hero-books-slider .book-title,
+    .books-track .book-title {
+        font-size: 12px;
+        line-height: 1.3;
+        margin-bottom: 3px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .hero-books-slider .book-author,
+    .books-track .book-author {
+        font-size: 10px;
+        color: #888;
+    }
+
+    /* Slider Dots */
+    .slider-dots {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .slider-dots .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ddd;
+    }
+
+    .slider-dots .dot.active {
+        background: var(--primary, #e42b26);
+        width: 24px;
+        border-radius: 4px;
+    }
+}
+
+/* ===== ISLAMIC BOOKS BANNER - COMPLETE MOBILE FIX ===== */
+@media (max-width: 768px) {
+    .islamic-books-banner {
+        padding: 20px 0 !important;
+        width: 100% !important;
+        overflow: hidden !important;
+    }
+
+    .islamic-books-banner .container {
+        padding: 0 12px !important;
+    }
+
+    .islamic-books-banner .banner-wrapper {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        gap: 15px !important;
+        padding: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Book Grid - 2 columns on mobile */
+    .islamic-books-banner .banner-books-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* Individual Book Cards */
+    .islamic-books-banner .banner-book-card {
+        width: 100% !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+    }
+
+    .islamic-books-banner .banner-book-cover {
+        height: 140px !important;
+        padding: 8px !important;
+    }
+
+    .islamic-books-banner .banner-book-cover img {
+        max-height: 100% !important;
+        max-width: 100% !important;
+        object-fit: contain !important;
+    }
+
+    .islamic-books-banner .banner-book-info {
+        padding: 8px !important;
+    }
+
+    .islamic-books-banner .banner-book-title {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+        min-height: auto !important;
+    }
+
+    .islamic-books-banner .banner-book-author {
+        font-size: 9px !important;
+    }
+
+    /* TOP 100 Badge - Reduced Size */
+    .banner-badge-link {
+        display: flex !important;
+        justify-content: center !important;
+        width: 100% !important;
+    }
+
+    .banner-badge,
+    .top100-badge {
+        position: static !important;
+        transform: none !important;
+        margin: 0 auto !important;
+    }
+
+    .top100-badge .badge-content {
+        padding: 15px 25px !important;
+        min-width: 120px !important;
+        max-width: 180px !important;
+    }
+
+    .top100-badge .badge-label {
+        font-size: 22px !important;
+        letter-spacing: 1px !important;
+    }
+
+    .top100-badge .badge-title {
+        font-size: 12px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .islamic-books-banner .banner-books-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .islamic-books-banner .banner-book-cover {
+        height: 120px !important;
+    }
+}
+
+@media (max-width: 400px) {
+    .banner-books-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+    }
+}
+
+/* ===== PROMO CARDS - MOBILE FIXED ===== */
+@media (max-width: 768px) {
+    .bottom-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 0 10px;
+    }
+
+    .promo-card {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        border-radius: 12px;
+        overflow: hidden;
+        padding: 15px;
+    }
+
+    /* Academic Card */
+    .promo-card.academic-card {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    /* Exam Card */
+    .promo-card.exam-card {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    /* Gift Card - Special Styling */
+    .promo-card.gift-card {
+        background: linear-gradient(135deg, #ff6b35 0%, #f7941d 100%);
+        text-align: center;
+        padding: 25px 15px;
+    }
+
+    .gift-boxes {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-bottom: 15px;
+    }
+
+    .gift-box {
+        width: 50px;
+        height: 50px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .gift-box i {
+        font-size: 20px;
+        color: white;
+    }
+
+    .gift-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 5px;
+        display: block;
+    }
+
+    .gift-card h3 {
+        color: white;
+        font-size: 18px !important;
+        margin-bottom: 15px;
+    }
+
+    .btn-gift {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: white;
+        color: #ff6b35;
+        padding: 10px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    /* Crushes Card */
+    .promo-card.crushes-card {
+        background: white;
+        border: 1px solid #eee;
+    }
+
+    .promo-content {
+        margin-bottom: 15px;
+    }
+
+    .promo-content h3 {
+        font-size: 16px !important;
+        color: white;
+        margin-bottom: 10px;
+    }
+
+    .crushes-card .promo-content h3 {
+        color: #333;
+    }
+
+    .promo-books {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        padding-bottom: 5px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .promo-books::-webkit-scrollbar {
+        display: none;
+    }
+
+    .promo-books .book-mini {
+        min-width: 80px;
+        max-width: 80px;
+        flex-shrink: 0;
+    }
+
+    .btn-explore {
+        color: white;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .crushes-card .btn-explore {
+        color: var(--primary, #e42b26);
+    }
+}
+
+/* ===== SIDEBAR CARDS - MOBILE LAYOUT ===== */
+@media (max-width: 992px) {
+    .content-grid {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .content-left {
+        width: 100%;
+        order: 1;
+    }
+
+    .content-right {
+        width: 100%;
+        order: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Author Spotlight Card */
+    .sidebar-card.author-spotlight {
+        background: linear-gradient(135deg, #fef9f3 0%, #fff5eb 100%);
+        border-radius: 16px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .author-image {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    .author-placeholder {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #ddd 0%, #ccc 100%);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .author-placeholder i {
+        font-size: 30px;
+        color: #999;
+    }
+
+    .author-info {
+        margin-bottom: 15px;
+    }
+
+    .spotlight-label {
+        display: inline-block;
+        background: var(--primary, #e42b26);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 11px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 10px;
+    }
+
+    .author-spotlight h3 {
+        font-size: 16px !important;
+        color: #333;
+        line-height: 1.4;
+    }
+
+    .author-books {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        flex-wrap: wrap;
+    }
+
+    /* Learning Shelf Card */
+    .sidebar-card.learning-shelf {
+        background: linear-gradient(135deg, #e8f4f8 0%, #d4ecf4 100%);
+        border-radius: 16px;
+        padding: 20px;
+    }
+
+    .shelf-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 15px;
+    }
+
+    .shelf-header i {
+        font-size: 24px;
+        color: #2d7d9a;
+    }
+
+    .shelf-header h3 {
+        font-size: 16px !important;
+        color: #333;
+        margin: 0;
+    }
+
+    .shelf-books {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .shelf-books::-webkit-scrollbar {
+        display: none;
+    }
+
+    /* Ask Expert Card */
+    .sidebar-card.ask-expert {
+        background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+        border-radius: 16px;
+        padding: 25px 20px;
+        text-align: center;
+        color: white;
+    }
+
+    .expert-badge {
+        width: 60px;
+        height: 60px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 15px;
+    }
+
+    .expert-badge i {
+        font-size: 28px;
+        color: white;
+    }
+
+    .ask-expert h3 {
+        font-size: 20px !important;
+        color: white;
+        margin-bottom: 8px;
+    }
+
+    .ask-expert p {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.9);
+        margin-bottom: 20px;
+    }
+
+    .btn-ask {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        background: white;
+        color: #25D366;
+        padding: 12px 25px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn-ask i.fa-whatsapp {
+        font-size: 20px;
+    }
+
+    /* Common Button Styling */
+    .btn-view-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--primary, #e42b26);
+        font-size: 14px;
+        font-weight: 600;
+    }
+}
+
+/* ===== CONTENT GRID MAIN AREA ===== */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 15px 0;
+    }
+
+    .content-grid {
+        gap: 20px;
+    }
+
+    .featured-section {
+        padding: 0 10px;
+    }
+
+    .featured-books-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .featured-books-grid .book-card {
+        min-width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .section-nav {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .nav-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #ddd;
+    }
+
+    .nav-dot.active {
+        background: var(--primary, #e42b26);
+    }
+}
+
+/* =========================================
+   MOBILE RESPONSIVENESS FIXES - v3
+   Header, Buttons, Book Actions, Menus
+   ========================================= */
+
+/* ===== HEADER LAYOUT - MOBILE ===== */
+@media (max-width: 768px) {
+
+    /* Ensure header-content is a single, non-wrapping row */
+    .header-content {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        gap: 8px !important;
+        padding: 0 4px !important;
+        min-height: 56px;
+    }
+
+    /* Hamburger button - MUST be visible */
+    .mobile-menu-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 44px !important;
+        height: 44px !important;
+        min-width: 44px !important;
+        min-height: 44px !important;
+        flex-shrink: 0 !important;
+        background: var(--gray-100, #f3f4f6) !important;
+        border: 2px solid var(--gray-200, #e5e7eb) !important;
+        border-radius: 8px !important;
+        color: var(--primary, #e42b26) !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        outline: none !important;
+    }
+
+    .mobile-menu-btn:active {
+        background: var(--gray-200, #e5e7eb) !important;
+        transform: scale(0.95);
+    }
+
+    /* Logo - takes remaining space */
+    .header-content .logo {
+        flex: 1 !important;
+        min-width: 0 !important;
+        margin-right: auto !important;
+    }
+
+    .header-content .logo-img {
+        height: 36px !important;
+        width: auto !important;
+    }
+
+    /* Hide search on mobile - use mobile menu instead */
+    .header-content .search-wrapper {
+        display: none !important;
+    }
+
+    /* Desktop nav hidden on mobile */
+    .main-nav,
+    .desktop-nav {
+        display: none !important;
+    }
+
+    /* Header Actions - compact icon-only buttons */
+    .header-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+        flex-shrink: 0 !important;
+        flex-wrap: nowrap !important;
+    }
+
+    /* All header action buttons - reset and style */
+    .header-actions .action-btn,
+    .header-actions .auth-buttons .action-btn {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        min-width: 40px !important;
+        max-width: 40px !important;
+        min-height: 40px !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        gap: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 8px !important;
+        cursor: pointer !important;
+        position: relative !important;
+        flex-shrink: 0 !important;
+        color: var(--text-secondary, #64748b) !important;
+        font-size: 16px !important;
+        -webkit-appearance: none !important;
+        appearance: none !important;
+        overflow: hidden !important;
+    }
+
+    .header-actions .action-btn:active {
+        background: var(--gray-100, #f3f4f6) !important;
+    }
+
+    /* Hide text labels in header buttons on mobile */
+    .header-actions .action-btn>span:not(.badge),
+    .header-actions .auth-buttons .action-btn>span:not(.badge) {
+        display: none !important;
+    }
+
+    /* Show only the icon */
+    .header-actions .action-btn i,
+    .header-actions .auth-buttons .action-btn i {
+        font-size: 18px !important;
+        display: block !important;
+    }
+
+    /* Auth buttons container */
+    .auth-buttons {
+        display: flex !important;
+        align-items: center !important;
+        gap: 2px !important;
+        flex-shrink: 0 !important;
+    }
+
+    /* Signup button styling - keep compact */
+    .auth-buttons .signup-btn {
+        width: 40px !important;
+        min-width: 40px !important;
+    }
+
+    /* Badge positioning for icon-only buttons */
+    .header-actions .action-btn .badge {
+        position: absolute !important;
+        top: 2px !important;
+        right: 2px !important;
+        width: 16px !important;
+        height: 16px !important;
+        font-size: 9px !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    /* User account dropdown - proper positioning */
+    .user-account {
+        position: relative !important;
+    }
+
+    .user-dropdown {
+        position: absolute !important;
+        top: 100% !important;
+        right: 0 !important;
+        min-width: 180px !important;
+        z-index: 1001 !important;
+    }
+}
+
+/* ===== EXTRA SMALL SCREENS (iPhone SE, etc.) ===== */
+@media (max-width: 400px) {
+    .header-content {
+        gap: 4px !important;
+    }
+
+    .mobile-menu-btn {
+        width: 38px !important;
+        height: 38px !important;
+        min-width: 38px !important;
+        font-size: 18px !important;
+    }
+
+    .header-content .logo-img {
+        height: 30px !important;
+    }
+
+    .header-actions .action-btn,
+    .header-actions .auth-buttons .action-btn {
+        width: 36px !important;
+        height: 36px !important;
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+
+    .header-actions .action-btn i,
+    .header-actions .auth-buttons .action-btn i {
+        font-size: 16px !important;
+    }
+}
+
+/* ===== BOOK CARD ACTION BUTTONS - MOBILE ===== */
+/* On touch devices, hover doesn't exist, so buttons must be visible */
+@media (max-width: 768px) {
+    .book-card .book-actions {
+        opacity: 1 !important;
+        transform: translateX(0) !important;
+        top: 8px !important;
+        right: 8px !important;
+    }
+
+    .book-card .book-actions .btn-wishlist,
+    .book-card .book-actions .btn-cart {
+        width: 32px !important;
+        height: 32px !important;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2) !important;
+    }
+
+    .book-card .book-actions .btn-wishlist i,
+    .book-card .book-actions .btn-cart i {
+        font-size: 12px !important;
+    }
+
+    /* Hide hover overlay on mobile - use tap instead */
+    .book-card .book-overlay {
+        display: none !important;
+    }
+
+    /* Book rating - smaller on mobile */
+    .book-card .book-rating {
+        display: none !important;
+    }
+}
+
+/* ===== MOBILE SIDEBAR NAVIGATION ===== */
+@media (max-width: 768px) {
+    .mobile-nav-sidebar {
+        position: fixed !important;
+        top: 0 !important;
+        left: -100% !important;
+        width: 280px !important;
+        max-width: 85vw !important;
+        height: 100vh !important;
+        height: 100dvh !important;
+        background: white !important;
+        z-index: 10001 !important;
+        transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+        overflow-y: auto !important;
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.15) !important;
+    }
+
+    .mobile-nav-sidebar.active {
+        left: 0 !important;
+    }
+
+    .mobile-nav-overlay {
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        background: rgba(0, 0, 0, 0.5) !important;
+        z-index: 10000 !important;
+        opacity: 0 !important;
+        visibility: hidden !important;
+        transition: opacity 0.3s ease, visibility 0.3s ease !important;
+    }
+
+    .mobile-nav-overlay.active {
+        opacity: 1 !important;
+        visibility: visible !important;
+    }
+
+    /* Mobile nav list items - touchable targets */
+    .mobile-nav-list li a {
+        display: flex !important;
+        align-items: center !important;
+        gap: 12px !important;
+        padding: 14px 20px !important;
+        min-height: 48px !important;
+        font-size: 15px !important;
+        color: #333 !important;
+        text-decoration: none !important;
+        border-bottom: 1px solid #f0f0f0 !important;
+    }
+
+    .mobile-nav-list li a:active {
+        background: #f5f5f5 !important;
+    }
+
+    .mobile-nav-list li a i {
+        width: 20px !important;
+        text-align: center !important;
+        color: var(--primary, #e42b26) !important;
+        font-size: 16px !important;
+    }
+
+    /* Mobile submenu */
+    .mobile-submenu {
+        max-height: 0 !important;
+        overflow: hidden !important;
+        transition: max-height 0.3s ease !important;
+        background: #fafafa !important;
+    }
+
+    .mobile-submenu.active {
+        max-height: 500px !important;
+    }
+
+    .mobile-submenu li a {
+        padding-left: 52px !important;
+        font-size: 14px !important;
+    }
+
+    /* Close button */
+    .close-mobile-nav {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        border: none !important;
+        background: transparent !important;
+        font-size: 20px !important;
+        cursor: pointer !important;
+        color: #666 !important;
+    }
+}

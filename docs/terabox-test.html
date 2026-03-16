@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeraBox Link Converter - Test Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="url"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="url"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: transform 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #4caf50;
+            display: none;
+        }
+
+        .result.active {
+            display: block;
+        }
+
+        .result.error {
+            border-left-color: #f44336;
+            background: #ffebee;
+        }
+
+        .result h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 18px;
+        }
+
+        .result img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        .result-url {
+            word-break: break-all;
+            background: white;
+            padding: 12px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            gap: 12px;
+            z-index: 10000;
+            animation: slideInRight 0.3s ease;
+        }
+
+        .notification.active {
+            display: flex;
+        }
+
+        .notification.success {
+            border-left: 4px solid #4caf50;
+        }
+
+        .notification.error {
+            border-left: 4px solid #f44336;
+        }
+
+        .notification.info {
+            border-left: 4px solid #2196f3;
+        }
+
+        @keyframes slideInRight {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .instructions {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .instructions h4 {
+            margin-bottom: 10px;
+            color: #1976d2;
+        }
+
+        .instructions ol {
+            padding-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 5px;
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <h1><i class="fas fa-cloud-download-alt"></i> TeraBox Link Converter</h1>
+        <p class="subtitle">Test the TeraBox to Direct Link conversion</p>
+
+        <div class="instructions">
+            <h4>📋 How to use:</h4>
+            <ol>
+                <li>Upload an image to <a href="https://www.terabox.com/" target="_blank">TeraBox</a></li>
+                <li>Get the shareable link (make sure it's public)</li>
+                <li>Paste the link below and click Convert</li>
+            </ol>
+        </div>
+
+        <div class="input-group">
+            <label for="teraboxUrl"><i class="fas fa-link"></i> TeraBox Share Link</label>
+            <input type="url" id="teraboxUrl" placeholder="https://terabox.com/s/...">
+        </div>
+
+        <button class="btn" id="convertBtn">
+            <i class="fas fa-magic"></i> Convert to Direct Link
+        </button>
+
+        <div class="result" id="result">
+            <h3>✅ Conversion Successful!</h3>
+            <p><strong>Direct Image URL:</strong></p>
+            <div class="result-url" id="resultUrl"></div>
+            <img id="resultImg" alt="Converted Image">
+        </div>
+    </div>
+
+    <div class="notification" id="notification">
+        <i class="fas fa-info-circle"></i>
+        <span id="notificationText"></span>
+    </div>
+
+    <script>
+        const teraboxUrlInput = document.getElementById('teraboxUrl');
+        const convertBtn = document.getElementById('convertBtn');
+        const resultDiv = document.getElementById('result');
+        const resultUrl = document.getElementById('resultUrl');
+        const resultImg = document.getElementById('resultImg');
+
+        convertBtn.addEventListener('click', convertTeraboxLink);
+
+        teraboxUrlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                convertTeraboxLink();
+            }
+        });
+
+        async function convertTeraboxLink() {
+            const url = teraboxUrlInput.value.trim();
+
+            if (!url) {
+                showNotification('Please enter a TeraBox URL', 'error');
+                return;
+            }
+
+            if (!url.includes('terabox.com') && !url.includes('1024tera.com')) {
+                showNotification('Please enter a valid TeraBox URL', 'error');
+                return;
+            }
+
+            // Show loading state
+            const originalBtnText = convertBtn.innerHTML;
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Converting...';
+            resultDiv.classList.remove('active');
+
+            try {
+                showNotification('Converting TeraBox link... Please wait', 'info');
+
+                // Primary API
+                const apiUrl = `https://terabox-dl.qtcloud.workers.dev/api/get-info?shorturl=${encodeURIComponent(url)}`;
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (data.ok && data.list && data.list.length > 0) {
+                    const directUrl = data.list[0].dlink || data.list[0].thumbs?.url3;
+
+                    if (directUrl) {
+                        showResult(directUrl);
+                        showNotification('✅ Converted successfully!', 'success');
+                    } else {
+                        throw new Error('No direct link found');
+                    }
+                } else {
+                    throw new Error(data.error || 'Conversion failed');
+                }
+
+            } catch (error) {
+                console.error('Conversion error:', error);
+                showNotification('❌ Conversion failed. Please check the URL and try again.', 'error');
+                resultDiv.classList.add('active', 'error');
+                resultDiv.innerHTML = `
+                    <h3>❌ Conversion Failed</h3>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p style="margin-top: 10px;">Please ensure:</p>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>The TeraBox link is publicly accessible</li>
+                        <li>You're using a share link (not a direct file URL)</li>
+                        <li>The file still exists on TeraBox</li>
+                    </ul>
+                `;
+            } finally {
+                convertBtn.disabled = false;
+                convertBtn.innerHTML = originalBtnText;
+            }
+        }
+
+        function showResult(directUrl) {
+            resultUrl.textContent = directUrl;
+            resultImg.src = directUrl;
+            resultDiv.classList.remove('error');
+            resultDiv.classList.add('active');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.getElementById('notification');
+            const notificationText = document.getElementById('notificationText');
+
+            notification.className = `notification active ${type}`;
+            notificationText.textContent = message;
+
+            setTimeout(() => {
+                notification.classList.remove('active');
+            }, 5000);
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,531 @@
+/* Terabox Upload Styling */
+.upload-options {
+    margin-top: 10px;
+}
+
+.upload-tab-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.upload-tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: #f5f5f5;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.upload-tab:hover {
+    background: #e8f5e9;
+    border-color: #4caf50;
+}
+
+.upload-tab.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: #667eea;
+}
+
+.upload-content {
+    display: none;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 8px;
+}
+
+.upload-content.active {
+    display: block;
+}
+
+.terabox-guide {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px dashed #667eea;
+}
+
+.terabox-guide h4 {
+    color: #667eea;
+    margin-bottom: 15px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.upload-steps {
+    margin: 15px 0;
+    padding-left: 20px;
+}
+
+.upload-steps li {
+    margin-bottom: 15px;
+    line-height: 1.6;
+}
+
+.upload-steps strong {
+    color: #333;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.upload-steps ul {
+    margin-top: 8px;
+    padding-left: 20px;
+    list-style: disc;
+}
+
+.upload-steps ul li {
+    margin-bottom: 5px;
+    font-size: 13px;
+    color: #666;
+}
+
+.upload-steps code {
+    background: #f0f0f0;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    color: #e42b26;
+    font-size: 12px;
+}
+
+.terabox-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.terabox-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+#teraboxImage {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+#teraboxImage:focus {
+    border-color: #667eea;
+    outline: none;
+}
+
+.btn-convert {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-convert:hover {
+    background: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+}
+
+/* Image Preview */
+.image-preview-container {
+    margin-top: 20px;
+}
+
+.image-preview-container label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 600;
+    color: #333;
+}
+
+.image-preview {
+    position: relative;
+    display: inline-block;
+    max-width: 300px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f9f9f9;
+}
+
+.image-preview img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.btn-remove-preview {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 32px;
+    height: 32px;
+    background: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.btn-remove-preview:hover {
+    background: #f44336;
+    transform: scale(1.1);
+}
+
+/* TeraBox Note Section */
+.terabox-note {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+    border: 1px solid #ffc107;
+    border-left: 4px solid #ff9800;
+    border-radius: 6px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #856404;
+}
+
+.terabox-note i {
+    color: #ff9800;
+    margin-right: 8px;
+}
+
+.terabox-note strong {
+    color: #664d03;
+}
+
+.terabox-note a {
+    color: #667eea;
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px dotted #667eea;
+}
+
+.terabox-note a:hover {
+    color: #764ba2;
+    border-bottom-color: #764ba2;
+}
+
+/* Disabled button state */
+.btn-convert:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn-convert:disabled:hover {
+    background: #ccc;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ===== ImgBB Upload Styling ===== */
+.recommended-badge {
+    background: linear-gradient(135deg, #ffd700 0%, #ffed4e 100%);
+    color: #333;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    margin-left: 6px;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.imgbb-guide {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px dashed #35c3c1;
+}
+
+.imgbb-guide h4 {
+    color: #35c3c1;
+    margin-bottom: 10px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.imgbb-subtitle {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-style: italic;
+}
+
+.imgbb-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.imgbb-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(53, 195, 193, 0.3);
+}
+
+.step-note {
+    font-size: 13px;
+    color: #666;
+    margin-top: 6px;
+    padding-left: 20px;
+}
+
+.example-box {
+    background: #f0f9ff;
+    border: 1px solid #35c3c1;
+    border-radius: 6px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+.example-box code {
+    background: #fff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: 'Courier New', monospace;
+    color: #35c3c1;
+    font-size: 12px;
+}
+
+#imgbbImage {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    margin-top: 15px;
+}
+
+#imgbbImage:focus {
+    border-color: #35c3c1;
+    outline: none;
+}
+
+.btn-use-link {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-use-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(53, 195, 193, 0.3);
+}
+
+.imgbb-benefits {
+    background: linear-gradient(135deg, #e8f8f7 0%, #e0f7ff 100%);
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: 20px;
+    border-left: 4px solid #35c3c1;
+}
+
+.imgbb-benefits h5 {
+    color: #35c3c1;
+    margin-bottom: 12px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imgbb-benefits ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.imgbb-benefits li {
+    margin-bottom: 8px;
+    color: #555;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.imgbb-benefits li i {
+    color: #35c3c1;
+    font-size: 14px;
+}
+
+/* ===== Hosting Options Toggle ===== */
+.hosting-options {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.hosting-btn {
+    flex: 1;
+    padding: 10px 15px;
+    background: #f5f5f5;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+}
+
+.hosting-btn:hover {
+    background: #e8f8f7;
+    border-color: #35c3c1;
+}
+
+.hosting-btn.active {
+    background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+    color: white;
+    border-color: #35c3c1;
+}
+
+.hosting-guide {
+    display: none;
+}
+
+.hosting-guide.active {
+    display: block;
+}
+
+/* Warning Box */
+.warning-box {
+    background: linear-gradient(135deg, #fff3cd 0%, #fff8e1 100%);
+    border: 1px solid #ffc107;
+    border-left: 4px solid #ff9800;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-top: 10px;
+    font-size: 13px;
+    color: #856404;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.warning-box i {
+    color: #ff9800;
+    font-size: 16px;
+    margin-top: 2px;
+}
+
+/* Google Drive Link Button */
+.gdrive-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.gdrive-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 133, 244, 0.3);
+}
+
+/* Freeimage.host Link Button */
+.freeimage-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 15px;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    transition: transform 0.2s ease;
+}
+
+.freeimage-link:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+}
+
+/* Success Note */
+.success-note {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    border: 1px solid #28a745;
+    border-left: 4px solid #28a745;
+    border-radius: 6px;
+    padding: 12px 15px;
+    margin-top: 15px;
+    font-size: 13px;
+    color: #155724;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.success-note i {
+    color: #28a745;
+    font-size: 16px;
+    margin-top: 2px;
+}

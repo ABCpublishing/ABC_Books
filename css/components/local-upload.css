@@ -1,0 +1,71 @@
+/* Local Upload Styles */
+.local-upload-area {
+    padding: 20px;
+}
+
+.upload-dropzone {
+    border: 3px dashed #667eea;
+    border-radius: 12px;
+    padding: 40px 20px;
+    text-align: center;
+    background: linear-gradient(135deg, #f5f7ff 0%, #faf5ff 100%);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.upload-dropzone.dragover {
+    background: linear-gradient(135deg, #e8ecff 0%, #f0e5ff 100%);
+    border-color: #764ba2;
+    transform: scale(1.02);
+}
+
+.upload-icon {
+    font-size: 64px;
+    color: #667eea;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.upload-dropzone h4 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.upload-dropzone p {
+    color: #666;
+    margin: 15px 0;
+    font-size: 14px;
+}
+
+.btn-browse {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    margin: 10px 0;
+}
+
+.btn-browse:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.upload-hint {
+    display: block;
+    margin-top: 15px;
+    color: #999;
+    font-size: 12px;
+}
+
+.upload-dropzone.uploading {
+    pointer-events: none;
+    opacity: 0.6;
+}

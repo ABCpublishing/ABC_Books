@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Contact Us | ABC Books</title>
+    <meta name="description"
+        content="Get in touch with ABC Books - India's premier online bookstore. We're here to help!">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books, authors...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/admin/admin.html" class="action-btn" title="Admin Panel">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </a>
+                    <a href="/index.html" class="action-btn cart-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-has-submenu">
+                    <a href="#" class="mobile-nav-link" onclick="toggleMobileSubmenu(this)">Categories <i
+                            class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="/pages/search.html?q=quran"><i class="fas fa-mosque"></i> Islamic Books</a></li>
+                        <li><a href="/pages/search.html?q=fiction"><i class="fas fa-book"></i> English Fiction</a></li>
+                        <li><a href="/pages/search.html?q=arabic"><i class="fas fa-language"></i> Arabic Books</a></li>
+                        <li><a href="/pages/search.html?q=children"><i class="fas fa-child"></i> Children's Books</a>
+                        </li>
+                        <li><a href="/pages/search.html?q=academic"><i class="fas fa-graduation-cap"></i> Academic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="/pages/search.html?q=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
+                        Bestsellers</a></li>
+                <li><a href="/pages/search.html?q=new" class="mobile-nav-link"><i class="fas fa-bolt"></i> New
+                        Arrivals</a>
+                </li>
+                <li><a href="/pages/about.html" class="mobile-nav-link"><i class="fas fa-info-circle"></i> About Us</a>
+                </li>
+                <li><a href="/pages/contact.html" class="mobile-nav-link active"><i class="fas fa-envelope"></i>
+                        Contact</a>
+                </li>
+            </ul>
+            <div class="mobile-nav-footer">
+                <a href="#" class="btn-primary btn-block">Download App</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="page-hero contact-hero">
+        <div class="container">
+            <h1>Contact <span>Us</span></h1>
+            <p>We'd Love to Hear From You!</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="page-main">
+        <div class="container">
+            <!-- Contact Cards -->
+            <section class="contact-cards-section">
+                <div class="contact-cards-grid">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3>Call Us</h3>
+                        <p>Mon-Sat: 9AM - 8PM</p>
+                        <a href="tel:+919622827363">+91 9622827363, 8492927363</a>
+                        <span class="info-badge">Toll Free</span>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h3>Email Us</h3>
+                        <p>We reply within 24 hours</p>
+                        <a href="mailto:abcpublishinghouse@gmail.com">abcpublishinghouse@gmail.com</a>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h3>WhatsApp</h3>
+                        <p>Quick responses</p>
+                        <a href="https://wa.me/917006798511" target="_blank">+91 70067 98511</a>
+                        <span class="info-badge whatsapp-badge">Online Now</span>
+                    </div>
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h3>Visit Us</h3>
+                        <p>ABC Book Store</p>
+                        <span>13 Custodian Building, Srinagar</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Form & Map -->
+            <section class="content-section contact-form-section">
+                <div class="contact-grid">
+                    <!-- Contact Form -->
+                    <div class="form-container">
+                        <h2><i class="fas fa-paper-plane"></i> Send Us a Message</h2>
+                        <form id="contactForm" class="contact-form">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="name">Your Name *</label>
+                                    <input type="text" id="name" required placeholder="Enter your name">
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email Address *</label>
+                                    <input type="email" id="email" required placeholder="email@example.com">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <input type="tel" id="phone" placeholder="+91 XXXXX XXXXX">
+                            </div>
+                            <div class="form-group">
+                                <label for="subject">Subject *</label>
+                                <select id="subject" required>
+                                    <option value="">Select a topic</option>
+                                    <option value="order">Order Related</option>
+                                    <option value="product">Product Inquiry</option>
+                                    <option value="return">Returns & Refunds</option>
+                                    <option value="payment">Payment Issue</option>
+                                    <option value="feedback">Feedback</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message">Your Message *</label>
+                                <textarea id="message" rows="5" required placeholder="How can we help you?"></textarea>
+                            </div>
+                            <button type="submit" class="btn-submit">
+                                <i class="fas fa-paper-plane"></i> Send Message
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Map & Info -->
+                    <div class="map-container">
+                        <div class="map-placeholder">
+                            <div class="map-embed">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3304.839839!2d74.79!3d34.08!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMzTCsDA0JzQ4LjAiTiA3NMKwNDcnMjQuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                                    width="100%" height="300" style="border:0; border-radius: 15px;" allowfullscreen=""
+                                    loading="lazy">
+                                </iframe>
+                            </div>
+                        </div>
+                        <div class="store-info">
+                            <h3><i class="fas fa-store"></i> Store Information</h3>
+                            <div class="info-list">
+                                <div class="info-item">
+                                    <i class="fas fa-clock"></i>
+                                    <div>
+                                        <strong>Business Hours</strong>
+                                        <p>Monday - Saturday: 9:00 AM - 8:00 PM</p>
+                                        <p>Sunday: 10:00 AM - 6:00 PM</p>
+                                    </div>
+                                </div>
+                                <div class="info-item">
+                                    <i class="fas fa-map-pin"></i>
+                                    <div>
+                                        <strong>Store Address</strong>
+                                        <p>ABC Book Store</p>
+                                        <p>13 Custodian Building</p>
+                                        <p>Srinagar, J&K - 190001</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- FAQ Section -->
+            <section class="content-section faq-section">
+                <div class="center-header">
+                    <span class="section-tag"><i class="fas fa-question-circle"></i> FAQs</span>
+                    <h2>Frequently Asked Questions</h2>
+                </div>
+                <div class="faq-grid">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>How long does delivery take?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Standard delivery takes 5-7 business days. Express delivery (available for select pin
+                                codes) takes 2-3 business days. You can track your order using the tracking ID sent to
+                                your email.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>What is your return policy?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>We offer a 30-day return policy for most items. If you're not satisfied with your
+                                purchase, you can return it for a full refund. The book must be in original condition
+                                with all packaging intact.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Do you offer Cash on Delivery?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes! We offer Cash on Delivery (COD) across most pin codes in India. You can also pay
+                                using UPI, credit/debit cards, or net banking for a seamless checkout experience.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Are all books original?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Absolutely! We guarantee that all books sold on ABC Books are 100% genuine and original.
+                                We source directly from publishers and authorized distributors.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>How can I track my order?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Once your order is shipped, you'll receive an email with a tracking ID. You can use this
+                                ID to track your order on our website or the courier partner's website.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFaq(this)">
+                            <span>Can I cancel my order?</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>Yes, you can cancel your order before it's shipped. Once shipped, you'll need to wait for
+                                delivery and then initiate a return if needed. Contact our support team for assistance.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col brand-col">
+                        <div class="footer-logo">
+                            <img src="/images/logo.svg" alt="ABC Books" class="logo-img">
+                            <div class="logo-text">
+                                <span class="logo-sub">Publishing Books</span>
+                            </div>
+                        </div>
+                        <p>India's most trusted online bookstore.</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="/index.html">Home</a></li>
+                            <li><a href="/pages/about.html">About Us</a></li>
+                            <li><a href="/pages/contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact Us</h4>
+                        <ul class="contact-list">
+                            <li><i class="fas fa-map-marker-alt"></i> 13 Custodian Building, Srinagar</li>
+                            <li><i class="fas fa-phone"></i> +91 9622827363, 8492927363</li>
+                            <li><i class="fas fa-envelope"></i> abcpublishinghouse@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle FAQ
+        function toggleFaq(element) {
+            const faqItem = element.parentElement;
+            const isOpen = faqItem.classList.contains('active');
+
+            // Close all FAQs
+            document.querySelectorAll('.faq-item').forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // Open clicked FAQ if it was closed
+            if (!isOpen) {
+                faqItem.classList.add('active');
+            }
+        }
+
+        // Contact Form Submission
+        document.getElementById('contactForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value,
+                date: new Date().toISOString()
+            };
+
+            // Save to localStorage (in a real app, this would be sent to a server)
+            let messages = JSON.parse(localStorage.getItem('abc_contact_messages') || '[]');
+            messages.push(formData);
+            localStorage.setItem('abc_contact_messages', JSON.stringify(messages));
+
+            // Show success message
+            alert('Thank you for your message! We will get back to you within 24 hours.');
+
+            // Reset form
+            this.reset();
+        });
+    </script>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+</body>
+
+</html>

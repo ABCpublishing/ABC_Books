@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Top 100 Islamic & Arabic Books | ABC Books</title>
+    <meta name="description" content="Discover the Top 100 Islamic and Arabic books curated by ABC Books.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/user-ui.css">
+    <style>
+        :root {
+            --warm-bg: #fff9f0;
+            --brand-color: #c0392b;
+            --text-dark: #2c3e50;
+            --gold-accent: #d4af37;
+        }
+
+        body {
+            background-color: var(--warm-bg);
+        }
+
+        .top100-header {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 80px 0 60px;
+            text-align: center;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .top100-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .top100-header h1 i {
+            color: var(--gold-accent);
+            margin-right: 15px;
+        }
+
+        .top100-header p {
+            font-size: 18px;
+            max-width: 600px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 300;
+        }
+
+        .top100-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: 2px solid var(--primary);
+            background: transparent;
+            color: var(--primary);
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-size: 16px;
+        }
+
+        .tab-btn:hover {
+            background: rgba(192, 57, 43, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(192, 57, 43, 0.3);
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 30px;
+            padding-bottom: 80px;
+        }
+
+        /* Rank Badge Styling */
+        .rank-badge {
+            position: absolute;
+            top: -10px;
+            left: -10px;
+            width: 40px;
+            height: 40px;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .rank-badge.top-3 {
+            background: var(--gold-accent);
+            transform: scale(1.1);
+        }
+
+        /* Book Card Enhancements */
+        .book-card {
+            background: white;
+            border-radius: 12px;
+            overflow: visible;
+            /* Allow badge to pop out */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .book-cover {
+            height: 320px;
+            border-radius: 12px 12px 0 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .book-cover img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .book-card:hover .book-cover img {
+            transform: scale(1.05);
+        }
+
+        .book-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .book-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            line-height: 1.3;
+            height: 48px;
+            /* Limit to 2 lines */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .book-author {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-bottom: 12px;
+        }
+
+        .book-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        @media (max-width: 768px) {
+            .top100-header {
+                padding: 60px 0 40px;
+            }
+
+            .top100-header h1 {
+                font-size: 32px;
+            }
+
+            .books-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+            }
+
+            .book-cover {
+                height: 240px;
+            }
+
+            .tab-btn {
+                padding: 8px 15px;
+                /* Smaller tabs on mobile */
+                font-size: 13px;
+                white-space: nowrap;
+            }
+
+            .top100-tabs {
+                gap: 10px;
+                overflow-x: auto;
+                /* Allow scrolling if tabs don't fit */
+                justify-content: flex-start;
+                padding-bottom: 10px;
+                /* Space for scrollbar */
+                -webkit-overflow-scrolling: touch;
+            }
+
+            /* Hide scrollbar */
+            .top100-tabs::-webkit-scrollbar {
+                display: none;
+            }
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+
+                <!-- Desktop Nav (Simulated for this page) -->
+                <nav class="desktop-nav" style="display: none;">
+                    <!-- Note: Main styles.css usually handles desktop-nav display. 
+                         If responsive css hides it, we rely on mobile menu. 
+                         Let's keep it simple and consistent with index.html -->
+                    <a href="/index.html" class="nav-link">Home</a>
+                    <a href="#" class="nav-link active">Top 100</a>
+                    <a href="about.html" class="nav-link">About</a>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="/pages/wishlist.html" class="action-btn" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                    </a>
+                    <a href="/index.html" class="action-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="top-100.html" class="mobile-nav-link active"><i class="fas fa-crown"></i> Top 100 Books</a>
+                </li>
+                <li><a href="search.html?q=islamic" class="mobile-nav-link">Islamic Books</a></li>
+                <li><a href="search.html?q=arabic" class="mobile-nav-link">Arabic Books</a></li>
+                <li><a href="about.html" class="mobile-nav-link">About Us</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Page Header -->
+    <section class="top100-header">
+        <div class="container">
+            <h1><i class="fas fa-crown"></i> Top 100 Collection</h1>
+            <p>A curated selection of 50 Islamic Masterpieces & 50 Arabic Literary Classics to enrich your soul and
+                mind.</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container">
+        <!-- Tabs -->
+        <div class="top100-tabs">
+            <button class="tab-btn active" onclick="filterBooks('all')">All 100</button>
+            <button class="tab-btn" onclick="filterBooks('islamic')">Top 50 Islamic</button>
+            <button class="tab-btn" onclick="filterBooks('arabic')">Top 50 Arabic</button>
+        </div>
+
+        <!-- Books Grid -->
+        <div id="top100Grid" class="books-grid">
+            <!-- Books loaded dynamically -->
+            <div style="grid-column: 1/-1; text-align: center; padding: 50px;">
+                <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--primary);"></i>
+                <p style="margin-top: 15px; font-size: 18px;">Loading the collection...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/services/api.js?v=2.3"></script>
+    <script src="/js/data/books-data.js?v=2.3"></script>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTop100Page();
+        });
+
+        function initializeTop100Page() {
+            // Force data init
+            const data = initializeDemoData();
+
+            // Get the specific lists we generated in books-data.js v4
+            const islamicIds = data.sections.islamic_top50 || [];
+            const arabicIds = data.sections.arabic_top50 || [];
+
+            // Resolve book objects from IDs
+            const islamicBooks = islamicIds.map(id => data.books.find(b => b.id === id)).filter(Boolean);
+            const arabicBooks = arabicIds.map(id => data.books.find(b => b.id === id)).filter(Boolean);
+
+            // Create a combined list for specific display logic (interleaved or sequential)
+            // For "All 100", showing them sequentially (Islamic then Arabic) or mixed? 
+            // Let's mix them for variety: I, A, I, A...
+            const mixedBooks = [];
+            const maxLength = Math.max(islamicBooks.length, arabicBooks.length);
+            for (let i = 0; i < maxLength; i++) {
+                if (islamicBooks[i]) mixedBooks.push(islamicBooks[i]);
+                if (arabicBooks[i]) mixedBooks.push(arabicBooks[i]);
+            }
+
+            // Store for filtering
+            window.top100Data = {
+                all: mixedBooks,
+                islamic: islamicBooks,
+                arabic: arabicBooks
+            };
+
+            // Initial render
+            renderBooks(window.top100Data.all);
+        }
+
+        function renderBooks(books) {
+            const grid = document.getElementById('top100Grid');
+
+            if (!books || books.length === 0) {
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;"><p class="no-data">No books found in this category.</p></div>';
+                return;
+            }
+
+            // Generate HTML
+            grid.innerHTML = books.map((book, index) => {
+                // Determine rank based on current view/index
+                const rank = index + 1;
+                const isTop3 = rank <= 3;
+
+                return `
+                <div class="book-card" onclick="window.location.href='/pages/book-detail.html?id=${book.id}'" style="cursor: pointer;">
+                    <div class="rank-badge ${isTop3 ? 'top-3' : ''}">#${rank}</div>
+                    <div class="book-cover">
+                        <img src="${book.image}" alt="${book.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/220x320?text=${encodeURIComponent(book.title)}'">
+                    </div>
+                    <div class="book-info">
+                        <h3 class="book-title" title="${book.title}">${book.title}</h3>
+                        <p class="book-author">${book.author}</p>
+                        <div class="book-price">₹${book.price}</div>
+                    </div>
+                </div>
+            `}).join('');
+        }
+
+        function filterBooks(type) {
+            // Update UI state
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Render selected data
+            if (window.top100Data && window.top100Data[type]) {
+                renderBooks(window.top100Data[type]);
+            }
+        }
+    </script>
+</body>
+
+</html>

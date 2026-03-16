@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>About Us | ABC Books - India's Premier Bookstore</title>
+    <meta name="description"
+        content="Learn about ABC Books - India's most trusted online bookstore serving readers since 2015.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/pages.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="/index.html" class="logo">
+                    <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">Publications</span>
+                    </div>
+                </a>
+
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books, authors...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+
+                <div class="header-actions">
+                    <a href="/admin/admin.html" class="action-btn" title="Admin Panel">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </a>
+                    <a href="/index.html" class="action-btn cart-btn" title="Home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-has-submenu">
+                    <a href="#" class="mobile-nav-link" onclick="toggleMobileSubmenu(this)">Categories <i
+                            class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="/pages/search.html?q=quran"><i class="fas fa-mosque"></i> Islamic Books</a></li>
+                        <li><a href="/pages/search.html?q=fiction"><i class="fas fa-book"></i> English Fiction</a></li>
+                        <li><a href="/pages/search.html?q=arabic"><i class="fas fa-language"></i> Arabic Books</a></li>
+                        <li><a href="/pages/search.html?q=children"><i class="fas fa-child"></i> Children's Books</a>
+                        </li>
+                        <li><a href="/pages/search.html?q=academic"><i class="fas fa-graduation-cap"></i> Academic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="/pages/search.html?q=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
+                        Bestsellers</a></li>
+                <li><a href="/pages/search.html?q=new" class="mobile-nav-link"><i class="fas fa-bolt"></i> New
+                        Arrivals</a>
+                </li>
+                <li><a href="/pages/about.html" class="mobile-nav-link active"><i class="fas fa-info-circle"></i> About
+                        Us</a>
+                </li>
+                <li><a href="/pages/contact.html" class="mobile-nav-link"><i class="fas fa-envelope"></i> Contact</a>
+                </li>
+            </ul>
+            <div class="mobile-nav-footer">
+                <a href="#" class="btn-primary btn-block">Download App</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Banner -->
+    <section class="page-hero about-hero">
+        <div class="container">
+            <h1>About <span>ABC Books</span></h1>
+            <p>India's Most Trusted Online Bookstore Since 2015</p>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="page-main">
+        <div class="container">
+            <!-- Our Story Section -->
+            <section class="content-section">
+                <div class="section-grid">
+                    <div class="section-content">
+                        <span class="section-tag"><i class="fas fa-history"></i> Our Story</span>
+                        <h2>A Journey of Spreading Knowledge</h2>
+                        <p>ABC Books was founded in 2015 with a simple mission: to make quality books accessible to
+                            every reader in India. What started as a small bookshop in Srinagar has grown into one of
+                            India's most loved online bookstores.</p>
+                        <p>Our founder, a passionate bibliophile, believed that books have the power to transform lives.
+                            This belief continues to drive everything we do at ABC Books. We are committed to bringing
+                            the best books from around the world to your doorstep at affordable prices.</p>
+                        <p>Today, we serve millions of readers across India with a carefully curated collection of books
+                            spanning every genre imaginable – from Islamic literature and spiritual texts to
+                            international bestsellers and academic resources.</p>
+                    </div>
+                    <div class="section-image">
+                        <div class="image-placeholder story-image">
+                            <i class="fas fa-book-open"></i>
+                            <span>Our Journey</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Mission & Vision -->
+            <section class="content-section mission-section">
+                <div class="mission-grid">
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>To make quality books accessible and affordable to every reader in India, fostering a culture
+                            of reading and lifelong learning.</p>
+                    </div>
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>To become India's most beloved bookstore, known for exceptional service, curated collections,
+                            and community impact.</p>
+                    </div>
+                    <div class="mission-card">
+                        <div class="mission-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h3>Our Values</h3>
+                        <p>Integrity, customer-first approach, passion for books, continuous improvement, and giving
+                            back to the community.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Why Choose Us -->
+            <section class="content-section">
+                <div class="center-header">
+                    <span class="section-tag"><i class="fas fa-star"></i> Why Choose Us</span>
+                    <h2>The ABC Books Difference</h2>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-book"></i></div>
+                        <h4>Vast Collection</h4>
+                        <p>Over 5 million books across all genres and languages</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-tag"></i></div>
+                        <h4>Best Prices</h4>
+                        <p>Competitive prices with discounts up to 40%</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-truck"></i></div>
+                        <h4>Fast Delivery</h4>
+                        <p>Free shipping on orders above ₹499</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-certificate"></i></div>
+                        <h4>100% Authentic</h4>
+                        <p>All books are genuine and original</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-undo"></i></div>
+                        <h4>Easy Returns</h4>
+                        <p>30-day hassle-free return policy</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                        <h4>24/7 Support</h4>
+                        <p>Dedicated customer support team</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Our Bookstores -->
+            <section class="content-section bookstores-section">
+                <div class="center-header">
+                    <span class="section-tag"><i class="fas fa-store"></i> Visit Us</span>
+                    <h2>Our Bookstores</h2>
+                    <p class="section-sub">Find us at these locations across Srinagar and Delhi</p>
+                </div>
+                <div class="bookstores-grid">
+                    <article class="bookstore-card">
+                        <div class="bookstore-icon"><i class="fas fa-book-open"></i></div>
+                        <h3 class="bookstore-name">Maktaba Ilm-ul-Adab</h3>
+                        <p class="bookstore-address"><i class="fas fa-map-marker-alt"></i> Red Cross Road, Srinagar,
+                            Kashmir</p>
+                        <span class="bookstore-badge"><i class="fas fa-award"></i> Est. 1972 · National Award
+                            Winner</span>
+                    </article>
+                    <article class="bookstore-card">
+                        <div class="bookstore-icon"><i class="fas fa-building"></i></div>
+                        <h3 class="bookstore-name">ABC Publishing House</h3>
+                        <p class="bookstore-address"><i class="fas fa-map-marker-alt"></i> 13, Custodian Building, Red
+                            Cross Road, Srinagar</p>
+                    </article>
+                    <article class="bookstore-card">
+                        <div class="bookstore-icon"><i class="fas fa-store-alt"></i></div>
+                        <h3 class="bookstore-name">ABC Books</h3>
+                        <p class="bookstore-address"><i class="fas fa-map-marker-alt"></i> Peer Bagh Cooperative Colony,
+                            Srinagar</p>
+                        <span class="bookstore-badge"><i class="fas fa-globe"></i> Distributor of Cambridge
+                            International Books</span>
+                    </article>
+                    <article class="bookstore-card">
+                        <div class="bookstore-icon"><i class="fas fa-book-reader"></i></div>
+                        <h3 class="bookstore-name">Ashraf Book Centre</h3>
+                        <p class="bookstore-address"><i class="fas fa-map-marker-alt"></i> 1st Floor, City View
+                            Building, Red Cross Road, Srinagar</p>
+                    </article>
+                    <article class="bookstore-card">
+                        <div class="bookstore-icon"><i class="fas fa-landmark"></i></div>
+                        <h3 class="bookstore-name">Qari Publications</h3>
+                        <p class="bookstore-address"><i class="fas fa-map-marker-alt"></i> Turkman Gate, New Delhi</p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- Stats Section -->
+            <section class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="5000000">5M+</div>
+                        <p>Books Available</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="500000">500K+</div>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="1000">1000+</div>
+                        <p>Cities Served</p>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number" data-count="10">10+</div>
+                        <p>Years of Excellence</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Team Section -->
+            <section class="content-section team-section">
+                <div class="center-header">
+                    <span class="section-tag"><i class="fas fa-users"></i> Our Team</span>
+                    <h2>Meet the People Behind ABC Books</h2>
+                </div>
+                <div class="team-grid">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h4>Ahmed Khan</h4>
+                        <p class="role">Founder & CEO</p>
+                        <p class="bio">A passionate book lover with 20+ years in the publishing industry.</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h4>Sarah Malik</h4>
+                        <p class="role">Chief Operations Officer</p>
+                        <p class="bio">Ensuring smooth delivery of millions of books across India.</p>
+                    </div>
+                    <div class="team-card">
+                        <div class="team-image">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h4>Rahul Sharma</h4>
+                        <p class="role">Head of Curation</p>
+                        <p class="bio">Hand-picking the best books for our collection.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- CTA Section -->
+            <section class="cta-section">
+                <div class="cta-content">
+                    <h2>Ready to Start Your Reading Journey?</h2>
+                    <p>Explore our vast collection and find your next great read</p>
+                    <a href="/index.html" class="btn-cta">
+                        <i class="fas fa-shopping-bag"></i> Start Shopping
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col brand-col">
+                        <div class="footer-logo">
+                            <img src="/images/logo.svg" alt="ABC Books" class="logo-img">
+                            <div class="logo-text">
+                                <span class="logo-sub">Publishing Books</span>
+                            </div>
+                        </div>
+                        <p>India's most trusted online bookstore.</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="/index.html">Home</a></li>
+                            <li><a href="/pages/about.html">About Us</a></li>
+                            <li><a href="/pages/contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact Us</h4>
+                        <ul class="contact-list">
+                            <li><i class="fas fa-map-marker-alt"></i>13 Custodian Building, Srinagar</li>
+                            <li><i class="fas fa-phone"></i> +91 9622827363,8492927363</li>
+                            <li><i class="fas fa-envelope"></i> abcpublishinghouse@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+</body>
+
+</html>

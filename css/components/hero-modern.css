@@ -1,0 +1,413 @@
+/* Hero Section - Mushtaq Style (Warm, Cozy, Illustrated) */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+:root {
+    --hero-cream: #f4e7d7;
+    --hero-text-dark: #3d2c21;
+    --hero-text-rust: #8b4513;
+    --hero-year-color: #a0522d;
+    --accent-brown: #6b4423;
+}
+
+.hero-modern {
+    background: linear-gradient(135deg, #f4e7d7 0%, #ede0d4 100%);
+    padding: 3rem 0;
+    min-height: 480px;
+    font-family: 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-modern .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.hero-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+/* LEFT SIDE - Text Content */
+.hero-modern .hero-text,
+section.hero-modern .hero-text {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 1.5rem !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.hero-modern .hero-text *,
+section.hero-modern .hero-text * {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.hero-modern .hero-headline,
+section.hero-modern .hero-headline {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 3rem !important;
+    line-height: 1.2 !important;
+    color: var(--hero-text-dark) !important;
+    font-weight: 400 !important;
+    margin: 0 !important;
+    display: block !important;
+}
+
+.hero-modern .hero-number,
+section.hero-modern .hero-number {
+    font-size: 1.15em !important;
+    font-weight: 600 !important;
+    color: var(--hero-text-dark) !important;
+}
+
+.hero-modern .hero-year,
+section.hero-modern .hero-year {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.75rem !important;
+    color: #5c4033 !important;
+    font-weight: 400 !important;
+    display: inline-block !important;
+    margin: 0.25rem 0 0 !important;
+    letter-spacing: 0.02em !important;
+    background: rgba(139, 69, 19, 0.12) !important;
+    padding: 0.35rem 1rem !important;
+    border-radius: 6px !important;
+    box-shadow: none !important;
+}
+
+.hero-modern .hero-subhead,
+section.hero-modern .hero-subhead {
+    font-size: 1.3rem !important;
+    color: var(--hero-text-rust) !important;
+    font-weight: 500 !important;
+    display: block !important;
+    margin: 0.5rem 0 0.25rem 0 !important;
+}
+
+/* Hero – Available Book Stores */
+.hero-modern .hero-stores,
+section.hero-modern .hero-stores {
+    margin: 0.75rem 0 1rem 0 !important;
+    padding: 1rem 1.15rem !important;
+    background: rgba(255, 255, 255, 0.7) !important;
+    border: 1px solid rgba(139, 69, 19, 0.18) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 2px 12px rgba(92, 64, 51, 0.08) !important;
+}
+
+.hero-modern .hero-stores-title,
+section.hero-modern .hero-stores-title {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1rem !important;
+    font-weight: 600 !important;
+    color: var(--hero-text-dark) !important;
+    margin: 0 0 0.75rem 0 !important;
+    padding-bottom: 0.5rem !important;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.2) !important;
+}
+
+.hero-modern .hero-stores-list,
+section.hero-modern .hero-stores-list {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    counter-reset: store;
+}
+
+.hero-modern .hero-stores-list li,
+section.hero-modern .hero-stores-list li {
+    counter-increment: store;
+    padding: 0.5rem 0 !important;
+    border-bottom: 1px solid rgba(139, 69, 19, 0.08) !important;
+    display: block !important;
+}
+
+.hero-modern .hero-stores-list li:last-child,
+section.hero-modern .hero-stores-list li:last-child {
+    border-bottom: none !important;
+}
+
+.hero-modern .hero-stores-list li::before,
+section.hero-modern .hero-stores-list li::before {
+    content: counter(store) ". " !important;
+    font-weight: 700 !important;
+    color: var(--hero-text-rust) !important;
+    font-size: 0.85rem !important;
+}
+
+.hero-modern .hero-store-name,
+section.hero-modern .hero-store-name {
+    font-weight: 700 !important;
+    font-size: 0.9rem !important;
+    color: var(--hero-text-dark) !important;
+    display: inline !important;
+}
+
+.hero-modern .hero-store-address,
+section.hero-modern .hero-store-address {
+    font-size: 0.8rem !important;
+    color: #5c4033 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.35rem !important;
+}
+
+.hero-modern .hero-store-address i,
+section.hero-modern .hero-store-address i {
+    color: var(--hero-text-rust) !important;
+    flex-shrink: 0 !important;
+}
+
+.hero-modern .hero-store-badge,
+section.hero-modern .hero-store-badge {
+    font-size: 0.72rem !important;
+    color: #6b4423 !important;
+    background: rgba(139, 69, 19, 0.1) !important;
+    padding: 0.2rem 0.5rem !important;
+    border-radius: 4px !important;
+    width: fit-content !important;
+}
+
+.hero-modern .hero-description,
+section.hero-modern .hero-description {
+    font-size: 1rem !important;
+    line-height: 1.6 !important;
+    color: var(--hero-text-dark) !important;
+    display: block !important;
+    margin: 0 !important;
+}
+
+.hero-modern .hero-cta,
+section.hero-modern .hero-cta {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    background-color: var(--accent-brown) !important;
+    color: #fff !important;
+    padding: 0.9rem 2.5rem !important;
+    border-radius: 4px !important;
+    font-size: 0.95rem !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    box-shadow: 0 4px 12px rgba(107, 68, 35, 0.3) !important;
+    transition: all 0.3s ease !important;
+    width: fit-content !important;
+}
+
+.hero-modern .hero-cta:hover {
+    background-color: #5a3318 !important;
+    transform: translateY(-2px) !important;
+    box-shadow: 0 6px 16px rgba(107, 68, 35, 0.4) !important;
+}
+
+/* RIGHT SIDE - Hero Image */
+.hero-visual {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 400px;
+}
+
+.book-illustration {
+    position: relative;
+    width: 100%;
+    max-width: 520px;
+    height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #f4e7d7 0%, #ede0d4 100%);
+}
+
+.hero-illustration-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+}
+
+/* Fallback if no image */
+.illustration-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #d4a574 0%, #c89666 100%);
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+    color: #fff;
+}
+
+.illustration-placeholder i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.8;
+}
+
+.illustration-placeholder h3 {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.illustration-placeholder p {
+    font-size: 0.9rem;
+    opacity: 0.9;
+    max-width: 350px;
+    line-height: 1.4;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+    .hero-grid {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .hero-modern .hero-headline {
+        font-size: 2.5rem !important;
+    }
+
+    .hero-modern .hero-year {
+        font-size: 1.7rem !important;
+    }
+
+    .hero-visual {
+        min-height: 350px;
+    }
+
+    .book-illustration {
+        height: 350px;
+    }
+
+    .hero-modern .hero-stores {
+        max-height: 220px;
+        overflow-y: auto;
+    }
+}
+
+@media (max-width: 576px) {
+    .hero-modern .hero-headline {
+        font-size: 2rem !important;
+    }
+
+    .hero-modern .hero-year {
+        font-size: 1.5rem !important;
+    }
+
+    .hero-modern .hero-subhead {
+        font-size: 1.1rem !important;
+    }
+
+    .hero-modern .hero-stores {
+        padding: 0.75rem 1rem !important;
+    }
+
+    .hero-modern .hero-stores-title {
+        font-size: 0.9rem !important;
+    }
+
+    .hero-modern .hero-store-name {
+        font-size: 0.85rem !important;
+    }
+
+    .hero-modern .hero-store-address {
+        font-size: 0.75rem !important;
+    }
+
+    .book-illustration {
+        height: 300px;
+    }
+
+    .hero-modern .hero-stores {
+        max-height: 180px;
+        overflow-y: auto;
+    }
+}
+
+/* Ramadan Mubarak Banner */
+.ramadan-banner {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: linear-gradient(135deg, #6b4423 0%, #8b5a2b 50%, #6b4423 100%);
+    color: #f4e7d7;
+    padding: 0.6rem 1.2rem;
+    border-radius: 25px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    z-index: 10;
+    box-shadow: 0 4px 15px rgba(107, 68, 35, 0.4);
+    border: 2px solid #d4a574;
+    animation: ramadanGlow 2s ease-in-out infinite alternate;
+}
+
+.ramadan-crescent {
+    font-size: 1.3rem;
+    color: #FFD700;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.ramadan-text {
+    letter-spacing: 1px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.ramadan-star {
+    font-size: 1rem;
+    color: #FFD700;
+    animation: starTwinkle 1.5s ease-in-out infinite;
+}
+
+@keyframes ramadanGlow {
+    0% {
+        box-shadow: 0 4px 15px rgba(107, 68, 35, 0.4);
+    }
+
+    100% {
+        box-shadow: 0 4px 20px rgba(212, 165, 116, 0.6), 0 0 30px rgba(255, 215, 0, 0.2);
+    }
+}
+
+@keyframes starTwinkle {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(0.9);
+    }
+}
+
+/* Responsive Ramadan Banner */
+@media (max-width: 768px) {
+    .ramadan-banner {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+        top: 5px;
+        right: 5px;
+    }
+
+    .ramadan-crescent {
+        font-size: 1.1rem;
+    }
+}

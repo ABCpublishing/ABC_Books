@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Use ImgBB - Step by Step Guide</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .step {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 5px solid #35c3c1;
+            transition: transform 0.3s ease;
+        }
+
+        .step:hover {
+            transform: translateX(5px);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+            color: white;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 20px;
+            margin-right: 15px;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .step-header h2 {
+            color: #333;
+            font-size: 22px;
+        }
+
+        .step-content {
+            padding-left: 55px;
+            color: #555;
+            line-height: 1.8;
+        }
+
+        .step-content p {
+            margin-bottom: 12px;
+        }
+
+        .highlight {
+            background: #fff3cd;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #856404;
+        }
+
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            min-width: 200px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #35c3c1 0%, #00d4ff 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(53, 195, 193, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .tips {
+            background: linear-gradient(135deg, #e3f2fd 0%, #e1f5fe 100%);
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 30px;
+            border-left: 4px solid #2196f3;
+        }
+
+        .tips h3 {
+            color: #1976d2;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .tips ul {
+            padding-left: 25px;
+        }
+
+        .tips li {
+            margin-bottom: 8px;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .screenshot-placeholder {
+            background: #e9ecef;
+            border: 2px dashed #adb5bd;
+            border-radius: 8px;
+            padding: 40px;
+            text-align: center;
+            margin: 15px 0;
+            color: #6c757d;
+        }
+
+        .screenshot-placeholder i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-left: 4px solid #ff9800;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+
+        .warning i {
+            color: #ff9800;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-cloud-upload-alt"></i> How to Use ImgBB</h1>
+            <p>Free & Easy Image Hosting for Your Book Covers</p>
+        </div>
+
+        <div class="content">
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <span class="step-number">1</span>
+                    <h2>Go to ImgBB Website</h2>
+                </div>
+                <div class="step-content">
+                    <p>Open <span class="highlight">https://imgbb.com</span> in your browser.</p>
+                    <p><strong>No account required!</strong> You can upload images without signing up.</p>
+                    <div class="btn-group">
+                        <a href="https://imgbb.com" target="_blank" class="btn btn-primary">
+                            <i class="fas fa-external-link-alt"></i> Open ImgBB
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <span class="step-number">2</span>
+                    <h2>Upload Your Book Cover Image</h2>
+                </div>
+                <div class="step-content">
+                    <p>On the ImgBB homepage, you'll see a large upload area. You have 3 options:</p>
+                    <ul style="padding-left: 20px; margin: 15px 0;">
+                        <li><strong>Drag & Drop:</strong> Drag your image file directly to the upload area</li>
+                        <li><strong>Click to Browse:</strong> Click "Start uploading" and select your image</li>
+                        <li><strong>Paste from Clipboard:</strong> If you copied an image, just paste it (Ctrl+V)</li>
+                    </ul>
+                    <div class="warning">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Supported formats:</strong> JPG, PNG, GIF, WEBP | <strong>Max size:</strong> 32 MB
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <span class="step-number">3</span>
+                    <h2>Wait for Upload to Complete</h2>
+                </div>
+                <div class="step-content">
+                    <p>The image will upload automatically. You'll see a progress bar.</p>
+                    <p>Once complete, you'll be taken to the image page with sharing options.</p>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <span class="step-number">4</span>
+                    <h2>Get the Direct Image Link</h2>
+                </div>
+                <div class="step-content">
+                    <p>After upload, you'll see several link options. Look for <span class="highlight">"Direct
+                            link"</span>.</p>
+                    <p><strong>Click on the "Direct link" box</strong> - it will automatically copy to clipboard!</p>
+                    <div class="code-box">
+                        Example Direct Link:<br>
+                        https://i.ibb.co/abc123/book-cover.jpg
+                    </div>
+                    <div class="warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Important:</strong> Make sure to copy the <strong>"Direct link"</strong>, NOT the "HTML"
+                        or "BBCode" links. The direct link should start with <code>https://i.ibb.co/</code>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-header">
+                    <span class="step-number">5</span>
+                    <h2>Use the Link in ABC Books Admin</h2>
+                </div>
+                <div class="step-content">
+                    <p>Now you can use this direct link in your ABC Books admin panel:</p>
+                    <ol style="padding-left: 20px; margin: 15px 0;">
+                        <li>Open your ABC Books admin panel</li>
+                        <li>Click "Add Book" or "Edit Book"</li>
+                        <li>In the "Book Cover Image" field, paste the ImgBB direct link</li>
+                        <li>The image preview will appear automatically</li>
+                        <li>Save your book!</li>
+                    </ol>
+                    <div class="btn-group">
+                        <a href="admin.html" class="btn btn-secondary">
+                            <i class="fas fa-cog"></i> Open Admin Panel
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tips Section -->
+            <div class="tips">
+                <h3><i class="fas fa-lightbulb"></i> Pro Tips</h3>
+                <ul>
+                    <li><strong>Free Forever:</strong> ImgBB offers free image hosting with no expiration</li>
+                    <li><strong>No Login Required:</strong> Upload without creating an account (but creating one lets
+                        you manage uploads)</li>
+                    <li><strong>Fast CDN:</strong> Images are served from a fast Content Delivery Network</li>
+                    <li><strong>Resize Option:</strong> Before uploading, you can choose to auto-resize large images
+                    </li>
+                    <li><strong>Organize Better:</strong> Create a free account to organize your uploads in albums</li>
+                    <li><strong>Keep Track:</strong> Save the ImgBB page URL (not just direct link) to edit/delete
+                        images later</li>
+                </ul>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="btn-group" style="margin-top: 40px;">
+                <a href="https://imgbb.com" target="_blank" class="btn btn-primary">
+                    <i class="fas fa-cloud-upload-alt"></i> Start Uploading to ImgBB
+                </a>
+                <a href="admin.html" class="btn btn-secondary">
+                    <i class="fas fa-book-medical"></i> Add Book in Admin Panel
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

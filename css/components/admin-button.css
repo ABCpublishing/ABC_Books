@@ -1,0 +1,23 @@
+/* Admin Button Special Styling */
+.admin-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: white !important;
+    border-radius: 8px;
+    padding: 10px 18px !important;
+    box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.admin-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.5);
+}
+
+.admin-btn i {
+    color: white !important;
+    font-size: 18px;
+}
+
+.admin-btn span {
+    color: white !important;
+    font-weight: 600;
+}

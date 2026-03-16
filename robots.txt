@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /index.html
+Allow: /pages/about.html
+Allow: /pages/contact.html
+Allow: /pages/top-100.html
+Allow: /pages/search.html
+Allow: /pages/book-detail.html
+
+# Block admin and API paths
+Disallow: /admin/
+Disallow: /api/
+Disallow: /backend/
+
+# Sitemap location
+Sitemap: https://abcbooks.store/sitemap.xml

@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABC Books - Admin Panel</title>
+    <link rel="stylesheet" href="admin.css?v=2.3">
+    <link rel="stylesheet" href="/css/components/terabox-upload.css">
+    <link rel="stylesheet" href="/css/components/local-upload.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="login-header">
+                <div class="admin-logo">
+                    <i class="fas fa-shield-halved"></i>
+                </div>
+                <h1>ABC Books Admin</h1>
+                <p>Secure Content Management System</p>
+            </div>
+            <form id="loginForm" class="login-form">
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i>
+                        Username
+                    </label>
+                    <input type="text" id="username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">
+                        <i class="fas fa-lock"></i>
+                        Password
+                    </label>
+                    <input type="password" id="password" placeholder="Enter password" required>
+                </div>
+                <div class="login-info">
+                    <i class="fas fa-info-circle"></i>
+                    Default credentials: <strong>admin</strong> / <strong>admin123</strong>
+                </div>
+                <button type="submit" class="btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Sign In
+                </button>
+
+                <div class="google-auth-separator" style="text-align: center; margin: 20px 0; position: relative;">
+                    <hr
+                        style="position: absolute; top: 50%; left: 0; right: 0; margin: 0; border: none; border-top: 1px solid #ddd; z-index: 0;">
+                    <span
+                        style="background: white; padding: 0 10px; color: #666; font-size: 14px; position: relative; z-index: 1;">or
+                        continue with</span>
+                </div>
+                <!-- Google Sign-In Button Container -->
+                <div id="googleSignInBtnLogin" style="display: flex; justify-content: center; margin-bottom: 20px;">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="admin-dashboard" style="display: none;">
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" onclick="toggleAdminSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="admin-sidebar" id="adminSidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-book"></i>
+                    <span>ABC Admin</span>
+                </div>
+            </div>
+            <nav class="sidebar-nav">
+                <!-- ... Nav items structure remains the same, just adding ID for JS if needed but CSS handles layout ... -->
+                <a href="#" class="nav-item active" data-section="overview">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Overview</span>
+                </a>
+                <a href="#" class="nav-item" data-section="books">
+                    <i class="fas fa-book-open"></i>
+                    <span>All Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="categories">
+                    <i class="fas fa-tags"></i>
+                    <span>Categories</span>
+                </a>
+                <a href="#" class="nav-item" data-section="users">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item" data-section="orders">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-item" data-section="pages">
+                    <i class="fas fa-file-alt"></i>
+                    <span>Pages</span>
+                </a>
+                <a href="#" class="nav-item" data-section="hero">
+                    <i class="fas fa-star"></i>
+                    <span>Hero Section</span>
+                </a>
+                <a href="#" class="nav-item" data-section="editors">
+                    <i class="fas fa-award"></i>
+                    <span>Editor's Choice</span>
+                </a>
+                <a href="#" class="nav-item" data-section="featured">
+                    <i class="fas fa-fire"></i>
+                    <span>Featured Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="trending">
+                    <i class="fas fa-trending-up"></i>
+                    <span>Trending Now</span>
+                </a>
+                <a href="#" class="nav-item" data-section="newReleases">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>New Releases</span>
+                </a>
+                <a href="#" class="nav-item" data-section="children">
+                    <i class="fas fa-child"></i>
+                    <span>Children's Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="bestseller">
+                    <i class="fas fa-crown"></i>
+                    <span>Bestsellers</span>
+                </a>
+                <a href="#" class="nav-item" data-section="urdu">
+                    <i class="fas fa-language"></i>
+                    <span>Urdu Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="english">
+                    <i class="fas fa-language"></i>
+                    <span>English Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="arabic">
+                    <i class="fas fa-quran"></i>
+                    <span>Arabic Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="kashmiri">
+                    <i class="fas fa-mountain"></i>
+                    <span>Kashmiri Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="btn-logout" onclick="handleLogout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <!-- Top Bar -->
+            <header class="admin-topbar">
+                <div class="topbar-left">
+                    <button class="menu-toggle" onclick="toggleAdminSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h1 id="pageTitle">Dashboard Overview</h1>
+                </div>
+                <div class="topbar-right">
+                    <button id="previewSiteBtn" class="btn-preview">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Preview Site</span>
+                    </button>
+                    <div class="admin-user">
+                        <i class="fas fa-user-circle"></i>
+                        <span>Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="admin-content">
+                <!-- Overview Section -->
+                <section id="overviewSection" class="content-section active">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                <i class="fas fa-book"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="totalBooksCount">0</h3>
+                                <p>Total Books</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="heroCount">0</h3>
+                                <p>Hero Books</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="editorsCount">0</h3>
+                                <p>Editor's Choice</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="featuredCount">0</h3>
+                                <p>Featured Books</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="usersCount">0</h3>
+                                <p>Total Users</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon"
+                                style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                            <div class="stat-details">
+                                <h3 id="ordersCount">0</h3>
+                                <p>Total Orders</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quick-actions">
+                        <h2>Quick Actions</h2>
+                        <div class="action-buttons">
+                            <button class="action-btn" onclick="showAddBookModal()">
+                                <i class="fas fa-plus-circle"></i>
+                                Add New Book
+                            </button>
+                            <button class="action-btn" onclick="navigateToSection('books')">
+                                <i class="fas fa-edit"></i>
+                                Manage Books
+                            </button>
+                            <button class="action-btn" onclick="exportData()">
+                                <i class="fas fa-download"></i>
+                                Export Data
+                            </button>
+                            <button class="action-btn" onclick="importData()">
+                                <i class="fas fa-upload"></i>
+                                Import Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h2>Recent Activity</h2>
+                        <div id="activityLog" class="activity-list">
+                            <p class="no-activity">No recent activity</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Books Management Section -->
+                <section id="booksSection" class="content-section">
+                    <div class="section-header">
+                        <h2>All Books</h2>
+                        <button class="btn-primary" onclick="showAddBookModal()">
+                            <i class="fas fa-plus"></i>
+                            Add Book
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="booksTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Image</th>
+                                    <th>Title</th>
+                                    <th>Author</th>
+                                    <th>Price</th>
+                                    <th>Sections</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="booksTableBody">
+                                <tr>
+                                    <td colspan="7" class="no-data">No books added yet</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Categories Management Section -->
+                <section id="categoriesSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Category Management</h2>
+                        <button class="btn-primary" onclick="showAddCategoryModal()">
+                            <i class="fas fa-plus"></i>
+                            Add Category
+                        </button>
+                    </div>
+
+                    <div class="categories-tabs">
+                        <button class="category-tab active" data-tab="dropdown">
+                            <i class="fas fa-list"></i> Dropdown Menu (Main Nav)
+                        </button>
+                        <button class="category-tab" data-tab="strip">
+                            <i class="fas fa-grip-horizontal"></i> Quick Category Strip
+                        </button>
+                        <button class="category-tab" data-tab="showcase">
+                            <i class="fas fa-th-large"></i> Explore by Category
+                        </button>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="categoriesTable" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Icon</th>
+                                    <th>Name</th>
+                                    <th>Type</th>
+                                    <th>Subcategories</th>
+                                    <th>Visible</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="categoriesTableBody">
+                                <tr>
+                                    <td colspan="6" class="no-data">No categories added yet. Default categories will be
+                                        loaded.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Users Management Section -->
+                <section id="usersSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Users Management</h2>
+                        <div style="display: flex; gap: 10px;">
+                            <button id="bulkDeleteUsersBtn" class="btn-danger" style="display: none;"
+                                onclick="bulkDeleteUsers()">
+                                <i class="fas fa-trash-alt"></i> Delete Selected
+                            </button>
+                            <button class="btn-primary" onclick="alert('Add User feature coming soon!')">
+                                <i class="fas fa-user-plus"></i>
+                                Add User
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px;"><input type="checkbox" id="selectAllUsers"
+                                            onclick="toggleAllUsers(this)"></th>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Joined</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <tr>
+                                    <td colspan="8" class="no-data">No users yet. User management coming soon!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Orders Management Section -->
+                <section id="ordersSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Orders Management</h2>
+                        <button class="btn-primary" onclick="alert('Add Order feature coming soon!')">
+                            <i class="fas fa-plus"></i>
+                            Create Order
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Books</th>
+                                    <th>Total</th>
+                                    <th>Date</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTableBody">
+                                <tr>
+                                    <td colspan="7" class="no-data">No orders yet. Order management coming soon!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Pages Management Section -->
+                <section id="pagesSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Pages Management</h2>
+                        <button class="btn-primary" onclick="alert('Add Page feature coming soon!')">
+                            <i class="fas fa-file-medical"></i>
+                            Create Page
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Slug</th>
+                                    <th>Author</th>
+                                    <th>Status</th>
+                                    <th>Last Modified</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pagesTableBody">
+                                <tr>
+                                    <td colspan="6" class="no-data">No pages yet. Pages management coming soon!</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Hero Section Management -->
+                <section id="heroSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Hero Section Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('hero')">
+                            <i class="fas fa-plus"></i>
+                            Add to Hero
+                        </button>
+                    </div>
+                    <div id="heroBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Editor's Choice Management -->
+                <section id="editorsSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Editor's Choice Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('editors')">
+                            <i class="fas fa-plus"></i>
+                            Add to Editor's Choice
+                        </button>
+                    </div>
+                    <div id="editorsBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Featured Books Management -->
+                <section id="featuredSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Featured Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('featured')">
+                            <i class="fas fa-plus"></i>
+                            Add to Featured
+                        </button>
+                    </div>
+                    <div id="featuredBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Trending Books Management -->
+                <section id="trendingSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Trending Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('trending')">
+                            <i class="fas fa-plus"></i>
+                            Add to Trending
+                        </button>
+                    </div>
+                    <div id="trendingBooks" class="books-grid"></div>
+                </section>
+
+                <!-- New Releases Books Management -->
+                <section id="newReleasesSection" class="content-section">
+                    <div class="section-header">
+                        <h2>New Releases</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('newReleases')">
+                            <i class="fas fa-plus"></i>
+                            Add to New Releases
+                        </button>
+                    </div>
+                    <div id="newReleasesBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Children's Books Management -->
+                <section id="childrenSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Children's Corner</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('children')">
+                            <i class="fas fa-plus"></i>
+                            Add to Children
+                        </button>
+                    </div>
+                    <div id="childrenBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Bestsellers Management -->
+                <section id="bestsellerSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Bestseller Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('bestseller')">
+                            <i class="fas fa-plus"></i>
+                            Add to Bestsellers
+                        </button>
+                    </div>
+                    <div id="bestsellerBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Urdu Books Management -->
+                <section id="urduSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Urdu Books</h2>
+                        <button class="btn-primary" onclick="showAddBookModalWithCategory('Urdu')">
+                            <i class="fas fa-plus"></i>
+                            Add Urdu Book
+                        </button>
+                    </div>
+                    <div id="urduBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Popular Urdu Books (Indian Authors Section) -->
+                <section id="indianAuthorsSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Popular Urdu Books (Section)</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('indianAuthors')">
+                            <i class="fas fa-plus"></i>
+                            Add to Popular Urdu
+                        </button>
+                    </div>
+                    <div id="indianAuthorsBooks" class="books-grid"></div>
+                </section>
+
+                <!-- English Books Management -->
+                <section id="englishSection" class="content-section">
+                    <div class="section-header">
+                        <h2>English Books</h2>
+                        <button class="btn-primary" onclick="showAddBookModalWithCategory('English')">
+                            <i class="fas fa-plus"></i>
+                            Add English Book
+                        </button>
+                    </div>
+                    <div id="englishBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Arabic Books Management -->
+                <section id="arabicSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Arabic Books</h2>
+                        <button class="btn-primary" onclick="showAddBookModalWithCategory('Arabic')">
+                            <i class="fas fa-plus"></i>
+                            Add Arabic Book
+                        </button>
+                    </div>
+                    <div id="arabicBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Kashmiri Books Management -->
+                <section id="kashmiriSection" class="content-section">
+                    <div class="section-header">
+                        <h2>Kashmiri Books</h2>
+                        <button class="btn-primary" onclick="showAddBookModalWithCategory('Kashmiri')">
+                            <i class="fas fa-plus"></i>
+                            Add Kashmiri Book
+                        </button>
+                    </div>
+                    <div id="kashmiriBooks" class="books-grid"></div>
+                </section>
+
+                <!-- Settings Section -->
+                <section id="settingsSection" class="content-section">
+                    <h2>Settings</h2>
+                    <div class="settings-grid">
+                        <div class="setting-card">
+                            <h3><i class="fas fa-database"></i> Data Management</h3>
+                            <p>Manage your book database and sections</p>
+                            <div class="setting-actions">
+                                <button class="btn-secondary" onclick="clearAllData()">
+                                    <i class="fas fa-trash"></i>
+                                    Clear All Data
+                                </button>
+                                <button class="btn-secondary" onclick="resetToDefault()">
+                                    <i class="fas fa-undo"></i>
+                                    Reset to Default
+                                </button>
+                            </div>
+                        </div>
+                        <div class="setting-card">
+                            <h3><i class="fas fa-key"></i> Change Password</h3>
+                            <p>Update your admin password</p>
+                            <div class="setting-actions">
+                                <button class="btn-secondary" onclick="showChangePasswordModal()">
+                                    <i class="fas fa-edit"></i>
+                                    Change Password
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Order Details Modal -->
+    <div id="orderModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2 id="orderModalTitle">Order Details</h2>
+                <button class="close-modal" onclick="closeOrderModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="order-modal-body" id="orderModalBody"
+                style="padding: 20px; font-size: 15px; line-height: 1.6; max-height: 60vh; overflow-y: auto;">
+                <!-- Order content will be injected here -->
+            </div>
+
+            <div class="order-management-controls"
+                style="margin: 0 20px 20px; padding: 15px; background: #f8f9fa; border-radius: 12px; border: 1px solid #e9ecef;">
+                <h3
+                    style="margin-bottom: 12px; font-size: 16px; font-weight: 600; color: #333; display: flex; align-items: center; gap: 8px;">
+                    <i class="fas fa-truck-loading" style="color: #667eea;"></i> Management Controls
+                </h3>
+                <form id="orderManagementForm">
+                    <input type="hidden" id="mgmtOrderId">
+                    <div class="form-row"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label
+                                style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase;">Status</label>
+                            <select id="mgmtStatus"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; background: white;">
+                                <option value="pending">Pending</option>
+                                <option value="paid">Paid</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="processing">Processing</option>
+                                <option value="shipped">Shipped</option>
+                                <option value="out_for_delivery">Out for Delivery</option>
+                                <option value="delivered">Delivered</option>
+                                <option value="cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label
+                                style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase;">Courier
+                                Name</label>
+                            <input type="text" id="mgmtCourier" placeholder="e.g. BlueDart"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                    </div>
+                    <div class="form-row"
+                        style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label
+                                style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase;">Tracking
+                                ID</label>
+                            <input type="text" id="mgmtTracking" placeholder="Tracking Number"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label
+                                style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase;">Est.
+                                Delivery Date</label>
+                            <input type="date" id="mgmtDeliveryDate"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label
+                            style="display: block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: #666; text-transform: uppercase;">Admin
+                            Notes (Visible in History)</label>
+                        <textarea id="mgmtNotes" rows="2" placeholder="Notes for history log..."
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px; resize: vertical;"></textarea>
+                    </div>
+                    <button type="button" class="btn-primary" onclick="updateOrderStatusFromAdmin()"
+                        style="width: 100%; padding: 12px; border-radius: 8px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; font-weight: 600; box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);">
+                        <i class="fas fa-save" style="margin-right: 8px;"></i> Save Update & Notify System
+                    </button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" onclick="closeOrderModal()">Close</button>
+                <button type="button" class="btn-primary" onclick="window.print()">
+                    <i class="fas fa-print"></i> Print Invoice
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Book Modal -->
+    <div id="bookModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Book</h2>
+                <button class="close-modal" onclick="closeBookModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="bookForm" class="book-form">
+                <input type="hidden" id="bookId">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookTitle">Book Title *</label>
+                        <input type="text" id="bookTitle" required placeholder="Enter book title">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookAuthor">Author *</label>
+                        <input type="text" id="bookAuthor" required placeholder="Enter author name">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookPublisher">Publisher *</label>
+                        <input type="text" id="bookPublisher" required
+                            placeholder="Enter publisher name (e.g., ABC Publishing, Penguin)">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookPrice">Price (₹) *</label>
+                        <input type="number" id="bookPrice" required placeholder="299">
+                    </div>
+                    <div class="form-group">
+                        <label for="bookOriginalPrice">Original Price (₹)</label>
+                        <input type="number" id="bookOriginalPrice" placeholder="499">
+                    </div>
+                </div>
+
+
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="bookLanguage">Category *</label>
+                        <select id="bookLanguage" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;"
+                            onchange="loadSubcategories()">
+                            <option value="">-- Select Category --</option>
+                            <option value="urdu">📘 Urdu</option>
+                            <option value="english">📗 English</option>
+                            <option value="arabic">📙 Arabic</option>
+                            <option value="kashmiri">🏔️ Kashmiri</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookSubcategory">Subcategory *</label>
+                        <select id="bookSubcategory" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            <option value="">-- Select Category First --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Hidden field for backward compatibility -->
+                <input type="hidden" id="bookCategory" value="General">
+
+
+                <div class="form-group">
+                    <label for="bookImage">Book Cover Image *</label>
+
+                    <!-- Image Upload Options -->
+                    <div class="upload-options">
+                        <div class="upload-tab-buttons">
+                            <button type="button" class="upload-tab active" data-tab="imgbb">
+                                <i class="fas fa-cloud-upload-alt"></i> Online Image Hosting <span
+                                    class="recommended-badge">⭐ Recommended</span>
+                            </button>
+                            <button type="button" class="upload-tab" data-tab="local">
+                                <i class="fas fa-upload"></i> Upload from Computer
+                            </button>
+                        </div>
+
+                        <!-- ImgBB / Google Drive Upload Tab (NEW - DEFAULT) -->
+                        <div class="upload-content active" id="imgbbTab">
+                            <div class="imgbb-guide">
+                                <h4><i class="fas fa-images"></i> Upload via Image Hosting</h4>
+                                <p class="imgbb-subtitle">Free, fast, and reliable image hosting with direct links</p>
+
+                                <!-- Option Selector -->
+                                <div class="hosting-options">
+                                    <button type="button" class="hosting-btn active"
+                                        onclick="showHostingGuide('freeimage')">
+                                        <i class="fas fa-star"></i> Freeimage.host <span
+                                            style="font-size:10px;color:#4caf50;">(EASIEST!)</span>
+                                    </button>
+                                    <button type="button" class="hosting-btn" onclick="showHostingGuide('gdrive')">
+                                        <i class="fab fa-google-drive"></i> Google Drive
+                                    </button>
+                                </div>
+
+                                <!-- Freeimage.host Guide (NEW - EASIEST!) -->
+                                <div id="freeimageGuide" class="hosting-guide active">
+                                    <ol class="upload-steps">
+                                        <li>
+                                            <strong>Step 1: Open Freeimage.host</strong>
+                                            <a href="https://freeimage.host" target="_blank" class="freeimage-link">
+                                                <i class="fas fa-external-link-alt"></i> Open Freeimage.host
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <strong>Step 2: Upload your image</strong>
+                                            <p class="step-note">Click "START UPLOADING" or drag & drop your image</p>
+                                        </li>
+                                        <li>
+                                            <strong>Step 3: Copy the "Image URL"</strong>
+                                            <div class="example-box">
+                                                <strong>✅ Copy this:</strong> <code>Image URL</code> field (starts with
+                                                <code>https://iili.io/...</code>)<br>
+                                                <strong>❌ NOT this:</strong> <code>Image link</code> field
+                                            </div>
+                                        </li>
+                                    </ol>
+                                    <div class="success-note">
+                                        <i class="fas fa-check-circle"></i>
+                                        <strong>Why Freeimage.host?</strong> No dropdown confusion! The "Image URL" is
+                                        clearly labeled.
+                                    </div>
+                                </div>
+
+                                <!-- Google Drive Guide -->
+                                <div id="gdriveGuide" class="hosting-guide">
+                                    <ol class="upload-steps">
+                                        <li>
+                                            <strong>Step 1: Upload image to Google Drive</strong>
+                                            <a href="https://drive.google.com" target="_blank" class="gdrive-link">
+                                                <i class="fab fa-google-drive"></i> Open Google Drive
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <strong>Step 2: Right-click → Share → "Anyone with link"</strong>
+                                            <p class="step-note">Make sure it's set to "Anyone with the link can view"
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <strong>Step 3: Copy the share link and paste below</strong>
+                                            <p class="step-note">We'll automatically convert it to a direct image link!
+                                            </p>
+                                        </li>
+                                    </ol>
+                                </div>
+
+                                <input type="url" id="imgbbImage"
+                                    placeholder="Paste your ImgBB direct link OR Google Drive share link here">
+                                <button type="button" class="btn-use-link" onclick="useImageLink()">
+                                    <i class="fas fa-check"></i> Use This Link
+                                </button>
+
+                                <div class="imgbb-benefits">
+                                    <h5><i class="fas fa-lightbulb"></i> Tips</h5>
+                                    <ul>
+                                        <li><i class="fas fa-check-circle"></i> ImgBB: Select <strong>"Direct
+                                                links"</strong> from dropdown (not "Viewer links")</li>
+                                        <li><i class="fas fa-check-circle"></i> Google Drive: Set sharing to
+                                            <strong>"Anyone with the link"</strong>
+                                        </li>
+                                        <li><i class="fas fa-check-circle"></i> Both services are free and reliable</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Local Upload Tab -->
+                        <div class="upload-content" id="localTab">
+                            <div class="local-upload-area">
+                                <div class="upload-dropzone" id="dropzone">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <h4>Drag & Drop your image here</h4>
+                                    <p>or</p>
+                                    <label for="localFileInput" class="btn-browse">
+                                        <i class="fas fa-folder-open"></i> Browse Files
+                                    </label>
+                                    <input type="file" id="localFileInput" accept="image/*" style="display: none;">
+                                    <small class="upload-hint">Supported: JPG, PNG, WEBP (Max: 2MB)</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Hidden input to store the final image data -->
+                    <input type="hidden" id="bookImage" required>
+
+                    <!-- Image Preview -->
+                    <div class="image-preview-container" id="imagePreview" style="display: none;">
+                        <label>Preview:</label>
+                        <div class="image-preview">
+                            <img id="previewImg" src="" alt="Book Cover Preview">
+                            <button type="button" class="btn-remove-preview" onclick="removeImagePreview()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Add to Sections</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="hero">
+                            <span>Hero Section</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="editors">
+                            <span>Editor's Choice</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="featured">
+                            <span>Featured Books</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="indianAuthors">
+                            <span>Popular Urdu Books</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="trending">
+                            <span>Trending Now</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="newReleases">
+                            <span>New Releases</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="children">
+                            <span>Children's Corner</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="bestseller">
+                            <span>Bestsellers</span>
+                        </label>
+                    </div>
+                </div>
+
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeBookModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Book
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="categoryModalTitle">Add New Category</h2>
+                <button class="close-modal" onclick="closeCategoryModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="categoryForm" class="book-form">
+                <input type="hidden" id="categoryId">
+
+                <div class="form-group">
+                    <label for="categoryName">Category Name *</label>
+                    <input type="text" id="categoryName" required placeholder="Enter category name">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryType">Category Type *</label>
+                    <select id="categoryType" required>
+                        <option value="">-- Select Type --</option>
+                        <option value="dropdown">Dropdown Menu (Main Navigation)</option>
+                        <option value="strip">Quick Category Strip</option>
+                        <option value="showcase">Explore by Category</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryIcon">Icon *</label>
+                    <div class="icon-picker">
+                        <input type="text" id="categoryIcon" required placeholder="Select an icon" readonly
+                            onclick="toggleIconPicker()">
+                        <button type="button" class="btn-icon-picker" onclick="toggleIconPicker()">
+                            <i class="fas fa-icons"></i> Choose Icon
+                        </button>
+                        <div id="iconPickerDropdown" class="icon-picker-dropdown" style="display: none;">
+                            <div class="icon-picker-grid">
+                                <span class="icon-option" data-icon="fa-book"><i class="fas fa-book"></i></span>
+                                <span class="icon-option" data-icon="fa-book-open"><i
+                                        class="fas fa-book-open"></i></span>
+                                <span class="icon-option" data-icon="fa-star"><i class="fas fa-star"></i></span>
+                                <span class="icon-option" data-icon="fa-fire"><i class="fas fa-fire"></i></span>
+                                <span class="icon-option" data-icon="fa-trophy"><i class="fas fa-trophy"></i></span>
+                                <span class="icon-option" data-icon="fa-award"><i class="fas fa-award"></i></span>
+                                <span class="icon-option" data-icon="fa-graduation-cap"><i
+                                        class="fas fa-graduation-cap"></i></span>
+                                <span class="icon-option" data-icon="fa-child"><i class="fas fa-child"></i></span>
+                                <span class="icon-option" data-icon="fa-heart"><i class="fas fa-heart"></i></span>
+                                <span class="icon-option" data-icon="fa-lightbulb"><i
+                                        class="fas fa-lightbulb"></i></span>
+                                <span class="icon-option" data-icon="fa-briefcase"><i
+                                        class="fas fa-briefcase"></i></span>
+                                <span class="icon-option" data-icon="fa-globe"><i class="fas fa-globe"></i></span>
+                                <span class="icon-option" data-icon="fa-boxes-stacked"><i
+                                        class="fas fa-boxes-stacked"></i></span>
+                                <span class="icon-option" data-icon="fa-comment-dots"><i
+                                        class="fas fa-comment-dots"></i></span>
+                                <span class="icon-option" data-icon="fa-sun"><i class="fas fa-sun"></i></span>
+                                <span class="icon-option" data-icon="fa-file-alt"><i class="fas fa-file-alt"></i></span>
+                                <span class="icon-option" data-icon="fa-users"><i class="fas fa-users"></i></span>
+                                <span class="icon-option" data-icon="fa-flag"><i class="fas fa-flag"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group" id="subcategoriesGroup" style="display: none;">
+                    <label for="categorySubcategories">Subcategories</label>
+                    <textarea id="categorySubcategories" rows="4"
+                        placeholder="Enter subcategories (one per line)&#10;Example:&#10;Fiction&#10;Non-Fiction&#10;Children's Books"></textarea>
+                    <small>Enter each subcategory on a new line (for dropdown menu only)</small>
+                </div>
+
+                <div class="form-group" id="bookCountGroup" style="display: none;">
+                    <label for="categoryBookCount">Book Count</label>
+                    <input type="number" id="categoryBookCount" placeholder="e.g., 5000">
+                    <small>Display number of books (for showcase only)</small>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="categoryVisible" checked>
+                        <span>Visible on website</span>
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeCategoryModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Category
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="/js/services/api.js?v=2.3"></script>
+    <script src="admin.js?v=2.3"></script>
+    <script src="/js/utilities/category-manager.js?v=2.3"></script>
+    <script src="/js/utilities/terabox-handler.js?v=2.3"></script>
+    <script src="/js/utilities/local-upload.js?v=2.3"></script>
+    <script src="/js/utilities/simple-image-upload.js?v=2.3"></script>
+</body>
+
+</html>

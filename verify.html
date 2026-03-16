@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Account - ABC Books</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #8B0000;
+            --success: #27ae60;
+            --error: #e74c3c;
+            --text: #333;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #f8f9fa;
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            font-size: 32px;
+            margin-bottom: 30px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .icon.loading {
+            color: #ccc;
+        }
+
+        .icon.success {
+            color: var(--success);
+        }
+
+        .icon.error {
+            color: var(--error);
+        }
+
+        h1 {
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(139, 0, 0, 0.3);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <div class="container">
+        <a href="/index.html" class="logo">ABC BOOKS</a>
+
+        <!-- Loading State -->
+        <div id="status-loading">
+            <div class="icon loading"><i class="fas fa-spinner fa-spin"></i></div>
+            <h1>Verifying...</h1>
+            <p>Please wait while we verify your account.</p>
+        </div>
+
+        <!-- Success State -->
+        <div id="status-success" class="hidden">
+            <div class="icon success"><i class="fas fa-check-circle"></i></div>
+            <h1>Verified!</h1>
+            <p>Your account has been successfully verified. You can now login and explore our collection.</p>
+            <a href="/index.html" class="btn">Go to Home</a>
+        </div>
+
+        <!-- Error State -->
+        <div id="status-error" class="hidden">
+            <div class="icon error"><i class="fas fa-exclamation-circle"></i></div>
+            <h1>Oops!</h1>
+            <p id="error-message">Invalid or expired verification link. Please try registering again.</p>
+            <a href="/index.html" class="btn">Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        async function verifyEmail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (!token) {
+                showState('error', 'No verification token found.');
+                return;
+            }
+
+            try {
+                // Detect environment
+                const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
+                const API_BASE = isProduction ? '/api' : 'http://localhost:3001/api';
+
+                const response = await fetch(`${API_BASE}/auth/verify?token=${token}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    showState('success');
+                } else {
+                    showState('error', data.error || 'Verification failed.');
+                }
+            } catch (error) {
+                console.error('Verification error:', error);
+                showState('error', 'Could not connect to the server.');
+            }
+        }
+
+        function showState(state, message) {
+            document.getElementById('status-loading').classList.add('hidden');
+            document.getElementById('status-success').classList.add('hidden');
+            document.getElementById('status-error').classList.add('hidden');
+
+            const target = document.getElementById(`status-${state}`);
+            target.classList.remove('hidden');
+
+            if (state === 'error' && message) {
+                document.getElementById('error-message').textContent = message;
+            }
+        }
+
+        // Run verification on load
+        window.onload = verifyEmail;
+    </script>
+</body>
+
+</html>

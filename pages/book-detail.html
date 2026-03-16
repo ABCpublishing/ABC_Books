@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <title>Book Details | ABC Books</title>
+    <meta name="description" content="View book details, reviews, and purchase options at ABC Books.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/styles-responsive.css">
+    <link rel="stylesheet" href="/css/user-ui.css">
+    <link rel="stylesheet" href="/css/components/book-detail.css">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
+
+                <a href="/index.html" class="logo">
+                    <img id="headerLogo" src="/images/logo.png" alt="ABC Books" class="logo-img">
+                    <div class="logo-text">
+                        <span class="logo-sub">BOOKS</span>
+                    </div>
+                </a>
+
+                <div class="search-wrapper">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search books, authors...">
+                        <button class="search-btn">Search</button>
+                    </div>
+                </div>
+
+
+                <div class="header-actions">
+                    <!-- User Account - Shows Login/Signup OR User icon when logged in -->
+                    <div id="authButtons" class="auth-buttons">
+                        <button class="action-btn" onclick="showLoginModal()" title="Sign In">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span>Login</span>
+                        </button>
+                        <button class="action-btn signup-btn" onclick="showSignupModal()" title="Sign Up">
+                            <i class="fas fa-user-plus"></i>
+                            <span>Sign Up</span>
+                        </button>
+                    </div>
+                    <!-- User Account When Logged In (hidden by default) -->
+                    <div id="userAccount" class="user-account" style="display: none;">
+                        <button class="action-btn" onclick="toggleUserMenu()" title="My Account">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="userName">Account</span>
+                        </button>
+                        <div class="user-dropdown" id="userDropdown">
+                            <a href="#" onclick="viewOrders()"><i class="fas fa-box"></i> My Orders</a>
+                            <a href="#" onclick="viewWishlist()"><i class="fas fa-heart"></i> My Wishlist</a>
+                            <a href="#" onclick="viewProfile()"><i class="fas fa-user-edit"></i> Edit Profile</a>
+                            <a href="/admin/admin.html"><i class="fas fa-user-shield"></i> Admin Panel</a>
+                            <a href="#" onclick="userLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+
+                    <button class="action-btn" onclick="toggleWishlist()" title="Wishlist">
+                        <i class="fas fa-heart"></i>
+                        <span>Wishlist</span>
+                        <span class="badge" id="wishlistCount">0</span>
+                    </button>
+                    <button class="action-btn cart-btn" onclick="toggleCart()" title="Shopping Cart">
+                        <i class="fas fa-shopping-bag"></i>
+                        <span>Cart</span>
+                        <span class="badge" id="cartCount">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sidebar -->
+    <div class="mobile-nav-overlay" id="mobileNavOverlay" onclick="toggleMobileMenu()"></div>
+    <div class="mobile-nav-sidebar" id="mobileNavSidebar">
+        <div class="mobile-nav-header">
+            <div class="logo">
+                <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-sub">BOOKS</span>
+                </div>
+            </div>
+            <button class="close-mobile-nav" onclick="toggleMobileMenu()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="mobile-nav-content">
+            <ul class="mobile-nav-list">
+                <li><a href="/index.html" class="mobile-nav-link"><i class="fas fa-home"></i> Home</a></li>
+                <li class="mobile-has-submenu">
+                    <a href="#" class="mobile-nav-link" onclick="toggleMobileSubmenu(this)">Categories <i
+                            class="fas fa-chevron-down"></i></a>
+                    <ul class="mobile-submenu">
+                        <li><a href="/pages/search.html?q=quran"><i class="fas fa-mosque"></i> Islamic Books</a></li>
+                        <li><a href="/pages/search.html?q=fiction"><i class="fas fa-book"></i> English Fiction</a></li>
+                        <li><a href="/pages/search.html?q=arabic"><i class="fas fa-language"></i> Arabic Books</a></li>
+                        <li><a href="/pages/search.html?q=children"><i class="fas fa-child"></i> Children's Books</a>
+                        </li>
+                        <li><a href="/pages/search.html?q=academic"><i class="fas fa-graduation-cap"></i> Academic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="/pages/search.html?q=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
+                        Bestsellers</a></li>
+                <li><a href="/pages/search.html?q=new" class="mobile-nav-link"><i class="fas fa-bolt"></i> New
+                        Arrivals</a>
+                </li>
+                <li><a href="/pages/about.html" class="mobile-nav-link"><i class="fas fa-info-circle"></i> About Us</a>
+                </li>
+                <li><a href="/pages/contact.html" class="mobile-nav-link"><i class="fas fa-envelope"></i> Contact</a>
+                </li>
+            </ul>
+            <div class="mobile-nav-footer">
+                <a href="#" class="btn-primary btn-block">Download App</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Breadcrumb -->
+    <nav class="breadcrumb-nav">
+        <div class="container">
+            <ul class="breadcrumb">
+                <li><a href="/index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="#">Books</a></li>
+                <li id="breadcrumbTitle">Book Title</li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Book Detail Section -->
+    <main class="book-detail-main">
+        <div class="container">
+            <div class="book-detail-grid">
+                <!-- Left: Book Image -->
+                <div class="book-image-section">
+                    <div class="book-image-container">
+                        <div class="discount-badge" id="discountBadge" style="display: none;">-30%</div>
+                        <img id="bookImage" src="" alt="Book Cover" class="book-main-image">
+                    </div>
+                    <div class="book-actions-mobile">
+                        <button class="btn-add-cart" onclick="addToCartDetail()">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                        <button class="btn-buy-now" onclick="buyNow()">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right: Book Info -->
+                <div class="book-info-section">
+                    <div class="book-badges">
+                        <span class="badge-bestseller" id="bestsellerBadge"><i class="fas fa-fire"></i>
+                            Bestseller</span>
+                        <span class="badge-instock" id="stockBadge"><i class="fas fa-check-circle"></i> In Stock</span>
+                    </div>
+
+                    <h1 class="book-title" id="bookTitle">Loading...</h1>
+                    <p class="book-author" id="bookAuthor">by <span>Author Name</span></p>
+
+                    <div class="book-rating">
+                        <div class="stars" id="bookStars">
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star"></i>
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <span class="rating-text" id="ratingText">4.5 (128 reviews)</span>
+                    </div>
+
+                    <div class="book-price-section">
+                        <div class="price-row">
+                            <span class="current-price" id="currentPrice">₹0</span>
+                            <span class="original-price" id="originalPrice"></span>
+                            <span class="discount-percent" id="discountPercent"></span>
+                        </div>
+                        <p class="price-note"><i class="fas fa-truck"></i> Free delivery on orders above ₹499</p>
+                    </div>
+
+                    <div class="book-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Language</span>
+                            <span class="meta-value" id="bookLanguage">English</span>
+                        </div>
+                    </div>
+
+                    <div class="quantity-section">
+                        <label>Quantity:</label>
+                        <div class="quantity-controls">
+                            <button class="qty-btn" onclick="decreaseQty()">-</button>
+                            <input type="number" id="quantity" value="1" min="1" max="10">
+                            <button class="qty-btn" onclick="increaseQty()">+</button>
+                        </div>
+                    </div>
+
+                    <div class="book-actions-desktop">
+                        <button class="btn-add-cart" onclick="addToCartDetail()">
+                            <i class="fas fa-shopping-cart"></i> Add to Cart
+                        </button>
+                        <button class="btn-buy-now" onclick="buyNow()">
+                            <i class="fas fa-bolt"></i> Buy Now
+                        </button>
+                        <button class="btn-wishlist" onclick="addToWishlistDetail()">
+                            <i class="far fa-heart"></i>
+                        </button>
+                        <button class="btn-share" onclick="shareBook()">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="trust-badges">
+                        <div class="trust-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Secure Payment</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-undo"></i>
+                            <span>Easy Returns</span>
+                        </div>
+                        <div class="trust-item">
+                            <i class="fas fa-certificate"></i>
+                            <span>100% Original</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Description & Reviews Tabs -->
+            <div class="book-tabs-section">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="description">Description</button>
+                    <button class="tab-btn" data-tab="details">Details</button>
+                    <button class="tab-btn" data-tab="reviews">Reviews <span id="reviewCount">(0)</span></button>
+                </div>
+
+                <div class="tabs-content">
+                    <!-- Description Tab -->
+                    <div class="tab-panel active" id="descriptionPanel">
+                        <div class="book-description" id="bookDescription">
+                            <p>Loading description...</p>
+                        </div>
+                    </div>
+
+                    <!-- Details Tab -->
+                    <div class="tab-panel" id="detailsPanel">
+                        <table class="details-table">
+                            <tr>
+                                <td>Title</td>
+                                <td id="detailTitle">-</td>
+                            </tr>
+                            <tr>
+                                <td>Author</td>
+                                <td id="detailAuthor">-</td>
+                            </tr>
+                            <tr>
+                                <td>Language</td>
+                                <td id="detailLanguage">English</td>
+                            </tr>
+                            <tr>
+                                <td>Binding</td>
+                                <td>Paperback</td>
+                            </tr>
+                            <tr>
+                                <td>Pages</td>
+                                <td>Varies</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Reviews Tab -->
+                    <div class="tab-panel" id="reviewsPanel">
+                        <div class="reviews-summary">
+                            <div class="overall-rating">
+                                <span class="rating-big" id="overallRating">4.5</span>
+                                <div class="stars-container" id="overallStars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span class="total-reviews">Based on <span id="totalReviews">0</span> reviews</span>
+                            </div>
+                            <button class="btn-write-review" onclick="showReviewForm()">
+                                <i class="fas fa-pen"></i> Write a Review
+                            </button>
+                        </div>
+
+                        <div class="reviews-list" id="reviewsList">
+                            <div class="no-reviews">
+                                <i class="fas fa-comment-slash"></i>
+                                <p>No reviews yet. Be the first to review this book!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Related Books Section -->
+            <section class="related-books-section">
+                <h2><i class="fas fa-book"></i> You May Also Like</h2>
+                <div class="related-books-grid" id="relatedBooks">
+                    <!-- Related books will be loaded dynamically -->
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-top">
+            <div class="container">
+                <div class="footer-grid">
+                    <div class="footer-col brand-col">
+                        <div class="footer-logo">
+                            <img src="/images/logo.png" alt="ABC Books" class="logo-img">
+                            <div class="logo-text">
+                                <span class="logo-sub">BOOKS</span>
+                            </div>
+                        </div>
+                        <p>India's most trusted online bookstore. Discover millions of books at unbeatable prices.</p>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Quick Links</h4>
+                        <ul>
+                            <li><a href="/index.html">Home</a></li>
+                            <li><a href="about.html">About Us</a></li>
+                            <li><a href="contact.html">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Customer Service</h4>
+                        <ul>
+                            <li><a href="#">My Account</a></li>
+                            <li><a href="#">Track Order</a></li>
+                            <li><a href="#">Shipping Policy</a></li>
+                            <li><a href="#">Returns & Refunds</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-col">
+                        <h4>Contact Us</h4>
+                        <ul class="contact-list">
+                            <li><i class="fas fa-map-marker-alt"></i> 13 Custodian Building, Srinagar</li>
+                            <li><i class="fas fa-phone"></i> +91 9622827363, 8492927363</li>
+                            <li><i class="fas fa-envelope"></i> abcpublishinghouse@gmail.com</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 ABC Books. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Sidebar -->
+    <div class="sidebar-overlay" id="cartOverlay" onclick="closeCart()"></div>
+    <div class="sidebar-panel cart-panel" id="cartPanel">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-shopping-bag"></i> Shopping Cart</h3>
+            <button class="close-sidebar" onclick="closeCart()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-content" id="cartContent">
+            <p class="empty-message"><i class="fas fa-shopping-cart"></i> Your cart is empty</p>
+        </div>
+        <div class="sidebar-footer cart-footer">
+            <div class="cart-total">
+                <span>Subtotal:</span>
+                <strong id="cartTotal">₹0</strong>
+            </div>
+            <button class="btn-primary btn-block" onclick="proceedToCheckout()">
+                <i class="fas fa-credit-card"></i> Proceed to Checkout
+            </button>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="sidebar-overlay" id="wishlistOverlay" onclick="closeWishlist()"></div>
+    <div class="sidebar-panel wishlist-panel" id="wishlistPanel">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-heart"></i> My Wishlist</h3>
+            <button class="close-sidebar" onclick="closeWishlist()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="sidebar-content" id="wishlistContent">
+            <p class="empty-message"><i class="fas fa-heart-broken"></i> Your wishlist is empty</p>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div class="auth-modal" id="loginModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeLoginModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-sign-in-alt"></i>
+                <h2>Welcome Back!</h2>
+                <p>Login to your ABC Books account</p>
+            </div>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="google-auth-container" style="margin-bottom: 25px;">
+                    <p style="text-align: center; color: #666; font-size: 13px; margin-bottom: 12px; font-weight: 500;">
+                        <i class="fas fa-magic"></i> Recommended for quick access:
+                    </p>
+                    <div id="googleSignInBtnLogin" style="display: flex; justify-content: center;">
+                        <button type="button" class="btn-google"
+                            onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
+                            style="margin-bottom: 0;">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                            <span>Continue with Google</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="google-auth-separator"
+                    style="text-align: center; margin-bottom: 25px; position: relative; height: 1px; background: #eee; margin-top: 25px;">
+                    <span
+                        style="background: white; padding: 0 15px; color: #888; font-size: 13px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 500;">
+                        or continue with email
+                    </span>
+                </div>
+                <div class="form-error-banner" id="loginFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="Enter your email address" required autocomplete="email">
+                    <span class="error-message" id="loginEmailError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="loginPassword" placeholder="Enter your password" required
+                        autocomplete="current-password">
+                    <span class="error-message" id="loginPasswordError"></span>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgotModal(event)">Forgot Password?</a>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div class="auth-modal" id="signupModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeSignupModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-user-plus"></i>
+                <h2>Create Account</h2>
+                <p>Join ABC Books today</p>
+            </div>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <div class="google-auth-container" style="margin-bottom: 25px;">
+                    <p style="text-align: center; color: #666; font-size: 13px; margin-bottom: 12px; font-weight: 500;">
+                        <i class="fas fa-bolt"></i> One-click signup:
+                    </p>
+                    <div id="googleSignInBtnSignup" style="display: flex; justify-content: center;">
+                        <button type="button" class="btn-google"
+                            onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
+                            style="margin-bottom: 0;">
+                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+                            <span>Sign up with Google</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="google-auth-separator"
+                    style="text-align: center; margin-bottom: 25px; position: relative; height: 1px; background: #eee; margin-top: 25px;">
+                    <span
+                        style="background: white; padding: 0 15px; color: #888; font-size: 13px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: 500;">
+                        or create email account
+                    </span>
+                </div>
+                <div class="form-error-banner" id="signupFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Full Name</label>
+                    <input type="text" id="signupName" placeholder="Enter your full name" required autocomplete="name">
+                    <span class="error-message" id="signupNameError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="signupEmail" placeholder="Enter your email" required autocomplete="email">
+                    <span class="error-message" id="signupEmailError"></span>
+                </div>
+
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="signupPassword" placeholder="Create a password" required minlength="6"
+                        autocomplete="new-password">
+                    <span class="error-message" id="signupPasswordError"></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Confirm Password</label>
+                    <input type="password" id="signupConfirmPassword" placeholder="Confirm your password" required
+                        autocomplete="new-password">
+                    <span class="error-message" id="signupConfirmPasswordError"></span>
+                </div>
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <span>I agree to the <a href="#">Terms & Conditions</a></span>
+                    </label>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-user-plus"></i> Create Account
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div class="auth-modal" id="forgotModal">
+        <div class="auth-modal-content">
+            <button class="close-auth" onclick="closeForgotModal()"><i class="fas fa-times"></i></button>
+            <div class="auth-header">
+                <i class="fas fa-key"></i>
+                <h2>Reset Password</h2>
+                <p>Enter your email to receive reset instructions</p>
+            </div>
+            <form id="forgotForm" onsubmit="handleForgotPassword(event)">
+                <div class="form-error-banner" id="forgotFormError" style="display: none;">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-success-banner" id="forgotFormSuccess">
+                    <i class="fas fa-check-circle"></i>
+                    <span></span>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-envelope"></i> Email</label>
+                    <input type="email" id="forgotEmail" placeholder="Enter your registered email" required>
+                    <span class="error-message" id="forgotEmailError"></span>
+                </div>
+                <button type="submit" class="btn-auth">
+                    <i class="fas fa-paper-plane"></i> Send Reset Link
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p>Back to <a href="#" onclick="switchToLogin()">Login</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/services/api.js?v=2.3"></script>
+    <script src="/js/auth/user-auth-api.js?v=2.3"></script>
+    <script src="/js/data/books-data.js?v=2.3"></script>
+    <script src="/js/pages/book-detail.js?v=2.3"></script>
+    <script src="/js/mobile-menu.js?v=2.3"></script>
+</body>
+
+</html>
