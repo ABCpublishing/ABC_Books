@@ -245,7 +245,7 @@ function setLoadingState(btn, isLoading) {
 }
 
 // ===== GOOGLE SIGN IN =====
-const GOOGLE_CLIENT_ID = '610549250942-paac6unq730b8osmhqbreve39fuduti9.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = '929782086663-1370jji0am7dfcjotfc308s48k7c6i0g.apps.googleusercontent.com';
 let googleInitialized = false;
 
 function initGoogleSignIn() {

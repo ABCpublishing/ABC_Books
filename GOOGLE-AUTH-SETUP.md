@@ -9,7 +9,7 @@ This guide explains how to configure the Google Cloud Console to allow Google Si
 ## 2. Configure OAuth Credentials
 1.  In the left sidebar, go to **APIs & Services** > **Credentials**.
 2.  Under **OAuth 2.0 Client IDs**, find your existing ID and click the **Pencil (Edit)** icon.
-    *   *Current ID in code: 610549250942-paac6unq730b8osmhqbreve39fuduti9.apps.googleusercontent.com*
+    *   *Current ID in code: 929782086663-1370jji0am7dfcjotfc308s48k7c6i0g.apps.googleusercontent.com*
 
 ## 3. Add Authorized Origins (CRITICAL)
 This step fixes the `unregistered_origin` error you saw in the console.
