@@ -1,3 +1,4 @@
+// ===== Users Routes (PostgreSQL / Admin DB) =====
 const express = require('express');
 const { authenticate, authenticateAdmin } = require('../middleware/security');
 const router = express.Router();
@@ -5,7 +6,7 @@ const router = express.Router();
 // Get current logged-in user's profile
 router.get('/me', authenticate, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const userId = req.userId;
 
         const users = await sql`
@@ -19,9 +20,8 @@ router.get('/me', authenticate, async (req, res) => {
 
         const user = users[0];
 
-        // Get user's order stats
         const orderStats = await sql`
-            SELECT COUNT(*) as count, COALESCE(SUM(total), 0) as total_spent
+            SELECT COUNT(*)::int as count, COALESCE(SUM(total), 0) as total_spent
             FROM orders WHERE user_id = ${userId}
         `;
         user.stats = {
@@ -39,7 +39,7 @@ router.get('/me', authenticate, async (req, res) => {
 // Get all users (admin)
 router.get('/', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         const users = await sql`
             SELECT id, name, email, phone, is_admin, created_at, updated_at
@@ -47,10 +47,9 @@ router.get('/', authenticateAdmin, async (req, res) => {
             ORDER BY created_at DESC
         `;
 
-        // Get order count for each user
         for (let user of users) {
             const orderCount = await sql`
-                SELECT COUNT(*) as count, COALESCE(SUM(total), 0) as total_spent
+                SELECT COUNT(*)::int as count, COALESCE(SUM(total), 0) as total_spent
                 FROM orders WHERE user_id = ${user.id}
             `;
             user.order_count = parseInt(orderCount[0].count);
@@ -64,13 +63,12 @@ router.get('/', authenticateAdmin, async (req, res) => {
     }
 });
 
-// Get user by ID with order history (requires authentication)
+// Get user by ID with order history
 router.get('/:id', authenticate, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
 
-        // Validate ID is a number
         if (isNaN(parseInt(id))) {
             return res.status(400).json({ error: 'Invalid user ID' });
         }
@@ -93,17 +91,14 @@ router.get('/:id', authenticate, async (req, res) => {
             ORDER BY created_at DESC
         `;
 
-        // Get order items for each order
+        // Get order items (self-contained, no cross-DB JOIN needed)
         for (let order of user.orders) {
             order.items = await sql`
-                SELECT oi.*, b.title, b.author, b.image
-                FROM order_items oi
-                LEFT JOIN books b ON oi.book_id = b.id
-                WHERE oi.order_id = ${order.id}
+                SELECT * FROM order_items
+                WHERE order_id = ${order.id}
             `;
         }
 
-        // Calculate stats
         user.stats = {
             total_orders: user.orders.length,
             total_spent: user.orders.reduce((sum, o) => sum + parseFloat(o.total), 0),
@@ -117,24 +112,21 @@ router.get('/:id', authenticate, async (req, res) => {
     }
 });
 
-// Delete user (admin only - requires admin authentication)
+// Delete user (admin only)
 router.delete('/:id', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
 
-        // Delete user's cart and wishlist first
         await sql`DELETE FROM cart WHERE user_id = ${id}`;
         await sql`DELETE FROM wishlist WHERE user_id = ${id}`;
 
-        // Fetch user data before delete to get name
         const users = await sql`SELECT id, name FROM users WHERE id = ${id}`;
         if (users.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
         const userToDelete = users[0];
 
-        // Delete user
         await sql`DELETE FROM users WHERE id = ${id}`;
 
         res.json({ message: `User ${userToDelete.name} deleted successfully` });
@@ -147,7 +139,7 @@ router.delete('/:id', authenticateAdmin, async (req, res) => {
 // Update user role (admin)
 router.patch('/:id/role', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
         const { is_admin } = req.body;
 
@@ -155,14 +147,14 @@ router.patch('/:id/role', authenticateAdmin, async (req, res) => {
             UPDATE users 
             SET is_admin = ${is_admin}, updated_at = NOW()
             WHERE id = ${id}
+            RETURNING id, name, is_admin
         `;
 
-        if (updateResult.affectedRows === 0) {
+        if (updateResult.length === 0) {
             return res.status(404).json({ error: 'User not found' });
         }
 
-        const freshUserResult = await sql`SELECT id, name, is_admin FROM users WHERE id = ${id}`;
-        const user = freshUserResult[0];
+        const user = updateResult[0];
 
         res.json({
             success: true,

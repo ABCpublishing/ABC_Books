@@ -1,4 +1,4 @@
-// ===== Orders Routes =====
+// ===== Orders Routes (PostgreSQL / Admin DB) =====
 const express = require('express');
 const router = express.Router();
 const { authenticate, authenticateAdmin } = require('../middleware/security');
@@ -10,7 +10,7 @@ router.use(authenticate);
 // Get all orders (admin)
 router.get('/', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         const orders = await sql`
             SELECT o.*, u.name as customer_name, u.email as customer_email
@@ -19,13 +19,11 @@ router.get('/', authenticateAdmin, async (req, res) => {
             ORDER BY o.created_at DESC
         `;
 
-        // Get order items for each order
+        // Get order items (self-contained in admin DB, no cross-DB JOIN)
         for (let order of orders) {
             order.items = await sql`
-                SELECT oi.*, b.title, b.author, b.image
-                FROM order_items oi
-                LEFT JOIN books b ON oi.book_id = b.id
-                WHERE oi.order_id = ${order.id}
+                SELECT * FROM order_items
+                WHERE order_id = ${order.id}
             `;
         }
 
@@ -39,8 +37,8 @@ router.get('/', authenticateAdmin, async (req, res) => {
 // Get user's orders
 router.get('/my-orders', async (req, res) => {
     try {
-        const sql = req.sql;
-        const userId = req.userId; // From auth middleware
+        const sql = req.db.admin;
+        const userId = req.userId;
 
         const orders = await sql`
             SELECT * FROM orders 
@@ -50,10 +48,8 @@ router.get('/my-orders', async (req, res) => {
 
         for (let order of orders) {
             order.items = await sql`
-                SELECT oi.*, b.title, b.author, b.image
-                FROM order_items oi
-                LEFT JOIN books b ON oi.book_id = b.id
-                WHERE oi.order_id = ${order.id}
+                SELECT * FROM order_items
+                WHERE order_id = ${order.id}
             `;
         }
 
@@ -67,7 +63,7 @@ router.get('/my-orders', async (req, res) => {
 // Get order by ID
 router.get('/:id', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
         const userId = req.userId;
         const isAdmin = req.isAdmin;
@@ -85,7 +81,6 @@ router.get('/:id', async (req, res) => {
 
         const order = orders[0];
 
-        // Security Check: Only admin or the specific user can view the order
         if (!isAdmin && order.user_id !== userId) {
             return res.status(403).json({
                 error: 'Access denied',
@@ -93,12 +88,10 @@ router.get('/:id', async (req, res) => {
             });
         }
 
-        // Fetch order items
+        // Fetch order items (self-contained)
         order.items = await sql`
-            SELECT oi.*, b.title, b.author, b.image
-            FROM order_items oi
-            LEFT JOIN books b ON oi.book_id = b.id
-            WHERE oi.order_id = ${order.id}
+            SELECT * FROM order_items
+            WHERE order_id = ${order.id}
         `;
 
         // Fetch order status history
@@ -118,7 +111,7 @@ router.get('/:id', async (req, res) => {
 // Create new order
 router.post('/', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const {
             user_id,
             items,
@@ -142,18 +135,12 @@ router.post('/', async (req, res) => {
         console.log('========================================');
         console.log('User ID:', user_id);
         console.log('Items count:', Array.isArray(items) ? items.length : (typeof items === 'string' ? 'JSON string' : 'unknown'));
-        console.log('Subtotal:', subtotal);
-        console.log('Discount:', discount);
         console.log('Total:', total);
         console.log('Customer:', shipping_first_name, shipping_last_name);
-        console.log('Email:', shipping_email);
-        console.log('Payment:', payment_method);
         console.log('========================================\n');
 
         // Generate order ID
         const orderId = 'ABC-' + Date.now().toString(36).toUpperCase();
-
-        // Create order
         const actualUserId = user_id || req.userId;
         const initialStatus = payment_method === 'razorpay' ? 'paid' : 'confirmed';
 
@@ -169,11 +156,10 @@ router.post('/', async (req, res) => {
                 ${shipping_address1 || ''}, ${shipping_address2 || ''}, ${shipping_city || ''}, ${shipping_state || ''}, ${shipping_pincode || ''},
                 ${payment_method || 'COD'}, ${initialStatus}
             )
+            RETURNING *
         `;
 
-        const newId = insertResult.insertId;
-        const freshOrderResult = await sql`SELECT * FROM orders WHERE id = ${newId}`;
-        const order = freshOrderResult[0];
+        const order = insertResult[0];
         console.log('✅ Order created:', order.order_id);
 
         // Record initial status in history
@@ -181,13 +167,11 @@ router.post('/', async (req, res) => {
             INSERT INTO order_status_history (order_id, status, notes)
             VALUES (${order.id}, ${initialStatus}, 'Order placed successfully')
         `;
-        console.log('✅ Initial status history recorded');
 
-        // Add order items - handle both integer book_id and string local IDs
+        // Add order items - store book metadata directly (no cross-DB dependency)
         const parsedItems = typeof items === 'string' ? JSON.parse(items) : items;
 
         for (const item of parsedItems) {
-            // Try to get book_id as integer, if not valid use NULL
             let bookId = null;
             if (typeof item.book_id === 'number') {
                 bookId = item.book_id;
@@ -195,7 +179,6 @@ router.post('/', async (req, res) => {
                 bookId = parseInt(item.book_id);
             }
 
-            // Store item details
             const itemPrice = item.price || 0;
             const itemQty = item.quantity || 1;
             const itemTitle = item.title || item.book_title || 'Book';
@@ -207,14 +190,12 @@ router.post('/', async (req, res) => {
                     INSERT INTO order_items (order_id, book_id, quantity, price, book_title, book_author, book_image)
                     VALUES (${order.id}, ${bookId}, ${itemQty}, ${itemPrice}, ${itemTitle}, ${itemAuthor}, ${itemImage})
                 `;
-                console.log('✅ Added order item:', { bookId, title: itemTitle, itemQty, itemPrice });
             } catch (itemError) {
-                console.log('⚠️ Error adding item, trying without book_id:', itemError.message);
-                // Insert without foreign key if book doesn't exist
+                console.log('⚠️ Error adding item:', itemError.message);
                 try {
                     await sql`
                         INSERT INTO order_items (order_id, book_id, quantity, price, book_title, book_author, book_image)
-                        VALUES (${order.id}, NULL, ${itemQty}, ${itemPrice}, ${itemTitle}, ${itemAuthor}, ${itemImage})
+                        VALUES (${order.id}, ${null}, ${itemQty}, ${itemPrice}, ${itemTitle}, ${itemAuthor}, ${itemImage})
                     `;
                 } catch (err2) {
                     console.log('⚠️ Fallback insert error:', err2.message);
@@ -222,51 +203,37 @@ router.post('/', async (req, res) => {
             }
         }
 
-        // Clear user's cart if user is logged in
+        // Clear user's cart
         if (user_id) {
             await sql`DELETE FROM cart WHERE user_id = ${user_id}`;
-            console.log('✅ Cart cleared for user:', user_id);
         }
 
-        // Send confirmation email asynchronously
+        // Send confirmation email
         try {
             const recipientEmail = order.shipping_email || order.email;
-            console.log('📧 Sending order confirmation to:', recipientEmail);
-            
-            if (!recipientEmail || !recipientEmail.includes('@')) {
-                console.warn('⚠️ Invalid recipient email, skipping email send');
-            } else {
+            if (recipientEmail && recipientEmail.includes('@')) {
                 await emailService.sendOrderConfirmation(recipientEmail, {
-                order_id: order.order_id,
-                total: order.total,
-                items: parsedItems,
-                shipping: {
-                    first_name: order.shipping_first_name,
-                    last_name: order.shipping_last_name,
-                    address1: order.shipping_address1,
-                    city: order.shipping_city
-                }
+                    order_id: order.order_id,
+                    total: order.total,
+                    items: parsedItems,
+                    shipping: {
+                        first_name: order.shipping_first_name,
+                        last_name: order.shipping_last_name,
+                        address1: order.shipping_address1,
+                        city: order.shipping_city
+                    }
                 });
-                console.log('✅ Confirmation email attempted');
             }
         } catch (emailError) {
             console.error('⚠️ Could not send order confirmation email:', emailError.message);
         }
 
         res.status(201).json({
-            order: {
-                ...order,
-                items: parsedItems
-            },
+            order: { ...order, items: parsedItems },
             message: 'Order placed successfully!'
         });
     } catch (error) {
-        console.error('\n❌❌❌ ORDER CREATION ERROR ❌❌❌');
-        console.error('Error message:', error.message);
-        console.error('Error code:', error.code);
-        console.error('Full error:', error);
-        console.error('Stack trace:', error.stack);
-        console.error('========================================\n');
+        console.error('❌ ORDER CREATION ERROR:', error.message);
         res.status(500).json({ error: 'Failed to create order: ' + error.message });
     }
 });
@@ -274,30 +241,17 @@ router.post('/', async (req, res) => {
 // Update order status & tracking info (admin only)
 router.patch('/:id/status', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
-        const {
-            status,
-            notes,
-            tracking_id,
-            courier_name,
-            estimated_delivery_date
-        } = req.body;
+        const { status, notes, tracking_id, courier_name, estimated_delivery_date } = req.body;
 
-        // Note: Using individual awaits here as the simple 'neon()' driver 
-        // handles each as a standalone query. For full ACID transactions 
-        // on Neon, one would typically use the @neondatabase/serverless pools.
-        // We ensure data integrity by checking order existence first.
-
-        // 1. Get existing order to verify ID
         const orders = await sql`SELECT id, status FROM orders WHERE id = ${id} OR order_id = ${id}`;
         if (orders.length === 0) {
             return res.status(404).json({ error: 'Order not found' });
         }
         const order = orders[0];
 
-        // 2. Update order table
-        const updateResult = await sql`
+        const freshResult = await sql`
             UPDATE orders SET 
                 status = ${status || order.status}, 
                 tracking_id = ${tracking_id || null},
@@ -305,18 +259,15 @@ router.patch('/:id/status', authenticateAdmin, async (req, res) => {
                 estimated_delivery_date = ${estimated_delivery_date || null},
                 updated_at = NOW()
             WHERE id = ${order.id}
+            RETURNING *
         `;
 
-        const freshUpdateResult = await sql`SELECT * FROM orders WHERE id = ${order.id}`;
-
-        // 3. Insert into history table (Audit Trail)
         if (status && status !== order.status) {
             await sql`
                 INSERT INTO order_status_history (order_id, status, notes)
                 VALUES (${order.id}, ${status}, ${notes || 'Status updated by administrator'})
             `;
         } else if (notes || tracking_id || courier_name) {
-            // Log update even if status didn't change but tracking was added
             await sql`
                 INSERT INTO order_status_history (order_id, status, notes)
                 VALUES (${order.id}, ${status || order.status}, ${notes || 'Tracking information updated'})
@@ -325,10 +276,9 @@ router.patch('/:id/status', authenticateAdmin, async (req, res) => {
 
         res.json({
             success: true,
-            order: freshUpdateResult[0],
+            order: freshResult[0],
             message: 'Order status and tracking information updated'
         });
-
     } catch (error) {
         console.error('Update order status error:', error);
         res.status(500).json({ error: 'Failed to update order status', details: error.message });
@@ -338,10 +288,9 @@ router.patch('/:id/status', authenticateAdmin, async (req, res) => {
 // Delete order (admin only)
 router.delete('/:id', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
 
-        // Resolve integer ID first if order_id (string) was provided
         const orders = await sql`SELECT id FROM orders WHERE id = ${id} OR order_id = ${id}`;
         if (orders.length === 0) {
             return res.status(404).json({ error: 'Order not found' });

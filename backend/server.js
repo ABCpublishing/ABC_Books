@@ -1,12 +1,13 @@
 
 // ===== ABC Books Backend Server =====
-// Using MySQL Database with Enhanced Security
+// Multi-Database PostgreSQL Architecture (Neon DB)
+// 4 Databases: English Books, Urdu Books, Arabic Books, Admin/General
 
 const path = require('path');
 require('dotenv').config({ path: path.join(__dirname, '.env') });
 const express = require('express');
 const cors = require('cors');
-const mysql = require('mysql2/promise');
+const { Pool } = require('pg');
 
 // Import routes
 const authRoutes = require('./routes/auth');
@@ -30,11 +31,102 @@ const {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// ===== Security Middleware =====
-// Apply security headers to all responses
-app.use(securityHeaders);
+// ===== Multi-Database Connection Pools =====
+// Each pool connects to a separate Neon PostgreSQL database
 
-// Request logging for monitoring
+function createPool(connectionString, name) {
+    if (!connectionString) {
+        console.warn(`⚠️ No connection string for ${name} database`);
+        return null;
+    }
+    const pool = new Pool({
+        connectionString,
+        ssl: { rejectUnauthorized: false },
+        max: 10,
+        idleTimeoutMillis: 30000,
+        connectionTimeoutMillis: 10000
+    });
+    pool.on('error', (err) => {
+        console.error(`❌ Unexpected error on ${name} pool:`, err.message);
+    });
+    console.log(`✅ ${name} database pool created`);
+    return pool;
+}
+
+const pools = {
+    admin:   createPool(process.env.DATABASE_URL_ADMIN,   'Admin'),
+    english: createPool(process.env.DATABASE_URL_ENGLISH, 'English'),
+    urdu:    createPool(process.env.DATABASE_URL_URDU,    'Urdu'),
+    arabic:  createPool(process.env.DATABASE_URL_ARABIC,  'Arabic')
+};
+
+// ===== PostgreSQL Tagged Template Query Helper =====
+// Usage: await db.query`SELECT * FROM users WHERE id = ${userId}`
+// Converts tagged template to parameterized query ($1, $2, etc.)
+
+function createQueryHelper(pool) {
+    if (!pool) {
+        return async () => { throw new Error('Database pool not configured'); };
+    }
+
+    const queryFn = async (strings, ...values) => {
+        // Build parameterized query: replace ${val} positions with $1, $2, etc.
+        let query = '';
+        strings.forEach((str, i) => {
+            query += str;
+            if (i < values.length) {
+                query += `$${i + 1}`;
+            }
+        });
+
+        try {
+            const result = await pool.query(query, values);
+            // Return rows array (compatible with existing code that expects array)
+            // Attach rowCount and other metadata for INSERT/UPDATE/DELETE
+            const rows = result.rows;
+            rows.rowCount = result.rowCount;
+            // For INSERT RETURNING, the inserted row is in rows[0]
+            return rows;
+        } catch (error) {
+            console.error('❌ SQL Error:', error.message);
+            console.error('   Query:', query);
+            throw error;
+        }
+    };
+
+    return queryFn;
+}
+
+// Create query helpers for each database
+const db = {
+    admin:   createQueryHelper(pools.admin),
+    english: createQueryHelper(pools.english),
+    urdu:    createQueryHelper(pools.urdu),
+    arabic:  createQueryHelper(pools.arabic),
+    pools    // Expose raw pools if needed
+};
+
+// Helper to get the right book database based on language/category
+db.getBookDb = (language) => {
+    if (!language) return null;
+    const lang = language.toLowerCase().trim();
+    if (lang === 'english') return db.english;
+    if (lang === 'urdu')    return db.urdu;
+    if (lang === 'arabic')  return db.arabic;
+    return null;
+};
+
+// Helper to get all book databases (for aggregate queries)
+db.getAllBookDbs = () => {
+    const dbs = [];
+    if (pools.english) dbs.push({ name: 'English', query: db.english });
+    if (pools.urdu)    dbs.push({ name: 'Urdu',    query: db.urdu });
+    if (pools.arabic)  dbs.push({ name: 'Arabic',  query: db.arabic });
+    return dbs;
+};
+
+// ===== Security Middleware =====
+app.use(securityHeaders);
 app.use(requestLogger);
 
 // Rate limiting - 100 requests per 15 minutes per IP
@@ -43,7 +135,7 @@ app.use(rateLimit({
     maxRequests: 100
 }));
 
-// Stricter rate limit for auth endpoints (prevent brute force)
+// Stricter rate limit for auth endpoints
 app.use('/api/auth', rateLimit({
     windowMs: 15 * 60 * 1000,
     maxRequests: 20,
@@ -53,10 +145,8 @@ app.use('/api/auth', rateLimit({
 // CORS Configuration
 app.use(cors({
     origin: function (origin, callback) {
-        // Allow requests with no origin (like mobile apps or curl requests)
         if (!origin) return callback(null, true);
 
-        // List of allowed origins
         const allowedOrigins = [
             'http://localhost:3000',
             'http://127.0.0.1:3000',
@@ -74,7 +164,6 @@ app.use(cors({
             'http://abcbooks.store'
         ];
 
-        // Allow any Vercel domain
         if (origin.endsWith('.vercel.app') || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
@@ -86,57 +175,52 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Body parsing with size limit (prevent large payload attacks)
+// Body parsing with size limit
 app.use(express.json({ limit: '10mb' }));
 
-// Input sanitization for all requests
+// Input sanitization
 app.use(sanitizeInput);
 
-// MySQL Connection Pool
-const pool = mysql.createPool({
-    host: process.env.DB_HOST || 'localhost',
-    user: process.env.DB_USER || 'root',
-    password: process.env.DB_PASSWORD || '',
-    database: process.env.DB_NAME || 'abc_books',
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0,
-    dateStrings: true
-});
-
-// SQL Tagged Template Helper for MySQL
-const sql = async (strings, ...params) => {
-    const query = strings.join('?');
-    try {
-        const [rows] = await pool.execute(query, params);
-        return rows;
-    } catch (error) {
-        console.error('❌ SQL Error:', error.message);
-        throw error;
-    }
-};
-
-// Make sql available to routes
+// ===== Make database helpers available to all routes =====
 app.use((req, res, next) => {
-    req.sql = sql;
-    req.db = pool;
+    req.db = db;
+    // Legacy compatibility: req.sql points to admin db (used by auth, users, orders, etc.)
+    req.sql = db.admin;
     next();
 });
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({ status: 'ok', message: 'ABC Books API v2.0 (Verified) is running!' });
+app.get('/api/health', async (req, res) => {
+    const status = {};
+    for (const [name, pool] of Object.entries(pools)) {
+        try {
+            if (pool) {
+                await pool.query('SELECT 1');
+                status[name] = 'connected';
+            } else {
+                status[name] = 'not configured';
+            }
+        } catch (e) {
+            status[name] = 'error: ' + e.message;
+        }
+    }
+    res.json({
+        status: 'ok',
+        message: 'ABC Books API v3.0 (Multi-DB PostgreSQL) is running!',
+        databases: status
+    });
 });
 
 // Maintenance Route - Verify All Users (admin only)
 app.get('/api/verify-all-users', authenticateAdmin, async (req, res) => {
     try {
-        // MySQL doesn't support RETURNING, so we just update and return success
-        const result = await req.sql`UPDATE users SET is_verified = TRUE WHERE is_verified = FALSE`;
+        const result = await req.db.admin`
+            UPDATE users SET is_verified = TRUE WHERE is_verified = FALSE
+        `;
         res.json({
             success: true,
-            message: `✅ Successfully verified users. Affect rows: ${result.affectedRows}`,
-            affectedRows: result.affectedRows
+            message: `✅ Successfully verified users. Affected rows: ${result.rowCount}`,
+            affectedRows: result.rowCount
         });
     } catch (error) {
         console.error('Verification failed:', error);
@@ -154,10 +238,9 @@ app.use('/api/wishlist', wishlistRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/categories', categoriesRoutes);
 
-// Serve frontend: static files + index.html at root
+// Serve frontend
 const rootDir = path.join(__dirname, '..');
 
-// Serve favicon.ico from favicon.svg (prevents 404)
 app.get('/favicon.ico', (req, res) => {
     res.sendFile(path.join(rootDir, 'favicon.svg'));
 });
@@ -176,7 +259,7 @@ if (require.main === module) {
     app.listen(PORT, () => {
         console.log(`🚀 ABC Books API running on http://localhost:${PORT}`);
         console.log(`📖 Open the site in your browser: http://localhost:${PORT}`);
-        console.log(`📚 Database: MySQL`);
+        console.log(`📚 Database: Multi-DB PostgreSQL (Neon)`);
     });
 }
 

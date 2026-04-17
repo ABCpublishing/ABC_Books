@@ -1,60 +1,116 @@
-// ===== Books Routes =====
+// ===== Books Routes (Multi-Database) =====
+// Books are split across 3 Neon databases: English, Urdu, Arabic
 const express = require('express');
 const { authenticateAdmin } = require('../middleware/security');
 const router = express.Router();
 
-// Get all books with sections
-// Get all books with sections
+// ===== Helper: Determine which DB to use based on language/category =====
+function resolveBookDb(req, language) {
+    const db = req.db.getBookDb(language);
+    if (db) return { db, language: language.toLowerCase() };
+    // Default to English if not specified
+    return { db: req.db.english, language: 'english' };
+}
+
+// ===== Helper: Query all book databases and merge results =====
+async function queryAllBookDbs(req, queryBuilder) {
+    const allDbs = req.db.getAllBookDbs();
+    const results = await Promise.allSettled(
+        allDbs.map(async ({ name, query }) => {
+            try {
+                const rows = await queryBuilder(query, name.toLowerCase());
+                return rows.map(row => ({ ...row, db_source: name.toLowerCase() }));
+            } catch (err) {
+                console.error(`❌ Error querying ${name} DB:`, err.message);
+                return [];
+            }
+        })
+    );
+    
+    // Flatten all fulfilled results
+    return results
+        .filter(r => r.status === 'fulfilled')
+        .flatMap(r => r.value);
+}
+
+// Get all books with sections (merges from all DBs)
 router.get('/', async (req, res) => {
     try {
-        const sql = req.sql;
-        const { category, search, limit = 100 } = req.query;
+        const { category, language, search, limit = 100 } = req.query;
         const parsedLimit = parseInt(limit) || 100;
 
         let books;
 
-        if (search) {
-            const pattern = '%' + search + '%';
-            books = await sql`
-                SELECT b.*, 
-                       GROUP_CONCAT(bs.section_name) as sections_str
-                FROM books b
-                LEFT JOIN book_sections bs ON b.id = bs.book_id
-                WHERE b.title LIKE ${pattern} 
-                   OR b.author LIKE ${pattern}
-                   OR b.description LIKE ${pattern}
-                GROUP BY b.id
-                ORDER BY b.created_at DESC
-                LIMIT ${parsedLimit}
-            `;
-        } else if (category) {
-            books = await sql`
-                SELECT b.*, 
-                       GROUP_CONCAT(bs.section_name) as sections_str
-                FROM books b
-                LEFT JOIN book_sections bs ON b.id = bs.book_id
-                WHERE LOWER(b.category) = LOWER(${category})
-                GROUP BY b.id
-                ORDER BY b.created_at DESC
-                LIMIT ${parsedLimit}
-            `;
+        // If a specific language/category is specified, query only that DB
+        const targetLang = language || category;
+        if (targetLang && req.db.getBookDb(targetLang)) {
+            const bookDb = req.db.getBookDb(targetLang);
+            
+            if (search) {
+                const pattern = '%' + search + '%';
+                books = await bookDb`
+                    SELECT b.*, 
+                           STRING_AGG(bs.section_name, ',') as sections_str
+                    FROM books b
+                    LEFT JOIN book_sections bs ON b.id = bs.book_id
+                    WHERE b.title ILIKE ${pattern} 
+                       OR b.author ILIKE ${pattern}
+                       OR b.description ILIKE ${pattern}
+                    GROUP BY b.id
+                    ORDER BY b.created_at DESC
+                    LIMIT ${parsedLimit}
+                `;
+            } else {
+                books = await bookDb`
+                    SELECT b.*, 
+                           STRING_AGG(bs.section_name, ',') as sections_str
+                    FROM books b
+                    LEFT JOIN book_sections bs ON b.id = bs.book_id
+                    GROUP BY b.id
+                    ORDER BY b.created_at DESC
+                    LIMIT ${parsedLimit}
+                `;
+            }
+            books = books.map(b => ({ ...b, db_source: targetLang.toLowerCase() }));
         } else {
-            books = await sql`
-                SELECT b.*, 
-                       GROUP_CONCAT(bs.section_name) as sections_str
-                FROM books b
-                LEFT JOIN book_sections bs ON b.id = bs.book_id
-                GROUP BY b.id
-                ORDER BY b.created_at DESC
-                LIMIT ${parsedLimit}
-            `;
+            // No specific language - query ALL databases and merge
+            books = await queryAllBookDbs(req, async (dbQuery, dbName) => {
+                if (search) {
+                    const pattern = '%' + search + '%';
+                    return await dbQuery`
+                        SELECT b.*, 
+                               STRING_AGG(bs.section_name, ',') as sections_str
+                        FROM books b
+                        LEFT JOIN book_sections bs ON b.id = bs.book_id
+                        WHERE b.title ILIKE ${pattern} 
+                           OR b.author ILIKE ${pattern}
+                           OR b.description ILIKE ${pattern}
+                        GROUP BY b.id
+                        ORDER BY b.created_at DESC
+                        LIMIT ${parsedLimit}
+                    `;
+                } else {
+                    return await dbQuery`
+                        SELECT b.*, 
+                               STRING_AGG(bs.section_name, ',') as sections_str
+                        FROM books b
+                        LEFT JOIN book_sections bs ON b.id = bs.book_id
+                        GROUP BY b.id
+                        ORDER BY b.created_at DESC
+                        LIMIT ${parsedLimit}
+                    `;
+                }
+            });
         }
 
-        // Convert GROUP_CONCAT string to array
+        // Convert STRING_AGG string to array
         const formattedBooks = books.map(b => ({
             ...b,
             sections: b.sections_str ? b.sections_str.split(',') : []
         }));
+
+        // Sort merged results by created_at DESC
+        formattedBooks.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
 
         res.json({ books: formattedBooks });
     } catch (error) {
@@ -63,21 +119,20 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get books by section (hero, featured, trending, etc.)
-// IMPORTANT: This route MUST come BEFORE /:id to avoid being shadowed
+// Get books by section (hero, featured, trending, etc.) - queries ALL DBs
 router.get('/section/:section', async (req, res) => {
     try {
-        const sql = req.sql;
         const { section } = req.params;
-
         console.log(`📚 Fetching books for section: ${section}`);
 
-        const books = await sql`
-            SELECT b.* FROM books b
-            INNER JOIN book_sections bs ON b.id = bs.book_id
-            WHERE bs.section_name = ${section}
-            ORDER BY bs.display_order ASC
-        `;
+        const books = await queryAllBookDbs(req, async (dbQuery) => {
+            return await dbQuery`
+                SELECT b.* FROM books b
+                INNER JOIN book_sections bs ON b.id = bs.book_id
+                WHERE bs.section_name = ${section}
+                ORDER BY bs.display_order ASC
+            `;
+        });
 
         console.log(`✅ Found ${books.length} books in ${section} section`);
         res.json({ books });
@@ -87,20 +142,39 @@ router.get('/section/:section', async (req, res) => {
     }
 });
 
-// Get book by ID
+// Get book by ID - searches all DBs if no language specified
 router.get('/:id', async (req, res) => {
     try {
-        const sql = req.sql;
         const { id } = req.params;
+        const { language } = req.query;
 
-        const books = await sql`
-            SELECT b.*, 
-                   GROUP_CONCAT(bs.section_name) as sections_str
-            FROM books b
-            LEFT JOIN book_sections bs ON b.id = bs.book_id
-            WHERE b.id = ${id}
-            GROUP BY b.id
-        `;
+        let books = [];
+
+        if (language && req.db.getBookDb(language)) {
+            // Query specific DB
+            const bookDb = req.db.getBookDb(language);
+            books = await bookDb`
+                SELECT b.*, 
+                       STRING_AGG(bs.section_name, ',') as sections_str
+                FROM books b
+                LEFT JOIN book_sections bs ON b.id = bs.book_id
+                WHERE b.id = ${id}
+                GROUP BY b.id
+            `;
+            books = books.map(b => ({ ...b, db_source: language.toLowerCase() }));
+        } else {
+            // Search all DBs
+            books = await queryAllBookDbs(req, async (dbQuery) => {
+                return await dbQuery`
+                    SELECT b.*, 
+                           STRING_AGG(bs.section_name, ',') as sections_str
+                    FROM books b
+                    LEFT JOIN book_sections bs ON b.id = bs.book_id
+                    WHERE b.id = ${id}
+                    GROUP BY b.id
+                `;
+            });
+        }
 
         if (books.length === 0) {
             return res.status(404).json({ error: 'Book not found' });
@@ -118,31 +192,35 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Add new book (admin only - requires admin authentication)
+// Add new book (admin only)
 router.post('/', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
         const { title, author, publisher, price, original_price, image, description, category, language, subcategory, rating, sections } = req.body;
 
-        const insertResult = await sql`
+        // Determine target database based on language/category
+        const targetLang = language || category || 'English';
+        const bookDb = req.db.getBookDb(targetLang) || req.db.english;
+        const dbSource = (targetLang || 'english').toLowerCase();
+
+        const insertResult = await bookDb`
             INSERT INTO books (title, author, publisher, price, original_price, image, description, category, language, subcategory, rating)
             VALUES (${title}, ${author}, ${publisher || 'ABC Publishing'}, ${price}, ${original_price || null}, ${image || null}, ${description || ''}, ${category || language || 'General'}, ${language || 'Urdu'}, ${subcategory || ''}, ${rating || 4.5})
+            RETURNING *
         `;
 
-        const newBookId = insertResult.insertId;
-        const bookResult = await sql`SELECT * FROM books WHERE id = ${newBookId}`;
-        const book = bookResult[0];
+        const book = insertResult[0];
 
         // Add sections if provided
         if (sections && Array.isArray(sections) && sections.length > 0) {
             for (const section of sections) {
-                await sql`
+                await bookDb`
                     INSERT INTO book_sections (book_id, section_name) 
                     VALUES (${book.id}, ${section})
                 `;
             }
         }
 
+        book.db_source = dbSource;
         res.status(201).json({ book, message: 'Book added successfully' });
     } catch (error) {
         console.error('Add book error:', error);
@@ -150,14 +228,17 @@ router.post('/', authenticateAdmin, async (req, res) => {
     }
 });
 
-// Update book (admin only - requires admin authentication)
+// Update book (admin only)
 router.put('/:id', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
         const { id } = req.params;
         const { title, author, publisher, price, original_price, image, description, category, language, subcategory, rating, sections } = req.body;
 
-        const updateResult = await sql`
+        // Determine target database
+        const targetLang = language || category || req.query.language || 'English';
+        const bookDb = req.db.getBookDb(targetLang) || req.db.english;
+
+        const updateResult = await bookDb`
             UPDATE books SET
                 title = ${title},
                 author = ${author},
@@ -172,23 +253,20 @@ router.put('/:id', authenticateAdmin, async (req, res) => {
                 rating = ${rating || 4.5},
                 updated_at = NOW()
             WHERE id = ${id}
+            RETURNING *
         `;
 
-        if (updateResult.affectedRows === 0) {
+        if (updateResult.length === 0) {
             return res.status(404).json({ error: 'Book not found' });
         }
 
-        const bookResult = await sql`SELECT * FROM books WHERE id = ${id}`;
-        const book = bookResult[0];
+        const book = updateResult[0];
 
         // Update sections if provided
         if (sections && Array.isArray(sections)) {
-            // Remove old sections
-            await sql`DELETE FROM book_sections WHERE book_id = ${id}`;
-
-            // Add new sections
+            await bookDb`DELETE FROM book_sections WHERE book_id = ${id}`;
             for (const section of sections) {
-                await sql`
+                await bookDb`
                     INSERT INTO book_sections (book_id, section_name) 
                     VALUES (${book.id}, ${section})
                 `;
@@ -202,17 +280,40 @@ router.put('/:id', authenticateAdmin, async (req, res) => {
     }
 });
 
-// Delete book (admin only - requires admin authentication)
+// Delete book (admin only)
 router.delete('/:id', authenticateAdmin, async (req, res) => {
     try {
-        const sql = req.sql;
         const { id } = req.params;
+        const { language } = req.query;
 
-        await sql`DELETE FROM book_sections WHERE book_id = ${id}`;
-        const deleteResult = await sql`DELETE FROM books WHERE id = ${id}`;
-
-        if (deleteResult.affectedRows === 0) {
-            return res.status(404).json({ error: 'Book not found' });
+        // If language specified, delete from that DB. Otherwise try all.
+        if (language && req.db.getBookDb(language)) {
+            const bookDb = req.db.getBookDb(language);
+            await bookDb`DELETE FROM book_sections WHERE book_id = ${id}`;
+            const result = await bookDb`DELETE FROM books WHERE id = ${id}`;
+            if (result.rowCount === 0) {
+                return res.status(404).json({ error: 'Book not found' });
+            }
+        } else {
+            // Try deleting from all DBs
+            let deleted = false;
+            const allDbs = req.db.getAllBookDbs();
+            for (const { name, query: dbQuery } of allDbs) {
+                try {
+                    await dbQuery`DELETE FROM book_sections WHERE book_id = ${id}`;
+                    const result = await dbQuery`DELETE FROM books WHERE id = ${id}`;
+                    if (result.rowCount > 0) {
+                        deleted = true;
+                        console.log(`✅ Book ${id} deleted from ${name} DB`);
+                        break;
+                    }
+                } catch (err) {
+                    console.warn(`Could not delete from ${name}:`, err.message);
+                }
+            }
+            if (!deleted) {
+                return res.status(404).json({ error: 'Book not found in any database' });
+            }
         }
 
         res.json({ message: 'Book deleted successfully' });

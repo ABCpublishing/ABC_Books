@@ -1,4 +1,4 @@
-// ===== Authentication Routes =====
+// ===== Authentication Routes (PostgreSQL / Admin DB) =====
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
@@ -12,7 +12,7 @@ const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 router.post('/register', async (req, res) => {
     try {
         const { name, email, password, phone = null } = req.body;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         // Check if email already exists
         const existingUser = await sql`
@@ -30,19 +30,13 @@ router.post('/register', async (req, res) => {
         // Hash password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Insert new user
-        const insertResult = await sql`
+        // Insert new user with RETURNING
+        const result = await sql`
             INSERT INTO users (name, email, phone, password_hash, verification_token, is_verified)
             VALUES (${name}, ${email}, ${phone}, ${hashedPassword}, ${verificationToken}, TRUE)
+            RETURNING id, name, email, phone, created_at
         `;
 
-        const newUserId = insertResult.insertId;
-
-        // Fetch the created user to keep returning data consistent
-        const result = await sql`
-            SELECT id, name, email, phone, created_at FROM users WHERE id = ${newUserId}
-        `;
-        
         const user = result[0];
 
         // Generate JWT token for auto-login
@@ -75,24 +69,22 @@ router.post('/register', async (req, res) => {
 router.get('/verify', async (req, res) => {
     try {
         const { token } = req.query;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         if (!token) {
             return res.status(400).json({ error: 'Missing token' });
         }
 
-        // Find user by token
-        const updateResult = await sql`
+        const result = await sql`
             UPDATE users 
             SET is_verified = TRUE, verification_token = NULL
             WHERE verification_token = ${token}
+            RETURNING id, name, email
         `;
 
-        if (updateResult.affectedRows === 0) {
+        if (result.length === 0) {
             return res.status(400).json({ error: 'Invalid or expired verification token' });
         }
-
-        const result = await sql`SELECT id, name, email FROM users WHERE verification_token IS NULL AND id > 0 LIMIT 1`; // Simplified for now since we don't have RETURNING
 
         res.json({ message: 'Email verified successfully! You can now login.' });
     } catch (error) {
@@ -105,13 +97,12 @@ router.get('/verify', async (req, res) => {
 router.post('/login', async (req, res) => {
     try {
         const { phone, password, email } = req.body;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         const identifier = phone || email;
 
-        // Find user by phone or email
         const users = await sql`
-            SELECT id, name, email, phone, password_hash, created_at, is_verified
+            SELECT id, name, email, phone, password_hash, created_at, is_verified, is_admin
             FROM users WHERE phone = ${identifier} OR email = ${identifier}
         `;
 
@@ -121,13 +112,8 @@ router.post('/login', async (req, res) => {
 
         const user = users[0];
 
-        // Check verification (Warning only for now to not block users)
         if (user.is_verified === false) {
             console.log(`⚠️ Unverified user logging in: ${identifier}`);
-            // Optionally auto-verify on first successful login if we want to be very lenient
-            /*
-            await sql`UPDATE users SET is_verified = TRUE WHERE id = ${user.id}`;
-            */
         }
 
         // Verify password
@@ -150,6 +136,7 @@ router.post('/login', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
+                is_admin: user.is_admin,
                 createdAt: user.created_at
             },
             token,
@@ -172,9 +159,9 @@ router.get('/me', async (req, res) => {
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        const sql = req.sql;
+        const sql = req.db.admin;
         const users = await sql`
-            SELECT id, name, email, phone, created_at
+            SELECT id, name, email, phone, is_admin, created_at
             FROM users WHERE id = ${decoded.userId}
         `;
 
@@ -189,6 +176,7 @@ router.get('/me', async (req, res) => {
                 name: user.name,
                 email: user.email,
                 phone: user.phone,
+                is_admin: user.is_admin,
                 createdAt: user.created_at
             }
         });
@@ -202,7 +190,7 @@ router.get('/me', async (req, res) => {
 router.post('/forgot-password', async (req, res) => {
     try {
         const { email } = req.body;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         const users = await sql`
             SELECT id, name FROM users WHERE email = ${email}
@@ -214,10 +202,9 @@ router.post('/forgot-password', async (req, res) => {
 
         const user = users[0];
 
-        // Generate reset token
         const crypto = require('crypto');
         const resetToken = crypto.randomBytes(32).toString('hex');
-        const expiry = new Date(Date.now() + 3600000); // 1 hour
+        const expiry = new Date(Date.now() + 3600000);
 
         await sql`
             UPDATE users 
@@ -226,11 +213,9 @@ router.post('/forgot-password', async (req, res) => {
             WHERE id = ${user.id}
         `;
 
-        // Build reset link for direct use
         const frontendUrl = process.env.FRONTEND_URL || 'https://abcbooks.store';
         const resetLink = `${frontendUrl}/reset-password.html?token=${resetToken}`;
 
-        // Attempt to send via Resend if configured
         const emailSent = await emailService.sendPasswordResetEmail(email, resetLink);
 
         res.json({
@@ -248,13 +233,12 @@ router.post('/forgot-password', async (req, res) => {
 router.post('/reset-password', async (req, res) => {
     try {
         const { token, password } = req.body;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         if (!token || !password) {
             return res.status(400).json({ error: 'Missing token or password' });
         }
 
-        // Find user by token and check expiry
         const users = await sql`
             SELECT id FROM users 
             WHERE reset_password_token = ${token} 
@@ -266,11 +250,8 @@ router.post('/reset-password', async (req, res) => {
         }
 
         const user = users[0];
-
-        // Hash new password
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        // Update user
         await sql`
             UPDATE users 
             SET password_hash = ${hashedPassword},
@@ -291,13 +272,12 @@ router.post('/reset-password', async (req, res) => {
 router.post('/google', async (req, res) => {
     try {
         const { credential } = req.body;
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         if (!credential) {
             return res.status(400).json({ error: 'Missing Google credential' });
         }
 
-        // Verify Google token
         const ticket = await googleClient.verifyIdToken({
             idToken: credential,
             audience: process.env.GOOGLE_CLIENT_ID,
@@ -305,32 +285,26 @@ router.post('/google', async (req, res) => {
         const payload = ticket.getPayload();
         const { email, name, picture, sub: googleId } = payload;
 
-        // Check if user exists by email
         let users = await sql`SELECT id, name, email, phone, created_at FROM users WHERE email = ${email}`;
         let user;
 
         if (users.length === 0) {
-            // New user, create them (with a generic random password since they use Google)
             const crypto = require('crypto');
             const randomPassword = crypto.randomBytes(16).toString('hex');
             const hashedPassword = await bcrypt.hash(randomPassword, 10);
 
-            const insertResult = await sql`
+            const result = await sql`
                 INSERT INTO users (name, email, password_hash, is_verified)
                 VALUES (${name}, ${email}, ${hashedPassword}, TRUE)
+                RETURNING id, name, email, phone, created_at
             `;
-            
-            const newUserId = insertResult.insertId;
-            const userResult = await sql`SELECT id, name, email, phone, created_at FROM users WHERE id = ${newUserId}`;
-            user = userResult[0];
+            user = result[0];
             console.log(`[Google Auth] New user registered: ${email}`);
         } else {
-            // Existing user
             user = users[0];
             console.log(`[Google Auth] Existing user logged in: ${email}`);
         }
 
-        // Generate JWT token
         const token = jwt.sign(
             { userId: user.id, email: user.email },
             process.env.JWT_SECRET,

@@ -1,20 +1,18 @@
-// ===== Categories Routes =====
+// ===== Categories Routes (PostgreSQL / Admin DB) =====
 const express = require('express');
 const router = express.Router();
 
-// Get all categories (organized by language)
+// Get all categories
 router.get('/', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
 
-        // Get all categories
         const categories = await sql`
             SELECT * FROM categories 
             WHERE visible = true
             ORDER BY is_language DESC, display_order ASC
         `;
 
-        // Organize into language -> subcategories structure
         const languages = categories.filter(c => c.is_language);
         const subcategories = categories.filter(c => !c.is_language);
 
@@ -33,10 +31,10 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Get languages only (main categories)
+// Get languages only
 router.get('/languages', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
 
         const languages = await sql`
             SELECT * FROM categories 
@@ -54,10 +52,9 @@ router.get('/languages', async (req, res) => {
 // Get subcategories for a specific language
 router.get('/language/:languageSlug', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { languageSlug } = req.params;
 
-        // Get language category
         const languages = await sql`
             SELECT * FROM categories 
             WHERE LOWER(slug) = LOWER(${languageSlug}) AND is_language = true
@@ -69,17 +66,13 @@ router.get('/language/:languageSlug', async (req, res) => {
 
         const language = languages[0];
 
-        // Get subcategories
         const subcategories = await sql`
             SELECT * FROM categories 
             WHERE parent_id = ${language.id} AND visible = true
             ORDER BY display_order ASC
         `;
 
-        res.json({
-            language,
-            subcategories
-        });
+        res.json({ language, subcategories });
     } catch (error) {
         console.error('Get language subcategories error:', error);
         res.status(500).json({ error: 'Failed to get subcategories' });
@@ -89,7 +82,7 @@ router.get('/language/:languageSlug', async (req, res) => {
 // Get category by ID
 router.get('/:id', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
 
         const categories = await sql`
@@ -112,16 +105,15 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Add new category (admin only)
+// Add new category
 router.post('/', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { name, slug, icon, parent_id, is_language, display_order, visible } = req.body;
 
-        // Create slug from name if not provided
         const categorySlug = slug || name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
-        const insertResult = await sql`
+        const result = await sql`
             INSERT INTO categories (name, slug, icon, parent_id, is_language, display_order, visible)
             VALUES (
                 ${name}, 
@@ -132,32 +124,30 @@ router.post('/', async (req, res) => {
                 ${display_order || 0},
                 ${visible !== false}
             )
+            RETURNING *
         `;
 
-        const newId = insertResult.insertId;
-        const freshCategoryResult = await sql`SELECT * FROM categories WHERE id = ${newId}`;
-
         res.status(201).json({
-            category: freshCategoryResult[0],
+            category: result[0],
             message: 'Category added successfully'
         });
     } catch (error) {
         console.error('Add category error:', error);
-        if (error.code === 'ER_DUP_ENTRY') {
+        if (error.code === '23505') {
             return res.status(400).json({ error: 'Category slug already exists' });
         }
         res.status(500).json({ error: 'Failed to add category' });
     }
 });
 
-// Update category (admin only)
+// Update category
 router.put('/:id', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
         const { name, slug, icon, parent_id, is_language, display_order, visible } = req.body;
 
-        const updateResult = await sql`
+        const result = await sql`
             UPDATE categories SET
                 name = ${name},
                 slug = ${slug},
@@ -168,16 +158,15 @@ router.put('/:id', async (req, res) => {
                 visible = ${visible !== false},
                 updated_at = NOW()
             WHERE id = ${id}
+            RETURNING *
         `;
 
-        if (updateResult.affectedRows === 0) {
+        if (result.length === 0) {
             return res.status(404).json({ error: 'Category not found' });
         }
 
-        const freshCategoryResult = await sql`SELECT * FROM categories WHERE id = ${id}`;
-
         res.json({
-            category: freshCategoryResult[0],
+            category: result[0],
             message: 'Category updated successfully'
         });
     } catch (error) {
@@ -186,21 +175,20 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete category (admin only)
+// Delete category
 router.delete('/:id', async (req, res) => {
     try {
-        const sql = req.sql;
+        const sql = req.db.admin;
         const { id } = req.params;
 
-        // Check if it's a language category and has subcategories
         const category = await sql`SELECT * FROM categories WHERE id = ${id}`;
         if (category.length === 0) {
             return res.status(404).json({ error: 'Category not found' });
         }
 
         if (category[0].is_language) {
-            const subcategories = await sql`SELECT COUNT(*) as count FROM categories WHERE parent_id = ${id}`;
-            if (subcategories[0].count > 0) {
+            const subcategories = await sql`SELECT COUNT(*)::int as count FROM categories WHERE parent_id = ${id}`;
+            if (parseInt(subcategories[0].count) > 0) {
                 return res.status(400).json({
                     error: 'Cannot delete language category with subcategories. Delete subcategories first.'
                 });
@@ -216,18 +204,22 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
-// Get books by language
+// Get books by language - queries the appropriate book DB
 router.get('/books/language/:language', async (req, res) => {
     try {
-        const sql = req.sql;
         const { language } = req.params;
         const { limit = 50 } = req.query;
+        const parsedLimit = parseInt(limit) || 50;
 
-        const books = await sql`
+        const bookDb = req.db.getBookDb(language);
+        if (!bookDb) {
+            return res.json({ books: [], count: 0 });
+        }
+
+        const books = await bookDb`
             SELECT * FROM books 
-            WHERE LOWER(language) = LOWER(${language})
             ORDER BY created_at DESC
-            LIMIT ${parseInt(limit)}
+            LIMIT ${parsedLimit}
         `;
 
         res.json({ books, count: books.length });
@@ -240,16 +232,20 @@ router.get('/books/language/:language', async (req, res) => {
 // Get books by language and subcategory
 router.get('/books/:language/:subcategory', async (req, res) => {
     try {
-        const sql = req.sql;
         const { language, subcategory } = req.params;
         const { limit = 50 } = req.query;
+        const parsedLimit = parseInt(limit) || 50;
 
-        const books = await sql`
+        const bookDb = req.db.getBookDb(language);
+        if (!bookDb) {
+            return res.json({ books: [], count: 0 });
+        }
+
+        const books = await bookDb`
             SELECT * FROM books 
-            WHERE LOWER(language) = LOWER(${language})
-              AND LOWER(subcategory) = LOWER(${subcategory})
+            WHERE LOWER(subcategory) = LOWER(${subcategory})
             ORDER BY created_at DESC
-            LIMIT ${parseInt(limit)}
+            LIMIT ${parsedLimit}
         `;
 
         res.json({ books, count: books.length });

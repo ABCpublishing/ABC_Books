@@ -43,18 +43,16 @@ const TokenManager = {
         if (!token) return false;
 
         try {
-            // If it's not a 3-part JWT, just check if it exists
             const parts = token.split('.');
             if (parts.length !== 3) {
-                return true; // Consider it valid if it exists but isn't a JWT (for dev/demo)
+                return true;
             }
 
-            // Decode JWT to check expiration
             const payload = JSON.parse(atob(parts[1]));
             return payload.exp * 1000 > Date.now();
         } catch (e) {
             console.warn('Token validation error:', e);
-            return !!token; // Fallback to existence check
+            return !!token;
         }
     }
 };
@@ -163,7 +161,7 @@ const AuthAPI = {
         TokenManager.remove();
         localStorage.removeItem('currentUser');
         localStorage.removeItem('abc_books_current_user');
-        localStorage.removeItem('abc_books_cart'); // Clear visual cart cache on logout
+        localStorage.removeItem('abc_books_cart');
         localStorage.removeItem('abc_books_wishlist');
     }
 };
@@ -263,7 +261,6 @@ const OrdersAPI = {
     },
 
     async getByUser() {
-        // Authenticated route: uses token to identify user
         return await apiRequest('/orders/my-orders');
     },
 

@@ -1,7 +1,7 @@
 {
     "name": "abc-books-backend",
-    "version": "1.0.0",
-    "description": "Backend API for ABC Books using Neon PostgreSQL",
+    "version": "2.0.0",
+    "description": "Backend API for ABC Books using Neon PostgreSQL (Multi-DB)",
     "main": "server.js",
     "scripts": {
         "start": "node server.js",
@@ -20,7 +20,7 @@
         "google-auth-library": "^10.6.1",
         "jsonwebtoken": "^9.0.2",
         "mailgun.js": "^10.4.0",
-        "mysql2": "^3.9.2",
+        "pg": "^8.13.1",
         "razorpay": "^2.9.2"
     },
     "devDependencies": {

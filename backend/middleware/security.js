@@ -53,8 +53,8 @@ const authenticateAdmin = async (req, res, next) => {
         const token = authHeader.split(' ')[1];
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-        // Check if user is admin (you can enhance this with a role field in the database)
-        const sql = req.sql;
+        // Check if user is admin in the Admin database
+        const sql = req.db ? req.db.admin : req.sql;
         const users = await sql`
             SELECT id, email, is_admin FROM users WHERE id = ${decoded.userId}
         `;

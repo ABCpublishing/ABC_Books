@@ -58,6 +58,7 @@ async function fetchAllBooks() {
             if (!response.ok) throw new Error('API request failed');
 
             const data = await response.json();
+
             if (data && data.books) {
                 const mappedBooks = data.books.map(book => ({
                     id: book.id,
