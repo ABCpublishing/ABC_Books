@@ -29,49 +29,45 @@ async function loadBookDetails() {
         return;
     }
 
-    // FIRST: Try to fetch from API/database (for admin-added books with numeric IDs)
+    // FIRST: Try to fetch from API/database
     try {
-        console.log(`📖 Fetching book with ID: ${bookId} from API...`);
-        const queryStr = lang ? `?language=${lang}` : '';
-        const response = await fetch(`${BOOK_DETAIL_API_BASE}/books/${bookId}${queryStr}`);
+        console.log(`📖 Fetching book with ID: ${bookId} [Lang: ${lang || 'Any'}] from API...`);
+        
+        let data;
+        if (typeof API !== 'undefined' && API.Books) {
+            data = await API.Books.getById(bookId, { lang: lang });
+        } else {
+            const queryStr = lang ? `?lang=${lang}` : '';
+            const response = await fetch(`${BOOK_DETAIL_API_BASE}/books/${bookId}${queryStr}`);
+            data = await response.json();
+        }
 
-        if (response.ok) {
-            const data = await response.json();
-            if (data.book) {
-                console.log('✅ Book found in database:', data.book.title);
-                // Map database fields to expected format
-                currentBook = {
-                    id: data.book.id,
-                    title: data.book.title,
-                    author: data.book.author,
-                    price: data.book.price,
-                    originalPrice: data.book.original_price,
-                    image: data.book.image,
-                    description: data.book.description,
-                    category: data.book.category,
-                    image: data.book.image,
-                    description: data.book.description,
-                    category: data.book.category,
-                    rating: data.book.rating || 4.5
-                };
-                populateBookDetails();
-                loadRelatedBooks();
-                return;
-            }
+        if (data && data.book) {
+            console.log('✅ Book found in database:', data.book.title);
+            currentBook = data.book;
+            populateBookDetails();
+            loadRelatedBooks();
+            return;
         }
     } catch (error) {
         console.log('⚠️ API fetch failed, trying local data...', error);
     }
 
-    // FALLBACK: Try localStorage data
-    const data = localStorage.getItem('abc_books_data_cache');
-    if (data) {
-        const parsed = JSON.parse(data);
-        currentBook = parsed.books.find(b => 
-            (b.id === bookId || String(b.id) === bookId) && 
-            (!lang || (b.db_source || b.language).toLowerCase() === lang.toLowerCase())
-        );
-    }
+    console.log('🔄 API book not found, checking local cache/data with language filter...');
+    const storedBooks = JSON.parse(localStorage.getItem('abc_books_data_cache') || '{"books":[]}').books;
+    
+    // Find book matching ID AND language/db_source to avoid collisions
+    currentBook = storedBooks.find(b => {
+        const idMatch = String(b.id) === String(bookId);
+        if (!idMatch) return false;
+        
+        // If lang is specified, it must match either language or db_source
+        if (lang) {
+            const bLang = (b.db_source || b.language || '').toLowerCase();
+            return bLang === lang.toLowerCase();
+        }
+        return true;
+    });
 
     // FALLBACK: Try demo data
     if (!currentBook && typeof DEMO_ISLAMIC_BOOKS !== 'undefined') {

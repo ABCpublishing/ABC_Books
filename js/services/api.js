@@ -173,8 +173,9 @@ const BooksAPI = {
         return await apiRequest(`/books${query ? '?' + query : ''}`);
     },
 
-    async getById(id) {
-        return await apiRequest(`/books/${id}`);
+    async getById(id, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await apiRequest(`/books/${id}${query ? '?' + query : ''}`);
     },
 
     async create(bookData) {

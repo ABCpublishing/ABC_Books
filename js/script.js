@@ -180,7 +180,7 @@ async function renderTop100Books() {
         top100Container.innerHTML = top100Books.map((book, index) => {
             const bookJSON = JSON.stringify(book).replace(/'/g, "\\'").replace(/"/g, '&quot;');
             return `
-            <div class="top100-book-item">
+            <div class="top100-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
                 <span class="book-rank">#${index + 1}</span>
                 <img src="${book.image}" alt="${book.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'">
                 <div class="book-info">

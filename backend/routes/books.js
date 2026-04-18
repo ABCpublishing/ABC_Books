@@ -155,13 +155,14 @@ router.get('/section/:section', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
-        const { language } = req.query;
+        const { lang, language, db_source } = req.query;
+        const targetLang = lang || language || db_source;
 
         let books = [];
 
-        if (language && req.db.getBookDb(language)) {
+        if (targetLang && req.db.getBookDb(targetLang)) {
             // Query specific DB
-            const bookDb = req.db.getBookDb(language);
+            const bookDb = req.db.getBookDb(targetLang);
             books = await bookDb`
                 SELECT b.*, 
                        STRING_AGG(bs.section_name, ',') as sections_str
@@ -170,7 +171,7 @@ router.get('/:id', async (req, res) => {
                 WHERE b.id = ${id}
                 GROUP BY b.id
             `;
-            books = books.map(b => ({ ...b, db_source: language.toLowerCase() }));
+            books = books.map(b => ({ ...b, db_source: targetLang.toLowerCase() }));
         } else {
             // Search all DBs
             books = await queryAllBookDbs(req, async (dbQuery) => {

@@ -294,7 +294,7 @@ function createGridCard(book) {
     const imageSrc = book.image || '';
 
     return `
-        <div class="result-card" onclick="viewBook('${book.id}')">
+        <div class="result-card" onclick="viewBook('${book.id}', '${book.db_source || book.language || ''}')">
             <div class="book-image">
                 ${discount > 0 ? `<span class="discount-tag">-${discount}%</span>` : ''}
                 <div class="quick-actions">
@@ -329,7 +329,7 @@ function createListCard(book) {
     const imageSrc = book.image || '';
 
     return `
-        <div class="result-card-list" onclick="viewBook('${book.id}')">
+        <div class="result-card-list" onclick="viewBook('${book.id}', '${book.db_source || book.language || ''}')">
             <div class="book-image">
                 <img src="${imageSrc}" alt="${book.title}"
                     onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
@@ -374,8 +374,9 @@ function generateStars(rating) {
 }
 
 // View book details
-function viewBook(bookId) {
-    window.location.href = `book-detail.html?id=${bookId}`;
+function viewBook(bookId, lang) {
+    const query = lang ? `?id=${bookId}&lang=${lang}` : `?id=${bookId}`;
+    window.location.href = `book-detail.html${query}`;
 }
 
 // Toggle view
