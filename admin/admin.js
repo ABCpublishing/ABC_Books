@@ -781,10 +781,10 @@ async function renderBooksTable(books) {
                 <td><div class="section-badges">${sectionBadges || '<span style="color: #999;">None</span>'}</div></td>
                 <td>
                     <div class="action-icons">
-                        <button class="icon-btn edit" onclick="editBook('${book.id}')" title="Edit">
+                        <button class="icon-btn edit" onclick="editBook('${book.id}', '${book.db_source || book.language || ''}')" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <button class="icon-btn delete" onclick="deleteBook('${book.id}')" title="Delete">
+                        <button class="icon-btn delete" onclick="deleteBook('${book.id}', '${book.db_source || book.language || ''}')" title="Delete">
                             <i class="fas fa-trash"></i>
                         </button>
                     </div>
@@ -812,10 +812,10 @@ function renderSectionBooks(section, books) {
                 <p>${book.author}</p>
                 <p style="font-weight: 600; color: var(--primary-color);">₹${book.price}</p>
                 <div class="book-card-actions">
-                    <button class="btn-edit-book" onclick="editBook('${book.id}')">
+                    <button class="btn-edit-book" onclick="editBook('${book.id}', '${book.db_source || book.language || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn-remove-book" onclick="removeFromSection('${book.id}', '${section}')">
+                    <button class="btn-remove-book" onclick="removeFromSection('${book.id}', '${section}', '${book.db_source || book.language || ''}')">
                         <i class="fas fa-times"></i> Remove
                     </button>
                 </div>
@@ -841,10 +841,10 @@ function renderCategoryBooks(section, books) {
                 <p>${book.author}</p>
                 <p style="font-weight: 600; color: var(--primary-color);">₹${book.price}</p>
                 <div class="book-card-actions">
-                    <button class="btn-edit-book" onclick="editBook('${book.id}')">
+                    <button class="btn-edit-book" onclick="editBook('${book.id}', '${book.db_source || book.language || ''}')">
                         <i class="fas fa-edit"></i> Edit
                     </button>
-                    <button class="btn-remove-book" onclick="deleteBook('${book.id}')" style="background-color: #e74c3c;">
+                    <button class="btn-remove-book" onclick="deleteBook('${book.id}', '${book.db_source || book.language || ''}')" style="background-color: #e74c3c;">
                         <i class="fas fa-trash"></i> Delete
                     </button>
                 </div>
@@ -882,9 +882,9 @@ function closeBookModal() {
     document.getElementById('bookModal').classList.remove('active');
 }
 
-async function editBook(bookId) {
+async function editBook(bookId, lang) {
     try {
-        const response = await API.Books.getById(bookId);
+        const response = await API.Books.getById(bookId, { lang });
         const book = response.book;
 
         if (!book) return;
@@ -972,13 +972,13 @@ async function handleBookFormSubmit(e) {
     }
 }
 
-async function deleteBook(bookId) {
+async function deleteBook(bookId, lang) {
     if (!confirm('Are you sure you want to delete this book? This action cannot be undone.')) {
         return;
     }
 
     try {
-        await API.Books.delete(bookId);
+        await API.Books.delete(bookId, { language: lang });
         logActivity(`Deleted book ID: ${bookId}`);
         alert('Book deleted successfully!');
 
@@ -991,12 +991,12 @@ async function deleteBook(bookId) {
     }
 }
 
-async function removeFromSection(bookId, sectionToRemove) {
+async function removeFromSection(bookId, sectionToRemove, lang) {
     if (!confirm('Remove this book from this section?')) return;
 
     try {
         // 1. Get current book details (including sections)
-        const response = await API.Books.getById(bookId);
+        const response = await API.Books.getById(bookId, { lang });
         const book = response.book;
         if (!book) throw new Error('Book not found');
 
@@ -1008,7 +1008,7 @@ async function removeFromSection(bookId, sectionToRemove) {
         await API.Books.update(bookId, {
             ...book,
             sections: newSections
-        });
+        }, { language: lang });
 
         logActivity(`Removed book from ${sectionToRemove}`);
 

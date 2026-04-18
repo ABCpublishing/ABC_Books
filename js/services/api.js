@@ -185,15 +185,17 @@ const BooksAPI = {
         });
     },
 
-    async update(id, bookData) {
-        return await apiRequest(`/books/${id}`, {
+    async update(id, bookData, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await apiRequest(`/books/${id}${query ? '?' + query : ''}`, {
             method: 'PUT',
             body: JSON.stringify(bookData)
         });
     },
 
-    async delete(id) {
-        return await apiRequest(`/books/${id}`, {
+    async delete(id, params = {}) {
+        const query = new URLSearchParams(params).toString();
+        return await apiRequest(`/books/${id}${query ? '?' + query : ''}`, {
             method: 'DELETE'
         });
     },
