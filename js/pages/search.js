@@ -24,7 +24,8 @@ document.addEventListener('DOMContentLoaded', () => {
             'trending': 'Trending Now',
             'featured': 'Featured Books',
             'newReleases': 'New Releases',
-            'editors': "Editor's Choice"
+            'editors': "Editor's Choice",
+            'boxSets': 'Box Sets & Collections'
         };
         const label = sectionLabels[section] || section;
         const qEl = document.getElementById('searchQuery');
@@ -207,7 +208,12 @@ async function performSearch(query, language, subcategory) {
     try {
         let response;
         if (typeof API !== 'undefined' && API.Books) {
-            response = await API.Books.getAll({ search: query, limit: 200 });
+            response = await API.Books.getAll({ 
+                search: query, 
+                language: language, 
+                subcategory: subcategory,
+                limit: 200 
+            });
         } else {
             console.error('API not found');
             response = { books: [] };

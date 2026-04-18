@@ -73,33 +73,42 @@ router.get('/', async (req, res) => {
             }
             books = books.map(b => ({ ...b, db_source: targetLang.toLowerCase() }));
         } else {
-            // No specific language - query ALL databases and merge
+            // No specific book-db mapping found (e.g., Kashmiri, or multiple) - query ALL databases and merge
             books = await queryAllBookDbs(req, async (dbQuery, dbName) => {
+                let sql = `
+                    SELECT b.*, 
+                           STRING_AGG(bs.section_name, ',') as sections_str
+                    FROM books b
+                    LEFT JOIN book_sections bs ON b.id = bs.book_id
+                    WHERE 1=1
+                `;
+                const params = [];
+                
                 if (search) {
-                    const pattern = '%' + search + '%';
-                    return await dbQuery`
-                        SELECT b.*, 
-                               STRING_AGG(bs.section_name, ',') as sections_str
-                        FROM books b
-                        LEFT JOIN book_sections bs ON b.id = bs.book_id
-                        WHERE b.title ILIKE ${pattern} 
-                           OR b.author ILIKE ${pattern}
-                           OR b.description ILIKE ${pattern}
-                        GROUP BY b.id
-                        ORDER BY b.created_at DESC
-                        LIMIT ${parsedLimit}
-                    `;
-                } else {
-                    return await dbQuery`
-                        SELECT b.*, 
-                               STRING_AGG(bs.section_name, ',') as sections_str
-                        FROM books b
-                        LEFT JOIN book_sections bs ON b.id = bs.book_id
-                        GROUP BY b.id
-                        ORDER BY b.created_at DESC
-                        LIMIT ${parsedLimit}
-                    `;
+                    params.push('%' + search + '%');
+                    sql += ` AND (b.title ILIKE $${params.length} OR b.author ILIKE $${params.length} OR b.description ILIKE $${params.length})`;
                 }
+                
+                if (language) {
+                    params.push(language);
+                    sql += ` AND b.language = $${params.length}`;
+                }
+                
+                if (subcategory) {
+                    params.push(subcategory);
+                    sql += ` AND b.subcategory = $${params.length}`;
+                }
+                
+                sql += `
+                    GROUP BY b.id
+                    ORDER BY b.created_at DESC
+                    LIMIT $${params.length + 1}
+                `;
+                params.push(parsedLimit);
+                
+                // Use the pool's query method since our query helper doesn't support raw SQL strings easily for dynamic building
+                const result = await req.db.pools[dbName].query(sql, params);
+                return result.rows;
             });
         }
 

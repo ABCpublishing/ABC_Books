@@ -8,8 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Load wishlist
-function loadWishlist() {
-    wishlistItems = JSON.parse(localStorage.getItem('abc_books_wishlist') || '[]');
+async function loadWishlist() {
+    let localWishlist = JSON.parse(localStorage.getItem('abc_books_wishlist') || '[]');
+    wishlistItems = localWishlist;
+    
+    // Attempt API load if auth functions exist
+    if (typeof getCurrentUser === 'function' && typeof API !== 'undefined') {
+        try {
+            const user = await getCurrentUser();
+            if (user && user.id && user.id !== -1) {
+                const response = await API.Wishlist.get(user.id);
+                if (response && response.wishlist) {
+                    wishlistItems = response.wishlist;
+                    // Keep local synced just in case
+                    localStorage.setItem('abc_books_wishlist', JSON.stringify(wishlistItems));
+                }
+            }
+        } catch (error) {
+            console.error('Failed to load wishlist from API', error);
+        }
+    }
+    
     renderWishlist();
 }
 

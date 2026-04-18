@@ -11,12 +11,15 @@ let quantity = 1;
 // Get book ID from URL
 function getBookIdFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
-    return urlParams.get('id');
+    return {
+        id: urlParams.get('id'),
+        lang: urlParams.get('lang')
+    };
 }
 
 // Load book details
 async function loadBookDetails() {
-    const bookId = getBookIdFromUrl();
+    const { id: bookId, lang } = getBookIdFromUrl();
 
     if (!bookId) {
         showError('Book not found. Redirecting to home...');
@@ -29,7 +32,8 @@ async function loadBookDetails() {
     // FIRST: Try to fetch from API/database (for admin-added books with numeric IDs)
     try {
         console.log(`📖 Fetching book with ID: ${bookId} from API...`);
-        const response = await fetch(`${BOOK_DETAIL_API_BASE}/books/${bookId}`);
+        const queryStr = lang ? `?language=${lang}` : '';
+        const response = await fetch(`${BOOK_DETAIL_API_BASE}/books/${bookId}${queryStr}`);
 
         if (response.ok) {
             const data = await response.json();
@@ -63,7 +67,10 @@ async function loadBookDetails() {
     const data = localStorage.getItem('abc_books_data_cache');
     if (data) {
         const parsed = JSON.parse(data);
-        currentBook = parsed.books.find(b => b.id === bookId || String(b.id) === bookId);
+        currentBook = parsed.books.find(b => 
+            (b.id === bookId || String(b.id) === bookId) && 
+            (!lang || (b.db_source || b.language).toLowerCase() === lang.toLowerCase())
+        );
     }
 
     // FALLBACK: Try demo data
@@ -206,7 +213,8 @@ async function loadRelatedBooks() {
                     title: b.title,
                     author: b.author,
                     price: b.price,
-                    image: b.image
+                    image: b.image,
+                    db_source: b.db_source || b.language
                 }));
             }
         }
@@ -238,7 +246,7 @@ async function loadRelatedBooks() {
     }
 
     container.innerHTML = relatedBooks.map(book => `
-        <div class="related-book-card" onclick="viewBook('${book.id}')">
+        <div class="related-book-card" onclick="viewBook('${book.id}', '${book.db_source || ''}')">
             <div class="book-cover">
                 <img src="${book.image}" alt="${book.title}" 
                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22%3E%3Crect fill=%22%23e8e8e8%22 width=%22200%22 height=%22300%22/%3E%3Cpath d=%22M80 110h40v80H80z%22 fill=%22%23ccc%22/%3E%3Cpath d=%22M85 115h30v70H85z%22 fill=%22%23fff%22/%3E%3Cpath d=%22M90 125h20v2H90zm0 8h20v2H90zm0 8h15v2H90z%22 fill=%22%23ddd%22/%3E%3C/svg%3E'">
@@ -253,14 +261,14 @@ async function loadRelatedBooks() {
 }
 
 // View another book
-function viewBook(bookId) {
-    window.location.href = `/pages/book-detail.html?id=${bookId}`;
+function viewBook(bookId, lang) {
+    window.location.href = lang ? `/pages/book-detail.html?id=${bookId}&lang=${lang}` : `/pages/book-detail.html?id=${bookId}`;
 }
 
 // Quantity controls
 function increaseQty() {
     const input = document.getElementById('quantity');
-    if (quantity < 10) {
+    if (quantity < 99) {
         quantity++;
         input.value = quantity;
     }

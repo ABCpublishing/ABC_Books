@@ -198,7 +198,7 @@ function createBookCard(book) {
 
     return `
         <div class="book-card" data-book-id="${book.id}">
-            <div class="book-cover" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="book-cover" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language}')" style="cursor: pointer;">
                 <img src="${bookImage}" alt="${book.title}" loading="lazy" onerror="this.onerror=null;this.src='${placeholderSVG}'">
                 ${discount > 0 ? `<div class="discount-badge">-${discount}%</div>` : ''}
                 
@@ -223,7 +223,7 @@ function createBookCard(book) {
                     </div>
                 </div>
             </div>
-            <div class="book-info" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="book-info" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language}')" style="cursor: pointer;">
                 <h3 class="book-title">${book.title}</h3>
                 <p class="book-author">${book.author}</p>
                 <div class="book-rating">
@@ -241,7 +241,7 @@ function createBookCard(book) {
 
 
 // Navigate to book detail page
-function viewBookDetail(bookId) {
+function viewBookDetail(bookId, lang) {
     if (!bookId) {
         console.error('Cannot view book detail: ID is missing');
         return;
@@ -252,7 +252,7 @@ function viewBookDetail(bookId) {
     const isInsidePages = pathParts.some(part => part.toLowerCase() === 'pages');
 
     // ALWAYS use absolute path from root for detail viewing
-    const targetUrl = `/pages/book-detail.html?id=${bookId}`;
+    const targetUrl = lang ? `/pages/book-detail.html?id=${bookId}&lang=${lang}` : `/pages/book-detail.html?id=${bookId}`;
 
     console.log(`🚀 Navigating to ${targetUrl} (isInsidePages: ${isInsidePages})`);
     window.location.href = targetUrl;

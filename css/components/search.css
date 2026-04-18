@@ -288,6 +288,7 @@
     transition: all 0.3s ease;
     cursor: pointer;
     min-width: 0;
+    position: relative;
 }
 
 .result-card:hover {

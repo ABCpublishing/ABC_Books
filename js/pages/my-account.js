@@ -190,24 +190,30 @@ async function loadWishlistPreview() {
 
         // Show first 4 items
         const previewItems = wishlist.slice(0, 4);
-        container.innerHTML = previewItems.map(item => `
-            <div class="wishlist-item">
-                <img src="${item.image}" alt="${item.title}" 
-                    onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22200%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22200%22 height=%22200%22/%3E%3C/svg%3E'">
+        container.innerHTML = previewItems.map(item => {
+            const titleInitial = (item.title || 'B').charAt(0).toUpperCase();
+            const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 300'%3E%3Cdefs%3E%3ClinearGradient id='bg' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23f5f0eb'/%3E%3Cstop offset='100%25' stop-color='%23e8ddd4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23bg)' width='200' height='300' rx='4'/%3E%3Crect x='55' y='80' width='90' height='120' rx='4' fill='%238B0000' opacity='0.12'/%3E%3Ctext x='100' y='155' text-anchor='middle' font-family='Georgia,serif' font-size='48' font-weight='bold' fill='%238B0000' opacity='0.5'%3E${titleInitial}%3C/text%3E%3Ctext x='100' y='235' text-anchor='middle' font-family='Arial,sans-serif' font-size='11' fill='%23999'%3EABC Books%3C/text%3E%3C/svg%3E`;
+            const bookImage = (item.image && item.image.trim() && item.image !== 'null' && item.image !== 'undefined') ? item.image : placeholderSVG;
+            const safeImage = bookImage.replace(/"/g, '&quot;');
+            
+            return `
+            <div class="wishlist-item" onclick="window.location.href='/pages/book-detail.html?id=${item.book_id || item.id}&lang=${item.db_source || item.language || ''}'" style="cursor:pointer">
+                <img src="${safeImage}" alt="${item.title}" 
+                    onerror="this.onerror=null;this.src='${placeholderSVG}'">
                 <div class="wishlist-item-info">
                     <h4>${item.title}</h4>
                     <p class="price">₹${item.price}</p>
                 </div>
                 <div class="wishlist-item-actions">
-                    <button class="btn-add-to-cart" onclick="moveToCart('${item.book_id || item.id}')">
+                    <button class="btn-add-to-cart" onclick="event.stopPropagation(); moveToCart('${item.book_id || item.id}')">
                         <i class="fas fa-cart-plus"></i>
                     </button>
-                    <button class="btn-remove-wishlist" onclick="removeFromWishlist('${item.id}')">
+                    <button class="btn-remove-wishlist" onclick="event.stopPropagation(); removeFromWishlist('${item.id}')">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
             </div>
-        `).join('');
+        `}).join('');
     } catch (error) {
         console.error('Error loading wishlist preview:', error);
     }

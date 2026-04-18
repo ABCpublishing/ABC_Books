@@ -20,6 +20,33 @@ async function renderIslamicBooks() {
     }
 }
 
+// ===== Kashmiri Books Section =====
+async function renderKashmiriBooks() {
+    // Try to get by section first, then fallback to language filter
+    let kashmiriBooks = await getBooksForSection('kashmiri');
+    
+    if (kashmiriBooks.length === 0) {
+        if (typeof API !== 'undefined' && API.Books) {
+            try {
+                const response = await API.Books.getAll({ language: 'Kashmiri' });
+                kashmiriBooks = response.books || [];
+            } catch (err) {
+                console.warn('Failed to fetch Kashmiri books by language');
+            }
+        }
+    }
+
+    const container = document.getElementById('kashmiriBooksGrid');
+
+    if (container && kashmiriBooks.length > 0) {
+        const booksToShow = kashmiriBooks.slice(0, 8);
+        container.innerHTML = booksToShow.map(book => createBookCard(book)).join('');
+        console.log('✅ Kashmiri books grid rendered:', booksToShow.length);
+    } else if (container) {
+        container.innerHTML = '<p class="no-data" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">Kashmiri books are coming soon!</p>';
+    }
+}
+
 // ===== Editor's Choice Banner =====
 async function renderFeaturedBooks() {
     const featuredBooks = await getBooksForSection('featured');
@@ -101,7 +128,7 @@ async function renderSidebarBooks() {
     const authorContainer = document.getElementById('authorBooks');
     if (authorContainer && featuredBooks.length > 0) {
         authorContainer.innerHTML = featuredBooks.slice(0, 3).map(book => `
-            <div class="author-book-item" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="author-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
                 <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
                 <div class="book-details">
                     <h4>${book.title}</h4>
@@ -116,7 +143,7 @@ async function renderSidebarBooks() {
     const academicContainer = document.getElementById('academicBooks');
     if (academicContainer && academicBooks.length > 0) {
         academicContainer.innerHTML = academicBooks.slice(0, 3).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
                 <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             </div>
         `).join('');
@@ -127,7 +154,7 @@ async function renderSidebarBooks() {
     const examContainer = document.getElementById('examBooks');
     if (examContainer && examBooks.length > 0) {
         examContainer.innerHTML = examBooks.slice(0, 3).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
                 <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             </div>
         `).join('');
@@ -137,7 +164,7 @@ async function renderSidebarBooks() {
     const crushContainer = document.getElementById('crushBooks');
     if (crushContainer && featuredBooks.length > 3) {
         crushContainer.innerHTML = featuredBooks.slice(3, 6).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}')" style="cursor: pointer;">
+            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
                 <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             </div>
         `).join('');
@@ -701,11 +728,11 @@ async function initializeWebsite() {
         });
 
         // 1. Load CRITICAL sections first (Hero/Featured)
-        // These will likely trigger the fetchAllBooks() call
         const criticalLoad = Promise.allSettled([
             safeRender(renderHeroBooks, 'Hero Books'),
             safeRender(renderFeaturedBooks, 'Featured Books'),
-            safeRender(renderIslamicBooks, 'Islamic Books')
+            safeRender(renderIslamicBooks, 'Islamic Books'),
+            safeRender(renderKashmiriBooks, 'Kashmiri Collection')
         ]);
 
         // 2. RACE: Hide loader when critical data is ready OR after 1.5s (UI feedback)
