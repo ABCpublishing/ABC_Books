@@ -1165,26 +1165,28 @@ function updateDate() {
 // Different subcategories for each language (Fallback for when DB is empty)
 const SUBCATEGORIES_BY_LANGUAGE = {
     'urdu': [
-        { value: 'Quran & Tafsir', label: '📖 Quran & Tafsir' },
-        { value: 'Hadith', label: '📜 Hadith' },
-        { value: 'Biography', label: '👤 Biography' },
-        { value: 'Creed & Fiqh', label: '⚖️ Creed & Fiqh' },
-        { value: 'Literature & Fiction', label: '📕 Literature & Fiction' }
+        { value: 'Quran & Tafsir', label: '📘 Quran & Tafsir' },
+        { value: 'Hadith', label: '📗 Hadith' },
+        { value: 'Biography', label: '📙 Biography' },
+        { value: 'Creed & Fiqh', label: '📕 Creed & Fiqh' },
+        { value: 'Literature & Fiction', label: '📘 Literature & Fiction' }
     ],
     'english': [
-        { value: 'Quran & Tafsir', label: '📖 Quran & Tafsir' },
-        { value: 'Hadith', label: '📜 Hadith' },
-        { value: 'Academic', label: '🎓 Academic' },
-        { value: 'Literature & Fiction', label: '📕 Literature & Fiction' }
+        { value: 'Quran & Tafsir', label: '📘 Quran & Tafsir' },
+        { value: 'Hadith', label: '📗 Hadith' },
+        { value: 'Academic', label: '📙 Academic' },
+        { value: 'Literature & Fiction', label: '📕 Literature & Fiction' },
+        { value: 'Biography', label: '📙 Biographies' }
     ],
     'arabic': [
-        { value: 'Quran & Tafsir', label: '📖 Quran & Tafsir' },
-        { value: 'Hadith', label: '📜 Hadith' },
-        { value: 'Arabic Grammar', label: '📝 Arabic Grammar' }
+        { value: 'Quran & Tafsir', label: '📘 Quran & Tafsir' },
+        { value: 'Hadith', label: '📗 Hadith' },
+        { value: 'Arabic Grammar', label: '📙 Arabic Grammar' },
+        { value: 'Arabic Literature', label: '📕 Arabic Literature' },
+        { value: 'Dictionaries', label: '📘 Dictionaries' }
     ],
     'kashmiri': [
-        { value: 'Kashmiri Poetry', label: '🎭 Kashmiri Poetry' },
-        { value: 'Kashmiri Literature', label: '📕 Kashmiri Literature' }
+        { value: 'General', label: '🏔️ All Kashmiri Books' }
     ]
 };
 
