@@ -148,21 +148,32 @@ async function handleLogin(e) {
             body: JSON.stringify({ email: username, password })
         });
 
-        const data = await response.json();
-
-        if (response.ok && (data.token || data.accessToken)) {
-            const token = data.token || data.accessToken;
-            API.Token.set(token); // Store for API services
-            localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true'); // Show UI visibility
-            localStorage.setItem('abc_admin_user', JSON.stringify(data.user)); // Store admin profile
-            logActivity(`Admin logged in: ${username}`);
-            showDashboard();
+        // Ensure we catch HTML 500 error pages from Vercel instead of blindly parsing JSON
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.indexOf("application/json") !== -1) {
+            const data = await response.json();
+            if (response.ok && (data.token || data.accessToken)) {
+                const token = data.token || data.accessToken;
+                API.Token.set(token); // Store for API services
+                localStorage.setItem(STORAGE_KEYS.ADMIN_AUTH, 'true'); // Show UI visibility
+                localStorage.setItem('abc_admin_user', JSON.stringify(data.user)); // Store admin profile
+                logActivity(`Admin logged in: ${username}`);
+                showDashboard();
+            } else {
+                alert('Login failed: ' + (data.error || 'Invalid credentials'));
+            }
         } else {
-            alert('Login failed: ' + (data.error || 'Invalid credentials'));
+            const textData = await response.text();
+            console.error("Received non-JSON response:", textData);
+            alert('Server error: The backend returned an invalid response (Wait, did Vercel crash?). Details logged to console.');
         }
     } catch (error) {
         console.error('Login error:', error);
-        alert('Authentication system unavailable. Please check your internet connection or server status.');
+        if (error.message.includes('Failed to fetch')) {
+            alert(`Authentication system unavailable. Could not connect to API at ${API_BASE_URL}. If testing locally, please ensure the backend server is running on port 3001.`);
+        } else {
+            alert('Authentication system unavailable. Please check your internet connection or server status. Error: ' + error.message);
+        }
     }
 }
 
