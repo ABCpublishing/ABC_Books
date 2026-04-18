@@ -799,7 +799,7 @@ async function loadWishlistItems() {
             const price = parseFloat(item.price) || 0;
             return `
                 <div class="wishlist-item">
-                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/50x70?text=Book'">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
                     <div class="item-details">
                         <h4>${item.title}</h4>
                         <p>${item.author}</p>
@@ -948,7 +948,7 @@ async function loadCartItems() {
             const qty = parseInt(item.quantity) || 1;
             return `
                 <div class="cart-item">
-                    <img src="${item.image}" alt="${item.title}" onerror="this.src='https://via.placeholder.com/50x70?text=Book'">
+                    <img src="${item.image}" alt="${item.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
                     <div class="item-details">
                         <h4>${item.title}</h4>
                         <p>${item.author}</p>

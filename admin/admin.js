@@ -774,7 +774,7 @@ async function renderBooksTable(books) {
         return `
             <tr>
                 <td><code style="background:#f0f0f0;padding:2px 6px;border-radius:4px;font-size:12px;">${book.id}</code></td>
-                <td><img src="${book.image}" alt="${book.title}" class="book-img" onerror="this.src='https://via.placeholder.com/50x70?text=No+Image'"></td>
+                <td><img src="${book.image}" alt="${book.title}" class="book-img" onerror="this.onerror=null;this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2250%22 height=%2270%22><rect width=%2250%22 height=%2270%22 fill=%22%23ddd%22/><text x=%2225%22 y=%2240%22 text-anchor=%22middle%22 font-size=%228%22 fill=%22%23888%22>No Image</text></svg>'"></td>
                 <td>${book.title}</td>
                 <td>${book.author}</td>
                 <td>₹${book.price}</td>
@@ -806,7 +806,7 @@ function renderSectionBooks(section, books) {
 
     container.innerHTML = books.map(book => `
         <div class="book-card">
-            <img src="${book.image}" alt="${book.title}" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+            <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             <div class="book-card-content">
                 <h3 title="${book.title}">${book.title}</h3>
                 <p>${book.author}</p>
@@ -835,7 +835,7 @@ function renderCategoryBooks(section, books) {
 
     container.innerHTML = books.map(book => `
         <div class="book-card">
-            <img src="${book.image}" alt="${book.title}" onerror="this.src='https://via.placeholder.com/200x280?text=No+Image'">
+            <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             <div class="book-card-content">
                 <h3 title="${book.title}">${book.title}</h3>
                 <p>${book.author}</p>

@@ -285,7 +285,7 @@ function createGridCard(book) {
         ? Math.floor(((originalPrice - price) / originalPrice) * 100)
         : 0;
 
-    const imageSrc = book.image || 'https://via.placeholder.com/200x300?text=No+Image';
+    const imageSrc = book.image || '';
 
     return `
         <div class="result-card" onclick="viewBook('${book.id}')">
@@ -300,7 +300,7 @@ function createGridCard(book) {
                     </button>
                 </div>
                 <img src="${imageSrc}" alt="${book.title}"
-                    onerror="this.src='https://via.placeholder.com/200x300?text=Cover+Not+Found'">
+                    onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             </div>
             <div class="book-info">
                 <h3 class="book-title" title="${book.title}">${book.title}</h3>
@@ -320,13 +320,13 @@ function createGridCard(book) {
 
 // Create list card HTML
 function createListCard(book) {
-    const imageSrc = book.image || 'https://via.placeholder.com/200x300?text=No+Image';
+    const imageSrc = book.image || '';
 
     return `
         <div class="result-card-list" onclick="viewBook('${book.id}')">
             <div class="book-image">
                 <img src="${imageSrc}" alt="${book.title}"
-                    onerror="this.src='https://via.placeholder.com/200x300?text=Cover+Not+Found'">
+                    onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
             </div>
             <div class="book-details">
                 <h3 class="book-title">${book.title}</h3>

@@ -395,7 +395,7 @@
                 <div class="book-card" onclick="window.location.href='/pages/book-detail.html?id=${book.id}'" style="cursor: pointer;">
                     <div class="rank-badge ${isTop3 ? 'top-3' : ''}">#${rank}</div>
                     <div class="book-cover">
-                        <img src="${book.image}" alt="${book.title}" loading="lazy" onerror="this.src='https://via.placeholder.com/220x320?text=${encodeURIComponent(book.title)}'">
+                        <img src="${book.image}" alt="${book.title}" loading="lazy" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
                     </div>
                     <div class="book-info">
                         <h3 class="book-title" title="${book.title}">${book.title}</h3>
