@@ -19,6 +19,7 @@
     "jsonwebtoken": "^9.0.2",
     "mailgun.js": "^10.4.0",
     "mysql2": "^3.9.2",
+    "pg": "^8.13.1",
     "razorpay": "^2.9.2"
   },
   "devDependencies": {
