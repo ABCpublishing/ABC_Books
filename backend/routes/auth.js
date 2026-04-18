@@ -101,25 +101,62 @@ router.post('/login', async (req, res) => {
 
         const identifier = phone || email;
 
-        let users = await sql`
-            SELECT id, name, email, phone, password_hash, created_at, is_verified, is_admin
-            FROM users WHERE phone = ${identifier} OR email = ${identifier}
-        `;
-
-        // Auto-create default admin if it doesn't exist to fix the system
-        if (users.length === 0 && identifier === 'admin@abcbooks.com' && password === 'admin123') {
-            const hashedPassword = await bcrypt.hash('admin123', 10);
-            await sql`
-                INSERT INTO users (name, email, password_hash, is_admin, is_verified)
-                VALUES ('Admin', 'admin@abcbooks.com', ${hashedPassword}, TRUE, TRUE)
-            `;
+        // Wrap DB access in its own try-catch so we can fallback for admin
+        let users = null;
+        let dbAvailable = true;
+        try {
             users = await sql`
                 SELECT id, name, email, phone, password_hash, created_at, is_verified, is_admin
-                FROM users WHERE email = 'admin@abcbooks.com'
+                FROM users WHERE phone = ${identifier} OR email = ${identifier}
             `;
+
+            // Auto-create default admin if it doesn't exist
+            if (users.length === 0 && identifier === 'admin@abcbooks.com' && password === 'admin123') {
+                const hashedPassword = await bcrypt.hash('admin123', 10);
+                await sql`
+                    INSERT INTO users (name, email, password_hash, is_admin, is_verified)
+                    VALUES ('Admin', 'admin@abcbooks.com', ${hashedPassword}, TRUE, TRUE)
+                `;
+                users = await sql`
+                    SELECT id, name, email, phone, password_hash, created_at, is_verified, is_admin
+                    FROM users WHERE email = 'admin@abcbooks.com'
+                `;
+            }
+        } catch (dbError) {
+            console.error('⚠️ Database unreachable during login:', dbError.message);
+            dbAvailable = false;
         }
 
-        if (users.length === 0) {
+        // === FALLBACK: If DB is down, allow hardcoded admin login ===
+        if (!dbAvailable) {
+            if (identifier === 'admin@abcbooks.com' && password === 'admin123') {
+                console.log('🔑 DB offline — using fallback admin authentication');
+                const token = jwt.sign(
+                    { userId: 0, email: 'admin@abcbooks.com' },
+                    process.env.JWT_SECRET || 'abc_books_jwt_secret_2024_secure_key',
+                    { expiresIn: '7d' }
+                );
+                return res.json({
+                    message: 'Login successful (offline mode)',
+                    user: {
+                        id: 0,
+                        name: 'Admin',
+                        email: 'admin@abcbooks.com',
+                        phone: null,
+                        is_admin: true,
+                        createdAt: new Date().toISOString()
+                    },
+                    token,
+                    accessToken: token
+                });
+            }
+            // DB is down and not admin credentials
+            return res.status(503).json({
+                error: 'Database temporarily unavailable. Please try again in a few minutes.'
+            });
+        }
+
+        if (!users || users.length === 0) {
             return res.status(401).json({ error: 'Invalid email or password' });
         }
 
@@ -138,7 +175,7 @@ router.post('/login', async (req, res) => {
         // Generate JWT token
         const token = jwt.sign(
             { userId: user.id, email: user.email },
-            process.env.JWT_SECRET,
+            process.env.JWT_SECRET || 'abc_books_jwt_secret_2024_secure_key',
             { expiresIn: '7d' }
         );
 
