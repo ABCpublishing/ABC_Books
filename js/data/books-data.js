@@ -107,152 +107,47 @@ async function getBooksForSection(section) {
     const allBooks = await fetchAllBooks();
     if (!allBooks || allBooks.length === 0) return [];
 
-    // 1. Explicit Manual Assignment (from Admin Panel)
-    // Map 'featured' to include 'editors' choice from Admin
+    // === STRICT MODE: Only return books explicitly assigned to this section via Admin Panel ===
+    // Map internal section names to what Admin uses
     let dbSections = [section];
     if (section === 'featured') dbSections = ['featured', 'editors'];
 
-    // Filter books that have this section assigned
+    // Filter books that have this section explicitly assigned
     const explicitBooks = allBooks.filter(b => b.sections && dbSections.some(s => b.sections.includes(s)));
 
-    // 2. Automatic Rule-based Fallback
-    const sortedByNewest = [...allBooks].sort((a, b) => b.id - a.id);
-    const sortedByRating = [...allBooks].sort((a, b) => (b.rating || 0) - (a.rating || 0));
-
-    let autoBooks = [];
-    let sliceStart = 0;
-    let limit = 6;
-
+    // === SPECIAL SECTIONS that use smart category-based logic (not admin-assigned) ===
     switch (section) {
-        case 'featured':
-            autoBooks = sortedByNewest;
-            limit = 50;
-            break;
-
-        case 'trending':
-            autoBooks = sortedByRating;
-            limit = 50;
-            break;
-
-        case 'newReleases':
-            autoBooks = sortedByNewest;
-            limit = 50;
-            break;
-
-        case 'indianAuthors': {
-            // Priority: Urdu/Hindi
-            const urduBooks = allBooks.filter(b => (b.language || '').toLowerCase() === 'urdu' || (b.language || '').toLowerCase() === 'hindi');
-            if (urduBooks.length > 0) {
-                autoBooks = urduBooks;
-            } else {
-                autoBooks = sortedByNewest;
-                sliceStart = 6; // Offset if falling back
-            }
-            limit = 50;
-            break;
-        }
-
-        case 'boxSets':
-            autoBooks = sortedByNewest;
-            sliceStart = 12;
-            limit = 4;
-            break;
-
-        case 'children': {
-            const childBooks = allBooks.filter(b =>
-                (b.category && b.category.toLowerCase().includes('children')) ||
-                (b.subcategory && b.subcategory.toLowerCase().includes('children'))
+        case 'islamicBooks': {
+            // Show books that match Islamic categories/subcategories
+            const islamic = allBooks.filter(b =>
+                (b.subcategory && (b.subcategory.toLowerCase().includes('quran') || b.subcategory.toLowerCase().includes('hadith') || b.subcategory.toLowerCase().includes('islamic'))) ||
+                (b.category && b.category.toLowerCase().includes('islamic')) ||
+                (b.title && (b.title.toLowerCase().includes('quran') || b.title.toLowerCase().includes('hadith')))
             );
-            if (childBooks.length > 0) {
-                autoBooks = childBooks;
-            } else {
-                autoBooks = sortedByNewest;
-                sliceStart = 18;
+            // Merge with any explicit assignments
+            const merged = [...explicitBooks];
+            for (const book of islamic) {
+                if (!merged.find(b => b.id === book.id)) merged.push(book);
             }
-            limit = 50;
-            break;
+            return merged.slice(0, 8);
         }
 
-        case 'fiction': {
-            const fiction = allBooks.filter(b =>
-                (b.subcategory && b.subcategory.toLowerCase().includes('fiction')) ||
-                (b.title && b.title.toLowerCase().includes('novel'))
-            );
-            if (fiction.length > 0) {
-                autoBooks = fiction;
-            } else {
-                const engBooks = allBooks.filter(b => (b.language || '').toLowerCase() === 'english');
-                if (engBooks.length > 0) {
-                    autoBooks = engBooks;
-                } else {
-                    autoBooks = sortedByNewest;
-                    sliceStart = 24;
-                }
-            }
-            limit = 50;
-            break;
-        }
-
-        case 'academic': {
-            const academic = allBooks.filter(b =>
-                (b.category && b.category.toLowerCase().includes('academic')) ||
-                (b.subcategory && b.subcategory.toLowerCase().includes('academic')) ||
-                (b.title && (b.title.toLowerCase().includes('school') || b.title.toLowerCase().includes('guide') || b.title.toLowerCase().includes('study')))
-            );
-            if (academic.length > 0) {
-                autoBooks = academic;
-            } else {
-                autoBooks = sortedByNewest;
-                sliceStart = 30;
-            }
-            break;
-        }
-
-        case 'exam': {
-            const exams = allBooks.filter(b =>
-                (b.title && (b.title.toLowerCase().includes('ctet') || b.title.toLowerCase().includes('csat') || b.title.toLowerCase().includes('exam') || b.title.toLowerCase().includes('paper'))) ||
-                (b.subcategory && b.subcategory.toLowerCase().includes('exam'))
-            );
-            if (exams.length > 0) {
-                autoBooks = exams;
-            } else {
-                // If no specific exams, at least show modern non-islamic books for this section to avoid confusion
-                autoBooks = allBooks.filter(b => b.category !== 'Islamic');
-                if (autoBooks.length === 0) autoBooks = sortedByNewest;
-            }
-            break;
-        }
+        case 'top100':
+            // Sorted by rating, max 50
+            return [...allBooks].sort((a, b) => (b.rating || 0) - (a.rating || 0)).slice(0, 50);
 
         case 'sidebar':
             return allBooks;
 
-        case 'top100':
-            return sortedByRating.slice(0, Math.min(allBooks.length, 50));
-
         case 'hero':
-            // Hero section is strictly manual. No automatic fallback.
-            // If explicitBooks is empty, we return empty [], so script.js keeps the static image.
+            // Hero is strictly manual — no fallback
             return explicitBooks;
 
         default:
-            autoBooks = sortedByNewest;
+            // For ALL other sections (trending, newReleases, featured, children, fiction, etc.)
+            // Return ONLY explicitly assigned books
+            return explicitBooks;
     }
-
-    // Merge: Top priority = Explicit, then Auto
-    // Ensure checking for duplicates by ID
-    let combined = [...explicitBooks];
-
-    // Get appropriate candidates based on slice logic
-    const autoCandidates = autoBooks.slice(sliceStart);
-
-    for (let book of autoCandidates) {
-        if (!combined.find(cb => cb.id === book.id)) {
-            combined.push(book);
-        }
-        if (combined.length >= limit) break;
-    }
-
-    return combined.slice(0, limit);
 }
 
 // ===== UI Rendering Functions =====
