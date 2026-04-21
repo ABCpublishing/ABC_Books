@@ -68,12 +68,22 @@ router.get('/:id', async (req, res) => {
         const userId = req.userId;
         const isAdmin = req.isAdmin;
 
-        const orders = await sql`
-            SELECT o.*, u.name as customer_name, u.email as customer_email
-            FROM orders o
-            LEFT JOIN users u ON o.user_id = u.id
-            WHERE o.id = ${id} OR o.order_id = ${id}
-        `;
+        let orders;
+        if (isNaN(parseInt(id)) || id.startsWith('ABC-')) {
+            orders = await sql`
+                SELECT o.*, u.name as customer_name, u.email as customer_email
+                FROM orders o
+                LEFT JOIN users u ON o.user_id = u.id
+                WHERE o.order_id = ${id}
+            `;
+        } else {
+            orders = await sql`
+                SELECT o.*, u.name as customer_name, u.email as customer_email
+                FROM orders o
+                LEFT JOIN users u ON o.user_id = u.id
+                WHERE o.id = ${id}
+            `;
+        }
 
         if (orders.length === 0) {
             return res.status(404).json({ error: 'Order not found' });
@@ -245,7 +255,12 @@ router.patch('/:id/status', authenticateAdmin, async (req, res) => {
         const { id } = req.params;
         const { status, notes, tracking_id, courier_name, estimated_delivery_date } = req.body;
 
-        const orders = await sql`SELECT id, status FROM orders WHERE id = ${id} OR order_id = ${id}`;
+        let orders;
+        if (isNaN(parseInt(id)) || id.startsWith('ABC-')) {
+            orders = await sql`SELECT id, status FROM orders WHERE order_id = ${id}`;
+        } else {
+            orders = await sql`SELECT id, status FROM orders WHERE id = ${id}`;
+        }
         if (orders.length === 0) {
             return res.status(404).json({ error: 'Order not found' });
         }
@@ -291,7 +306,12 @@ router.delete('/:id', authenticateAdmin, async (req, res) => {
         const sql = req.db.admin;
         const { id } = req.params;
 
-        const orders = await sql`SELECT id FROM orders WHERE id = ${id} OR order_id = ${id}`;
+        let orders;
+        if (isNaN(parseInt(id)) || id.startsWith('ABC-')) {
+            orders = await sql`SELECT id FROM orders WHERE order_id = ${id}`;
+        } else {
+            orders = await sql`SELECT id FROM orders WHERE id = ${id}`;
+        }
         if (orders.length === 0) {
             return res.status(404).json({ error: 'Order not found' });
         }

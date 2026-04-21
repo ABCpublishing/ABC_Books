@@ -242,10 +242,10 @@ router.post('/', authenticateAdmin, async (req, res) => {
 router.put('/:id', authenticateAdmin, async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, author, publisher, price, original_price, image, description, category, language, subcategory, rating, sections } = req.body;
+        const { title, author, publisher, price, original_price, image, description, category, language, subcategory, rating, sections, db_source } = req.body;
 
         // Determine target database
-        const targetLang = language || category || req.query.language || 'English';
+        const targetLang = db_source || language || category || req.query.language || 'English';
         const bookDb = req.db.getBookDb(targetLang) || req.db.english;
 
         const updateResult = await bookDb`
