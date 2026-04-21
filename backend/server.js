@@ -189,6 +189,65 @@ app.use((req, res, next) => {
     next();
 });
 
+// Auto-migrate wishlist table dynamically in development or startup
+(async function autoMigrate() {
+    try {
+        if (!pools.admin) return;
+        const sql = db.admin;
+        await sql`
+            CREATE TABLE IF NOT EXISTS wishlist (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                book_id INTEGER NOT NULL,
+                book_title VARCHAR(255),
+                book_author VARCHAR(100),
+                book_price DECIMAL(10,2),
+                book_original_price DECIMAL(10,2),
+                book_image TEXT,
+                book_rating DECIMAL(2,1),
+                book_source VARCHAR(20),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, book_id)
+            )
+        `;
+        // Also ensure missing columns are added if table existed without them
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_title VARCHAR(255)`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_author VARCHAR(100)`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_price DECIMAL(10,2)`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_original_price DECIMAL(10,2)`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_image TEXT`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_rating DECIMAL(2,1)`; } catch(e){}
+        try { await sql`ALTER TABLE wishlist ADD COLUMN book_source VARCHAR(20)`; } catch(e){}
+        console.log('✅ Auto-migrated wishlist table schema');
+
+        await sql`
+            CREATE TABLE IF NOT EXISTS cart (
+                id SERIAL PRIMARY KEY,
+                user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+                book_id INTEGER NOT NULL,
+                quantity INTEGER DEFAULT 1,
+                book_title VARCHAR(255),
+                book_author VARCHAR(100),
+                book_price DECIMAL(10,2),
+                book_original_price DECIMAL(10,2),
+                book_image TEXT,
+                book_source VARCHAR(20),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE(user_id, book_id)
+            )
+        `;
+        try { await sql`ALTER TABLE cart ADD COLUMN book_title VARCHAR(255)`; } catch(e){}
+        try { await sql`ALTER TABLE cart ADD COLUMN book_author VARCHAR(100)`; } catch(e){}
+        try { await sql`ALTER TABLE cart ADD COLUMN book_price DECIMAL(10,2)`; } catch(e){}
+        try { await sql`ALTER TABLE cart ADD COLUMN book_original_price DECIMAL(10,2)`; } catch(e){}
+        try { await sql`ALTER TABLE cart ADD COLUMN book_image TEXT`; } catch(e){}
+        try { await sql`ALTER TABLE cart ADD COLUMN book_source VARCHAR(20)`; } catch(e){}
+        console.log('✅ Auto-migrated cart table schema');
+    } catch(err) {
+        console.error('❌ Failed to auto-migrate database schemas:', err.message);
+    }
+})();
+
 // Health check endpoint
 app.get('/api/health', async (req, res) => {
     const status = {};
