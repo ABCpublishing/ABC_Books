@@ -22,8 +22,8 @@ router.get('/seed', async (req, res) => {
             // Insert language
             const langRs = await sql`
                 INSERT INTO categories (name, slug, is_language, parent_id)
-                VALUES (${langName}, ${langSlug}, true, -1)
-                ON CONFLICT (slug) DO UPDATE SET name = ${langName}, is_language = true, parent_id = -1
+                VALUES (${langName}, ${langSlug}, true, NULL)
+                ON CONFLICT (slug) DO UPDATE SET name = ${langName}, is_language = true, parent_id = NULL
                 RETURNING id;
             `;
             const langId = langRs[0].id;
