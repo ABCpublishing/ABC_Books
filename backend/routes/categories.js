@@ -1,5 +1,6 @@
 // ===== Categories Routes (PostgreSQL / Admin DB) =====
 const express = require('express');
+const { authenticateAdmin } = require('../middleware/security');
 const router = express.Router();
 
 // Get all categories
@@ -106,7 +107,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Add new category
-router.post('/', async (req, res) => {
+router.post('/', authenticateAdmin, async (req, res) => {
     try {
         const sql = req.db.admin;
         const { name, slug, icon, parent_id, is_language, display_order, visible } = req.body;
@@ -134,14 +135,14 @@ router.post('/', async (req, res) => {
     } catch (error) {
         console.error('Add category error:', error);
         if (error.code === '23505') {
-            return res.status(400).json({ error: 'Category slug already exists' });
+            return res.status(400).json({ error: 'Category slug already exists. Please choose a unique name.' });
         }
-        res.status(500).json({ error: 'Failed to add category' });
+        res.status(500).json({ error: 'Failed to add category (' + error.message + ')' });
     }
 });
 
 // Update category
-router.put('/:id', async (req, res) => {
+router.put('/:id', authenticateAdmin, async (req, res) => {
     try {
         const sql = req.db.admin;
         const { id } = req.params;
@@ -176,7 +177,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete category
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', authenticateAdmin, async (req, res) => {
     try {
         const sql = req.db.admin;
         const { id } = req.params;

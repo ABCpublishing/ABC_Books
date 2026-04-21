@@ -114,13 +114,16 @@ async function saveCategory() {
         return;
     }
 
+    const baseSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    const isSubcategory = type === 'strip';
+    
     const categoryData = {
         name,
         icon,
         visible: visible,
         is_language: type === 'dropdown',
-        parent_id: type === 'strip' && parentId ? parseInt(parentId) : null,
-        slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+        parent_id: isSubcategory && parentId ? parseInt(parentId) : null,
+        slug: (isSubcategory && parentId) ? `${parseInt(parentId)}-${baseSlug}` : baseSlug
     };
 
     try {
