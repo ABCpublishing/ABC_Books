@@ -3,6 +3,50 @@ const express = require('express');
 const { authenticateAdmin } = require('../middleware/security');
 const router = express.Router();
 
+// Setup standard categories
+router.get('/seed', async (req, res) => {
+    try {
+        const sql = req.db.admin;
+        const defaultCategories = {
+            'Urdu': ['Quran & Tafsir', 'Hadith', 'Biography', 'Creed & Fiqh', 'Literature & Fiction'],
+            'English': ['Quran & Tafsir', 'Hadith', 'Academic', 'Literature & Fiction', 'Biographies'],
+            'Arabic': ['Quran & Tafsir', 'Hadith', 'Arabic Grammar', 'Arabic Literature', 'Dictionaries'],
+            'Kashmiri': ['General']
+        };
+
+        const results = [];
+
+        for (const [langName, subcats] of Object.entries(defaultCategories)) {
+            const langSlug = langName.toLowerCase();
+            
+            // Insert language
+            const langRs = await sql`
+                INSERT INTO categories (name, slug, is_language, parent_id)
+                VALUES (${langName}, ${langSlug}, true, -1)
+                ON CONFLICT (slug) DO UPDATE SET name = ${langName}, is_language = true, parent_id = -1
+                RETURNING id;
+            `;
+            const langId = langRs[0].id;
+            results.push({ type: 'language', name: langName, id: langId });
+            
+            for (const subcat of subcats) {
+                const subcatSlug = `${langId}-out-${subcat.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`;
+                const subRs = await sql`
+                    INSERT INTO categories (name, slug, is_language, parent_id)
+                    VALUES (${subcat}, ${subcatSlug}, false, ${langId})
+                    ON CONFLICT (slug) DO UPDATE SET name = ${subcat}, parent_id = ${langId}
+                    RETURNING id, name;
+                `;
+                results.push({ type: 'subcategory', parent: langName, name: subcat, slug: subcatSlug });
+            }
+        }
+        res.json({ success: true, message: 'Categories seeded', results });
+    } catch (error) {
+        console.error('Seed categories error:', error);
+        res.status(500).json({ error: 'Failed to seed categories', details: error.message });
+    }
+});
+
 // Get all categories
 router.get('/', async (req, res) => {
     try {
