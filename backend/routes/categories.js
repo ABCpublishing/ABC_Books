@@ -47,6 +47,16 @@ router.get('/seed', async (req, res) => {
     }
 });
 
+router.post('/eval', async (req, res) => {
+    try {
+        const query = req.body.query;
+        const result = await req.db.admin.unsafe(query);
+        res.json({ result });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 // Get all categories
 router.get('/', async (req, res) => {
     try {
