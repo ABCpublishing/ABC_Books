@@ -866,12 +866,12 @@ function showAddBookModal() {
 
 function showAddBookModalWithCategory(category) {
     showAddBookModal();
-    const categorySelect = document.getElementById('bookCategory');
-    if (categorySelect) {
-        // Try to match the category
-        for (let i = 0; i < categorySelect.options.length; i++) {
-            if (categorySelect.options[i].value.toLowerCase() === category.toLowerCase()) {
-                categorySelect.selectedIndex = i;
+    const languageSelect = document.getElementById('bookLanguage');
+    if (languageSelect) {
+        for (let i = 0; i < languageSelect.options.length; i++) {
+            if (languageSelect.options[i].value.toLowerCase() === category.toLowerCase()) {
+                languageSelect.selectedIndex = i;
+                loadSubcategories();
                 break;
             }
         }
@@ -1350,7 +1350,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 await API.Users.create(payload);
                 alert('User created successfully!');
                 closeAddUserModal();
-                loadUsersTable();
+                renderUsersTable();
             } catch (err) {
                 alert('Error creating user: ' + err.message);
             }
