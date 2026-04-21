@@ -302,6 +302,13 @@ const UsersAPI = {
         return await apiRequest(`/users/${id}`);
     },
 
+    async create(userData) {
+        return await apiRequest('/users', {
+            method: 'POST',
+            body: JSON.stringify(userData)
+        });
+    },
+
     async delete(id) {
         return await apiRequest(`/users/${id}`, {
             method: 'DELETE'

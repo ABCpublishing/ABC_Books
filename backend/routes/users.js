@@ -63,6 +63,37 @@ router.get('/', authenticateAdmin, async (req, res) => {
     }
 });
 
+// Create new user (admin)
+router.post('/', authenticateAdmin, async (req, res) => {
+    try {
+        const sql = req.db.admin;
+        const { name, email, password, is_admin } = req.body;
+        
+        // Check if email already exists
+        const existingUser = await sql`SELECT id FROM users WHERE email = ${email}`;
+        if (existingUser.length > 0) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
+        const crypto = require('crypto');
+        const verificationToken = crypto.randomBytes(32).toString('hex');
+        
+        const bcrypt = require('bcryptjs');
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        const result = await sql`
+            INSERT INTO users (name, email, password_hash, is_admin, verification_token, is_verified)
+            VALUES (${name}, ${email}, ${hashedPassword}, ${is_admin || false}, ${verificationToken}, TRUE)
+            RETURNING id, name, email, is_admin
+        `;
+
+        res.status(201).json({ user: result[0], message: 'User created successfully' });
+    } catch (error) {
+        console.error('Create user error:', error);
+        res.status(500).json({ error: 'Failed to create user' });
+    }
+});
+
 // Get user by ID with order history
 router.get('/:id', authenticate, async (req, res) => {
     try {

@@ -96,10 +96,6 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span>Orders</span>
                 </a>
-                <a href="#" class="nav-item" data-section="pages">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Pages</span>
-                </a>
                 <a href="#" class="nav-item" data-section="hero">
                     <i class="fas fa-star"></i>
                     <span>Hero Section</span>
@@ -360,7 +356,7 @@
                                 onclick="bulkDeleteUsers()">
                                 <i class="fas fa-trash-alt"></i> Delete Selected
                             </button>
-                            <button class="btn-primary" onclick="alert('Add User feature coming soon!')">
+                            <button class="btn-primary" onclick="showAddUserModal()">
                                 <i class="fas fa-user-plus"></i>
                                 Add User
                             </button>
@@ -394,7 +390,7 @@
                 <section id="ordersSection" class="content-section">
                     <div class="section-header">
                         <h2>Orders Management</h2>
-                        <button class="btn-primary" onclick="alert('Add Order feature coming soon!')">
+                        <button class="btn-primary" onclick="showAddOrderModal()">
                             <i class="fas fa-plus"></i>
                             Create Order
                         </button>
@@ -421,32 +417,6 @@
                     </div>
                 </section>
 
-                <!-- Pages Management Section -->
-                <section id="pagesSection" class="content-section">
-                    <div class="section-header">
-                        <h2>Pages Management</h2>
-                        <button class="btn-primary" onclick="alert('Add Page feature coming soon!')">
-                            <i class="fas fa-file-medical"></i>
-                            Create Page
-                        </button>
-                    </div>
-                    <div class="table-container">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>Title</th>
-                                    <th>Slug</th>
-                                    <th>Author</th>
-                                    <th>Status</th>
-                                    <th>Last Modified</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="pagesTableBody">
-                                <tr>
-                                    <td colspan="6" class="no-data">No pages yet. Pages management coming soon!</td>
-                                </tr>
-                            </tbody>
                         </table>
                     </div>
                 </section>
@@ -990,11 +960,19 @@
 
                 <div class="form-group">
                     <label for="categoryType">Category Type *</label>
-                    <select id="categoryType" required>
+                    <select id="categoryType" required onchange="handleCategoryTypeChange()">
                         <option value="">-- Select Type --</option>
-                        <option value="dropdown">Dropdown Menu (Main Navigation)</option>
-                        <option value="strip">Quick Category Strip</option>
-                        <option value="showcase">Explore by Category</option>
+                        <option value="dropdown">Dropdown Menu (Main Language Category)</option>
+                        <option value="strip">Subcategory</option>
+                        <option value="showcase">Showcase Collection</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="parentCategoryGroup" style="display: none;">
+                    <label for="categoryParentId">Parent Category (For Subcategories)</label>
+                    <select id="categoryParentId">
+                        <option value="">-- Select Parent Language/Category --</option>
+                        <!-- Populated dynamically -->
                     </select>
                 </div>
 
@@ -1065,6 +1043,62 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Add User Modal -->
+    <div id="addUserModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New User</h2>
+                <button class="close-modal" onclick="closeAddUserModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addUserForm" class="book-form">
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="addUserName" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label>Email Address *</label>
+                    <input type="email" id="addUserEmail" required placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label>Password *</label>
+                    <input type="password" id="addUserPassword" required placeholder="Set temporary password">
+                </div>
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="addUserIsAdmin">
+                        <span>Grant Administrator Privileges</span>
+                    </label>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeAddUserModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">
+                        <i class="fas fa-user-plus"></i> Create User
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Create Order Modal -->
+    <div id="addOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Create Order</h2>
+                <button class="close-modal" onclick="closeAddOrderModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div style="padding: 20px; text-align: center;">
+                <i class="fas fa-cash-register" style="font-size: 48px; color: #a0aec0; margin-bottom: 20px;"></i>
+                <h3>Point of Sale (POS) Required</h3>
+                <p style="color: #4a5568; margin-bottom: 20px;">Manual order creation requires the POS extension to calculate real-time shipping rates and inventory sync.</p>
+                <button type="button" class="btn-secondary" onclick="closeAddOrderModal()">Close Window</button>
+            </div>
         </div>
     </div>
 

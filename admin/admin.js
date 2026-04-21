@@ -1322,3 +1322,46 @@ async function populateBookFormForEdit(book) {
 }
 // Cleanup secondary duplicate definitions that were at the end of the file
 // Note: All relevant logic from the bottom has been merged into the main sections above.
+
+// ===== Admin Management Ext ===== //
+
+function showAddUserModal() {
+    document.getElementById('addUserForm').reset();
+    document.getElementById('addUserModal').classList.add('active');
+}
+
+function closeAddUserModal() {
+    document.getElementById('addUserModal').classList.remove('active');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const addUserForm = document.getElementById('addUserForm');
+    if (addUserForm) {
+        addUserForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const payload = {
+                name: document.getElementById('addUserName').value,
+                email: document.getElementById('addUserEmail').value,
+                password: document.getElementById('addUserPassword').value,
+                is_admin: document.getElementById('addUserIsAdmin').checked
+            };
+            try {
+                // Register via Auth endpoint
+                await API.Users.create(payload);
+                alert('User created successfully!');
+                closeAddUserModal();
+                loadUsersTable();
+            } catch (err) {
+                alert('Error creating user: ' + err.message);
+            }
+        });
+    }
+});
+
+function showAddOrderModal() {
+    document.getElementById('addOrderModal').classList.add('active');
+}
+
+function closeAddOrderModal() {
+    document.getElementById('addOrderModal').classList.remove('active');
+}

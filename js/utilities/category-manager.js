@@ -22,31 +22,38 @@ async function populateParentCategories() {
     try {
         const response = await API.Categories.getLanguages();
         const languages = response.languages || [];
-        const parentSelect = document.getElementById('categoryType'); // Reusing this select for Parent if needed, but wait
-
-        // Actually, let's keep the 'categoryType' for now but maybe rename its purpose or labels
-        // For the new schema, we have 'Language' (is_language=true) or 'Subcategory' (parent_id set)
+        const parentSelect = document.getElementById('categoryParentId');
+        if (parentSelect) {
+            parentSelect.innerHTML = '<option value="">-- Select Parent Language/Category --</option>' + 
+                languages.map(lang => `<option value="${lang.id}">${lang.name}</option>`).join('');
+        }
     } catch (e) {
         console.error('Error loading languages for parent selection', e);
     }
 }
 
-// Handle category type change (Legacy/UI compatibility)
 function handleCategoryTypeChange() {
     const type = document.getElementById('categoryType').value;
     const subcategoriesGroup = document.getElementById('subcategoriesGroup');
     const bookCountGroup = document.getElementById('bookCountGroup');
+    const parentCategoryGroup = document.getElementById('parentCategoryGroup');
 
-    // This UI logic is legacy but we'll adapt it
     if (type === 'dropdown') {
-        subcategoriesGroup.style.display = 'block';
-        bookCountGroup.style.display = 'none';
+        if(subcategoriesGroup) subcategoriesGroup.style.display = 'block';
+        if(bookCountGroup) bookCountGroup.style.display = 'none';
+        if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
     } else if (type === 'showcase') {
-        subcategoriesGroup.style.display = 'none';
-        bookCountGroup.style.display = 'block';
+        if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
+        if(bookCountGroup) bookCountGroup.style.display = 'block';
+        if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
+    } else if (type === 'strip') {
+        if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
+        if(bookCountGroup) bookCountGroup.style.display = 'none';
+        if(parentCategoryGroup) parentCategoryGroup.style.display = 'block';
     } else {
-        subcategoriesGroup.style.display = 'none';
-        bookCountGroup.style.display = 'none';
+        if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
+        if(bookCountGroup) bookCountGroup.style.display = 'none';
+        if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
     }
 }
 
@@ -100,19 +107,19 @@ async function saveCategory() {
     const type = document.getElementById('categoryType').value;
     const icon = document.getElementById('categoryIcon').value;
     const visible = document.getElementById('categoryVisible').checked;
+    const parentId = document.getElementById('categoryParentId')?.value;
 
     if (!name || !icon) {
         alert('Please fill in all required fields');
         return;
     }
 
-    // Map the UI "Type" to database fields if needed, or just use name/slug
-    // For now, let's treat Languages as "dropdown" type from old UI
     const categoryData = {
         name,
         icon,
-        visible,
+        visible: visible,
         is_language: type === 'dropdown',
+        parent_id: type === 'strip' && parentId ? parseInt(parentId) : null,
         slug: name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
     };
 
