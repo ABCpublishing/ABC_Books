@@ -66,7 +66,15 @@ router.get('/:id', async (req, res) => {
         const sql = req.db.admin;
         const { id } = req.params;
         const userId = req.userId;
-        const isAdmin = req.isAdmin;
+        let isAdmin = req.isAdmin;
+
+        // If standard 'authenticate' middleware didn't set isAdmin, we must check the DB
+        if (!isAdmin) {
+            const usersCheck = await sql`SELECT is_admin FROM users WHERE id = ${userId}`;
+            if (usersCheck.length > 0 && usersCheck[0].is_admin) {
+                isAdmin = true;
+            }
+        }
 
         let orders;
         if (isNaN(parseInt(id)) || id.startsWith('ABC-')) {
