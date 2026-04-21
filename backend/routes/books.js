@@ -36,7 +36,7 @@ async function queryAllBookDbs(req, queryBuilder) {
 // Get all books with sections (merges from all DBs)
 router.get('/', async (req, res) => {
     try {
-        const { category, language, search, limit = 100 } = req.query;
+        const { category, language, search, subcategory, limit = 100 } = req.query;
         const parsedLimit = parseInt(limit) || 100;
 
         let books;
