@@ -348,20 +348,47 @@ function loadOrderSummary() {
 }
 
 // Cancel order
-function cancelOrder() {
+async function cancelOrder() {
     if (!confirm('Are you sure you want to cancel this order?')) return;
 
-    // Update order status
-    let orders = JSON.parse(localStorage.getItem('abc_books_orders') || '[]');
-    const orderIndex = orders.findIndex(o => o.orderId === currentOrder.orderId);
+    try {
+        const jwtToken = (typeof API !== 'undefined' && API.Token) ? API.Token.get() : (localStorage.getItem('accessToken') || localStorage.getItem('token') || localStorage.getItem('jwt_token'));
+        
+        let apiSuccess = false;
+        if (jwtToken) {
+            const apiBase = (window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') ? '/api' : 'http://localhost:3001/api';
+            const response = await fetch(`${apiBase}/orders/${currentOrder.orderId}/cancel`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            const data = await response.json();
+            if (response.ok) {
+                apiSuccess = true;
+            } else {
+                console.warn('API cancel failed', data.error);
+                alert('Could not cancel order on server: ' + (data.error || 'Unknown error'));
+            }
+        }
 
-    if (orderIndex >= 0) {
-        orders[orderIndex].status = 'cancelled';
-        localStorage.setItem('abc_books_orders', JSON.stringify(orders));
+        // Always update localStorage fallback just in case
+        let orders = JSON.parse(localStorage.getItem('abc_books_orders') || '[]');
+        const orderIndex = orders.findIndex(o => o.orderId === currentOrder.orderId);
+
+        if (orderIndex >= 0) {
+            orders[orderIndex].status = 'cancelled';
+            localStorage.setItem('abc_books_orders', JSON.stringify(orders));
+        }
+
+        // Reload page
+        alert('Order cancelled successfully.');
+        location.reload();
+    } catch (e) {
+        console.error('Error cancelling order', e);
+        alert('Failed to cancel order.');
     }
-
-    // Reload page
-    location.reload();
 }
 
 // Print order

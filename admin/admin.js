@@ -523,7 +523,11 @@ async function renderOrdersTable() {
             return;
         }
 
-        orders.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        orders.sort((a, b) => {
+            const dateA = new Date(a.created_at || a.orderDate || 0).getTime();
+            const dateB = new Date(b.created_at || b.orderDate || 0).getTime();
+            return dateB - dateA; // Descending order
+        });
 
         tbody.innerHTML = orders.map(order => {
             const date = new Date(order.created_at).toLocaleDateString('en-IN', {

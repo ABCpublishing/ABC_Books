@@ -335,8 +335,12 @@ function validateForm() {
     return true;
 }
 
+let isProcessingOrder = false;
+
 // Place order
 async function placeOrder() {
+    if (isProcessingOrder) return;
+    
     console.log('🛒 Place Order clicked');
     console.log('Cart items:', cartItems);
 
@@ -353,14 +357,32 @@ async function placeOrder() {
     const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value || 'cod';
     console.log('💳 Payment method selected:', paymentMethod);
 
-    // If Razorpay is selected, initiate Razorpay payment
-    if (paymentMethod === 'razorpay') {
-        await initiateRazorpayPayment();
-        return;
+    // Disable checkout button to prevent double-submit
+    const orderBtn = document.querySelector('.btn-checkout') || document.querySelector('.btn-primary[onclick="placeOrder()"]');
+    const originalBtnText = orderBtn ? orderBtn.innerHTML : '';
+    if (orderBtn) {
+        orderBtn.disabled = true;
+        orderBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
     }
 
-    // For other payment methods (COD, UPI, Card, NetBanking), proceed with normal order
-    await processOrder(paymentMethod);
+    isProcessingOrder = true;
+
+    try {
+        // If Razorpay is selected, initiate Razorpay payment
+        if (paymentMethod === 'razorpay') {
+            await initiateRazorpayPayment();
+            return;
+        }
+
+        // For other payment methods (COD, UPI, Card, NetBanking), proceed with normal order
+        await processOrder(paymentMethod);
+    } finally {
+        isProcessingOrder = false;
+        if (orderBtn) {
+            orderBtn.disabled = false;
+            orderBtn.innerHTML = originalBtnText;
+        }
+    }
 }
 
 // Initiate Razorpay Payment

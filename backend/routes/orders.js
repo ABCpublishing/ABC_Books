@@ -256,6 +256,52 @@ router.post('/', async (req, res) => {
     }
 });
 
+// Cancel order (user)
+router.post('/:id/cancel', async (req, res) => {
+    try {
+        const sql = req.db.admin;
+        const { id } = req.params;
+        const userId = req.userId;
+
+        let orders;
+        if (isNaN(parseInt(id)) || id.startsWith('ABC-')) {
+            orders = await sql`SELECT id, user_id, status FROM orders WHERE order_id = ${id}`;
+        } else {
+            orders = await sql`SELECT id, user_id, status FROM orders WHERE id = ${id}`;
+        }
+
+        if (orders.length === 0) {
+            return res.status(404).json({ error: 'Order not found' });
+        }
+
+        const order = orders[0];
+
+        // Ensure user owns the order
+        if (order.user_id !== userId) {
+            return res.status(403).json({ error: 'Access denied' });
+        }
+
+        // Only allow cancelling if pending or confirmed
+        if (order.status !== 'pending' && order.status !== 'confirmed' && order.status !== 'paid') {
+            return res.status(400).json({ error: 'Order cannot be cancelled in its current status' });
+        }
+
+        await sql`
+            UPDATE orders SET status = 'cancelled', updated_at = NOW() WHERE id = ${order.id}
+        `;
+
+        await sql`
+            INSERT INTO order_status_history (order_id, status, notes)
+            VALUES (${order.id}, 'cancelled', 'Order cancelled by customer')
+        `;
+
+        res.json({ success: true, message: 'Order cancelled successfully' });
+    } catch (error) {
+        console.error('Cancel order error:', error);
+        res.status(500).json({ error: 'Failed to cancel order' });
+    }
+});
+
 // Update order status & tracking info (admin only)
 router.patch('/:id/status', authenticateAdmin, async (req, res) => {
     try {

@@ -174,6 +174,9 @@ function populateBookDetails() {
 
     const overallStarsElem = document.getElementById('overallStars');
     if (overallStarsElem) overallStarsElem.innerHTML = generateStars(rating);
+
+    // Check wishlist status
+    checkWishlistStatus();
 }
 
 // Generate star rating HTML
@@ -361,18 +364,89 @@ async function buyNow() {
     }
 }
 
-// Add to wishlist - use shared logic from user-auth-api.js
-async function addToWishlistDetail() {
+// Check if book is already in wishlist
+async function checkWishlistStatus() {
     if (!currentBook) return;
-    if (typeof addToWishlist === 'function') {
+    
+    // Check locally first for speed
+    let list = JSON.parse(localStorage.getItem('abc_books_wishlist') || '[]');
+    let inWishlist = list.some(w => w.id == currentBook.id || w.book_id == currentBook.id);
+    
+    // Verify with API if logged in
+    const user = await getCurrentUser();
+    if (user && user.id !== -1) {
+        try {
+            const res = await API.Wishlist.get(user.id);
+            const serverList = res.wishlist || res || [];
+            inWishlist = serverList.some(w => w.book_id == currentBook.id);
+            // sync local
+            localStorage.setItem('abc_books_wishlist', JSON.stringify(serverList));
+        } catch(e) {}
+    }
+    
+    const btn = document.getElementById('detailWishlistBtn');
+    if (btn) {
+        if (inWishlist) {
+            btn.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i>';
+            btn.classList.add('active');
+        } else {
+            btn.innerHTML = '<i class="far fa-heart"></i>';
+            btn.classList.remove('active');
+        }
+    }
+}
+
+// Toggle wishlist status
+async function toggleWishlistDetail(btn) {
+    if (!currentBook) return;
+    
+    const user = await getCurrentUser();
+    if (!user || user.id === -1) {
+        // Fallback to login prompt
         const bookData = {
             id: currentBook.id,
             title: currentBook.title,
             author: currentBook.author,
             price: currentBook.price,
-            image: currentBook.image
+            image: currentBook.image,
+            db_source: currentBook.db_source || currentBook.language
         };
         await addToWishlist(currentBook.id, bookData);
+        return;
+    }
+    
+    try {
+        const checkRes = await API.Wishlist.get(user.id);
+        const list = checkRes.wishlist || checkRes || [];
+        const existing = list.find(w => w.book_id == currentBook.id);
+        
+        if (existing) {
+            // Remove
+            await API.Wishlist.remove(existing.id);
+            if (btn) {
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+                btn.classList.remove('active');
+            }
+            if (typeof showNotification === 'function') showNotification('Removed from wishlist');
+        } else {
+            // Add
+            const bookData = {
+                id: currentBook.id,
+                title: currentBook.title,
+                author: currentBook.author,
+                price: currentBook.price,
+                image: currentBook.image,
+                db_source: currentBook.db_source || currentBook.language
+            };
+            await addToWishlist(currentBook.id, bookData);
+            if (btn) {
+                btn.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i>';
+                btn.classList.add('active');
+            }
+        }
+        await checkWishlistStatus();
+    } catch(e) {
+        console.error('Error toggling wishlist', e);
     }
 }
 

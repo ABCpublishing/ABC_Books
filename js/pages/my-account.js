@@ -122,7 +122,11 @@ async function loadRecentOrders() {
         }
 
         // Sort by date (newest first)
-        const sortedOrders = orders.sort((a, b) => new Date(b.created_at || b.orderDate) - new Date(a.created_at || a.orderDate));
+        const sortedOrders = orders.sort((a, b) => {
+            const dateA = new Date(a.created_at || a.orderDate || 0).getTime();
+            const dateB = new Date(b.created_at || b.orderDate || 0).getTime();
+            return dateB - dateA;
+        });
 
         // Recent orders (last 3)
         const recentOrders = sortedOrders.slice(0, 3);
@@ -137,7 +141,8 @@ async function loadRecentOrders() {
 
 // Create order card HTML
 function createOrderCard(order) {
-    const date = new Date(order.orderDate).toLocaleDateString('en-IN', {
+    const rawDate = order.created_at || order.orderDate || new Date();
+    const date = new Date(rawDate).toLocaleDateString('en-IN', {
         day: 'numeric',
         month: 'short',
         year: 'numeric'
@@ -145,15 +150,16 @@ function createOrderCard(order) {
 
     const itemCount = order.items ? order.items.length : 0;
     const statusClass = (order.status || 'confirmed').toLowerCase();
+    const actualOrderId = order.order_id || order.orderId;
 
     return `
-        <div class="order-card" onclick="viewOrder('${order.orderId}')">
+        <div class="order-card" onclick="viewOrder('${actualOrderId}')">
             <div class="order-info">
                 <div class="order-icon">
                     <i class="fas fa-box"></i>
                 </div>
                 <div class="order-details">
-                    <h4>Order #${order.orderId}</h4>
+                    <h4>Order #${actualOrderId}</h4>
                     <p>${itemCount} item(s) • ${date}</p>
                 </div>
             </div>
