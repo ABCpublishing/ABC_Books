@@ -43,8 +43,8 @@ router.get('/', async (req, res) => {
 
         // If a specific language/category is specified, query only that DB
         const targetLang = language || category;
-        if (targetLang && req.db.getBookDb(targetLang)) {
-            const bookDb = req.db.getBookDb(targetLang);
+        if (targetLang && req.db.pools && req.db.pools[targetLang.toLowerCase()]) {
+            const pool = req.db.pools[targetLang.toLowerCase()];
             
             let sql = `
                 SELECT b.*, 
@@ -71,7 +71,7 @@ router.get('/', async (req, res) => {
             `;
             params.push(parsedLimit);
 
-            const result = await bookDb.query(sql, params);
+            const result = await pool.query(sql, params);
             books = result.rows || [];
             books = books.map(b => ({ ...b, db_source: targetLang.toLowerCase() }));
         } else {
