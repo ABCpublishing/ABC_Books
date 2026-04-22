@@ -51,7 +51,7 @@ async function fetchAllBooks() {
                 setTimeout(() => reject(new Error('API timeout')), 5000)
             );
             const response = await Promise.race([
-                fetch(`${BOOKS_DATA_API_BASE}/books?limit=1000`),
+                fetch(`${BOOKS_DATA_API_BASE}/books?limit=1000&_t=${Date.now()}`),
                 timeoutPromise
             ]);
 
