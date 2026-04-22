@@ -14,33 +14,6 @@ const ADMIN_CREDENTIALS = {
     password: 'admin123'
 };
 
-const SUBCATEGORIES_BY_LANGUAGE = {
-    'urdu': [
-        { value: 'Quran & Tafsir', label: 'Quran & Tafsir' },
-        { value: 'Hadith', label: 'Hadith' },
-        { value: 'Biography', label: 'Biography' },
-        { value: 'Creed & Fiqh', label: 'Creed & Fiqh' },
-        { value: 'Literature & Fiction', label: 'Literature & Fiction' }
-    ],
-    'english': [
-        { value: 'Quran & Tafsir', label: 'Quran & Tafsir' },
-        { value: 'Hadith', label: 'Hadith' },
-        { value: 'Academic', label: 'Academic' },
-        { value: 'Literature & Fiction', label: 'Literature & Fiction' },
-        { value: 'Biographies', label: 'Biographies' }
-    ],
-    'arabic': [
-        { value: 'Quran & Tafsir', label: 'Quran & Tafsir' },
-        { value: 'Hadith', label: 'Hadith' },
-        { value: 'Arabic Grammar', label: 'Arabic Grammar' },
-        { value: 'Arabic Literature', label: 'Arabic Literature' },
-        { value: 'Dictionaries', label: 'Dictionaries' }
-    ],
-    'kashmiri': [
-        { value: 'All Kashmiri Books', label: 'All Kashmiri Books' }
-    ]
-};
-
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function () {
     checkAuth();
