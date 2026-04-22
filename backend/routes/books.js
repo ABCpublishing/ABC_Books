@@ -46,31 +46,33 @@ router.get('/', async (req, res) => {
         if (targetLang && req.db.getBookDb(targetLang)) {
             const bookDb = req.db.getBookDb(targetLang);
             
+            let sql = `
+                SELECT b.*, 
+                       STRING_AGG(bs.section_name, ',') as sections_str
+                FROM books b
+                LEFT JOIN book_sections bs ON b.id = bs.book_id
+                WHERE 1=1
+            `;
+            const params = [];
+            
             if (search) {
-                const pattern = '%' + search + '%';
-                books = await bookDb`
-                    SELECT b.*, 
-                           STRING_AGG(bs.section_name, ',') as sections_str
-                    FROM books b
-                    LEFT JOIN book_sections bs ON b.id = bs.book_id
-                    WHERE b.title ILIKE ${pattern} 
-                       OR b.author ILIKE ${pattern}
-                       OR b.description ILIKE ${pattern}
-                    GROUP BY b.id
-                    ORDER BY b.created_at DESC
-                    LIMIT ${parsedLimit}
-                `;
-            } else {
-                books = await bookDb`
-                    SELECT b.*, 
-                           STRING_AGG(bs.section_name, ',') as sections_str
-                    FROM books b
-                    LEFT JOIN book_sections bs ON b.id = bs.book_id
-                    GROUP BY b.id
-                    ORDER BY b.created_at DESC
-                    LIMIT ${parsedLimit}
-                `;
+                params.push('%' + search + '%');
+                sql += ` AND (b.title ILIKE $${params.length} OR b.author ILIKE $${params.length} OR b.description ILIKE $${params.length})`;
             }
+            if (subcategory) {
+                params.push(subcategory);
+                sql += ` AND b.subcategory = $${params.length}`;
+            }
+            
+            sql += `
+                GROUP BY b.id
+                ORDER BY b.created_at DESC
+                LIMIT $${params.length + 1}
+            `;
+            params.push(parsedLimit);
+
+            const result = await bookDb.query(sql, params);
+            books = result.rows || [];
             books = books.map(b => ({ ...b, db_source: targetLang.toLowerCase() }));
         } else {
             // No specific book-db mapping found (e.g., Kashmiri, or multiple) - query ALL databases and merge

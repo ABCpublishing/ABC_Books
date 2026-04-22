@@ -212,11 +212,13 @@ function navigateToSection(section) {
         users: 'Users Management',
         orders: 'Orders Management',
         pages: 'Pages Management',
-        hero: 'Hero Section',
-        editors: "Editor's Choice",
-        featured: 'Featured Books',
-        trending: 'Trending Now',
-        bestseller: 'Bestsellers',
+        newArrivals: 'New Arrivals',
+        bestSellers: 'Best Sellers',
+        editorsChoice: "Editor's Choice",
+        childrenCorner: 'Children Corner',
+        comicBooks: 'Popular Comic Books',
+        boxSets: 'Box Sets',
+        examBooks: 'Competitive Exam Books',
         english: 'English Books',
         arabic: 'Arabic Books',
         kashmiri: 'Kashmiri Books',
@@ -307,14 +309,13 @@ async function loadSectionData(section) {
         case 'pages':
             renderPagesTable();
             break;
-        case 'hero':
-        case 'editors':
-        case 'featured':
-        case 'trending':
-        case 'newReleases':
-        case 'children':
-        case 'bestseller':
-        case 'indianAuthors':
+        case 'newArrivals':
+        case 'bestSellers':
+        case 'editorsChoice':
+        case 'childrenCorner':
+        case 'comicBooks':
+        case 'boxSets':
+        case 'examBooks':
             try {
                 const response = await API.Books.getBySection(section);
                 renderSectionBooks(section, response.books || []);

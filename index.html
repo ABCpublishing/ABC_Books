@@ -159,14 +159,32 @@
                         onclick="event.preventDefault(); toggleMobileSubmenu(this)">Categories <i
                             class="fas fa-chevron-down"></i></a>
                     <ul class="mobile-submenu">
-                        <li><a href="/pages/search.html?language=Urdu"><i class="fas fa-book-open"></i> Urdu Books</a>
-                        </li>
-                        <li><a href="/pages/search.html?language=English"><i class="fas fa-language"></i> English
-                                Books</a></li>
-                        <li><a href="/pages/search.html?language=Arabic"><i class="fas fa-quran"></i> Arabic Books</a>
-                        </li>
-                        <li><a href="/pages/search.html?language=Kashmiri"><i class="fas fa-mountain"></i> Kashmiri
-                                Books</a></li>
+                        <li style="padding-left: 1rem; color: #8B0000; font-weight: bold; margin-top: 0.5rem;"><i class="fas fa-book-open"></i> Urdu Books</li>
+                        <li><a href="/pages/search.html?language=Urdu">All Urdu Books</a></li>
+                        <li><a href="/pages/search.html?language=Urdu&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
+                        <li><a href="/pages/search.html?language=Urdu&subcategory=Hadith">Hadith</a></li>
+                        <li><a href="/pages/search.html?language=Urdu&subcategory=Biography">Biography</a></li>
+                        <li><a href="/pages/search.html?language=Urdu&subcategory=Creed+%26+Fiqh">Creed & Fiqh</a></li>
+                        <li><a href="/pages/search.html?language=Urdu&subcategory=Literature+%26+Fiction">Literature & Fiction</a></li>
+                        
+                        <li style="padding-left: 1rem; color: #2c3e50; font-weight: bold; margin-top: 0.5rem;"><i class="fas fa-language"></i> English Books</li>
+                        <li><a href="/pages/search.html?language=English">All English Books</a></li>
+                        <li><a href="/pages/search.html?language=English&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
+                        <li><a href="/pages/search.html?language=English&subcategory=Hadith">Hadith</a></li>
+                        <li><a href="/pages/search.html?language=English&subcategory=Academic">Academic</a></li>
+                        <li><a href="/pages/search.html?language=English&subcategory=Literature+%26+Fiction">Literature & Fiction</a></li>
+                        <li><a href="/pages/search.html?language=English&subcategory=Biography">Biographies</a></li>
+                        
+                        <li style="padding-left: 1rem; color: #27ae60; font-weight: bold; margin-top: 0.5rem;"><i class="fas fa-quran"></i> Arabic Books</li>
+                        <li><a href="/pages/search.html?language=Arabic">All Arabic Books</a></li>
+                        <li><a href="/pages/search.html?language=Arabic&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
+                        <li><a href="/pages/search.html?language=Arabic&subcategory=Hadith">Hadith</a></li>
+                        <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Grammar">Arabic Grammar</a></li>
+                        <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Literature">Arabic Literature</a></li>
+                        <li><a href="/pages/search.html?language=Arabic&subcategory=Dictionaries">Dictionaries</a></li>
+                        
+                        <li style="padding-left: 1rem; color: #8e44ad; font-weight: bold; margin-top: 0.5rem;"><i class="fas fa-mountain"></i> Kashmiri Books</li>
+                        <li><a href="/pages/search.html?language=Kashmiri">All Kashmiri Books</a></li>
                     </ul>
                 </li>
                 <li><a href="/pages/search.html?section=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
@@ -331,191 +349,128 @@
 
 
 
-    <!-- Main Content Area -->
-    <main class="main-content">
-        <div class="container">
-            <div class="content-grid">
-                <!-- Left Content - 70% -->
-                <!-- Left Content - Full Width -->
-                <div class="content-full" style="width: 100%; grid-column: 1 / -1; max-width: 100%;">
-                    <!-- Rewrite Your Story Section -->
-                    <section class="featured-section">
-                        <div class="section-header-fancy">
-                            <div class="header-line"></div>
-                            <h2><i class="fas fa-feather-alt"></i> Rewrite Your Story With The Right Reads</h2>
-                            <div class="header-line"></div>
-                        </div>
-                        <div class="featured-books-grid" id="featuredBooks">
-                            <!-- Books loaded dynamically -->
-                        </div>
-                        <div class="section-nav">
-                            <span class="nav-dot active"></span>
-                            <span class="nav-dot"></span>
-                            <span class="nav-dot"></span>
-                            <span class="nav-dot"></span>
-                            <span class="nav-dot"></span>
-                        </div>
-                    </section>
-
-                    <!-- Bottom Sections Grid -->
-                    <div class="bottom-sections">
-                        <!-- Academic Guides -->
-                        <section class="promo-card academic-card">
-                            <div class="promo-content">
-                                <h3><i class="fas fa-graduation-cap"></i> Study Smarter With Trusted Academic Guides
-                                </h3>
-                                <a href="#" class="btn-explore">Explore <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                            <div class="promo-books" id="academicBooks"></div>
-                        </section>
-
-                        <!-- CTET & CSAT -->
-                        <section class="promo-card exam-card">
-                            <div class="promo-content">
-                                <h3><i class="fas fa-award"></i> Master CTET & CSAT</h3>
-                                <a href="#" class="btn-explore">Shop Now <i class="fas fa-arrow-right"></i></a>
-                            </div>
-                            <div class="promo-books" id="examBooks"></div>
-                        </section>
-
-
-
-
-
-
-                    </div>
-                </div>
-
-                <!-- Right Sidebar - 30% -->
-
-            </div>
-        </div>
-    </main>
-
-    <!-- Trending Now Section -->
-    <section class="trending-section">
+    <!-- New Arrivals Section -->
+    <section class="new-arrivals-section" style="padding: 40px 0;">
         <div class="container">
             <div class="section-header-fancy">
                 <div class="header-line"></div>
-                <h2><i class="fas fa-fire-alt"></i> Trending Now</h2>
+                <h2><i class="fas fa-bolt"></i> New Arrivals</h2>
                 <div class="header-line"></div>
             </div>
-            <div class="trending-slider">
-                <button class="slider-arrow prev trending-prev"><i class="fas fa-chevron-left"></i></button>
-                <div class="trending-books-track" id="trendingBooks">
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev new-arrivals-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="new-arrivals-track" id="newArrivalsBooks" style="display: flex; gap: 15px; width: 100%;">
                     <!-- Books loaded dynamically -->
                 </div>
-                <button class="slider-arrow next trending-next"><i class="fas fa-chevron-right"></i></button>
+                <button class="slider-arrow next new-arrivals-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
 
-    <!-- New Releases Section -->
-    <section class="new-releases-section">
+    <!-- Best Sellers Section -->
+    <section class="best-sellers-section" style="padding: 40px 0; background-color: #fcfcfc;">
         <div class="container">
             <div class="section-header-fancy">
                 <div class="header-line"></div>
-                <h2><i class="fas fa-bolt"></i> New Releases - March 2026</h2>
+                <h2><i class="fas fa-crown"></i> Best Sellers</h2>
                 <div class="header-line"></div>
             </div>
-            <div class="new-releases-slider">
-                <button class="slider-arrow prev releases-prev"><i class="fas fa-chevron-left"></i></button>
-                <div class="new-releases-track" id="newReleasesBooks">
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev best-sellers-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="best-sellers-track" id="bestSellersBooks" style="display: flex; gap: 15px; width: 100%;">
                     <!-- Books loaded dynamically -->
                 </div>
-                <button class="slider-arrow next releases-next"><i class="fas fa-chevron-right"></i></button>
+                <button class="slider-arrow next best-sellers-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
 
-    <!-- Popular Urdu Books Section -->
-    <section class="indian-authors-section">
+    <!-- Editor's Choice Section -->
+    <section class="editors-choice-section" style="padding: 40px 0;">
         <div class="container">
             <div class="section-header-fancy">
                 <div class="header-line"></div>
-                <h2><i class="fas fa-book-open"></i> Popular Urdu Books</h2>
+                <h2><i class="fas fa-award"></i> Editor's Choice</h2>
                 <div class="header-line"></div>
             </div>
-            <p class="section-description">Discover the finest Urdu literature — from timeless classics to contemporary
-                bestsellers</p>
-            <div class="indian-authors-grid" id="indianAuthorsBooks">
-                <!-- Books loaded dynamically -->
-            </div>
-            <div class="section-cta">
-                <a href="/pages/search.html?language=Urdu" class="btn-primary">Explore All Urdu Books <i
-                        class="fas fa-arrow-right"></i></a>
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev editors-choice-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="editors-choice-track" id="editorsChoiceBooks" style="display: flex; gap: 15px; width: 100%;">
+                    <!-- Books loaded dynamically -->
+                </div>
+                <button class="slider-arrow next editors-choice-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
-    
-    <!-- Kashmiri Books Section -->
-    <section class="kashmiri-section">
+
+    <!-- Children Corner Section -->
+    <section class="children-corner-section" style="padding: 40px 0; background-color: #f7fbff;">
         <div class="container">
             <div class="section-header-fancy">
-                <div class="header-left">
-                    <span class="section-tag"><i class="fas fa-mountain"></i> Cultural Heritage</span>
-                    <h2>Kashmiri <span>Collection</span></h2>
-                </div>
-                <div class="header-right">
-                    <a href="/pages/search.html?language=Kashmiri" class="btn-outline">View All <i class="fas fa-arrow-right"></i></a>
-                </div>
+                <div class="header-line"></div>
+                <h2><i class="fas fa-child"></i> Children Corner</h2>
+                <div class="header-line"></div>
             </div>
-            
-            <p class="section-description">A curated selection of books in and about Kashmiri language, culture, and history.</p>
-            
-            <div class="books-grid-modern" id="kashmiriBooksGrid">
-                <div class="loading-placeholder">
-                    <i class="fas fa-spinner fa-spin"></i> Loading Kashmiri Collection...
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev children-corner-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="children-corner-track" id="childrenCornerBooks" style="display: flex; gap: 15px; width: 100%;">
+                    <!-- Books loaded dynamically -->
                 </div>
+                <button class="slider-arrow next children-corner-next"><i class="fas fa-chevron-right"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Popular Comic Books Section -->
+    <section class="comic-books-section" style="padding: 40px 0;">
+        <div class="container">
+            <div class="section-header-fancy">
+                <div class="header-line"></div>
+                <h2><i class="fas fa-mask"></i> Popular Comic Books</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev comic-books-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="comic-books-track" id="comicBooksBooks" style="display: flex; gap: 15px; width: 100%;">
+                    <!-- Books loaded dynamically -->
+                </div>
+                <button class="slider-arrow next comic-books-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
 
     <!-- Box Sets Section -->
-    <section class="box-sets-section">
+    <section class="box-sets-section" style="padding: 40px 0; background-color: #fef9f9;">
         <div class="container">
-            <div class="box-sets-banner">
-                <div class="box-sets-content">
-                    <span class="special-tag"><i class="fas fa-percentage"></i> Special Offer</span>
-                    <h2>Complete Box Sets</h2>
-                    <p>Get entire series at unbeatable prices - Save up to 40% on bestselling collections</p>
-                    <a href="/pages/search.html?section=boxSets" class="btn-shop-now">Shop Box Sets <i class="fas fa-shopping-cart"></i></a>
-                </div>
-                <div class="box-sets-books" id="boxSetsBooks">
+            <div class="section-header-fancy">
+                <div class="header-line"></div>
+                <h2><i class="fas fa-boxes"></i> Box Sets</h2>
+                <div class="header-line"></div>
+            </div>
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev box-sets-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="box-sets-track" id="boxSetsBooks" style="display: flex; gap: 15px; width: 100%;">
                     <!-- Books loaded dynamically -->
                 </div>
+                <button class="slider-arrow next box-sets-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>
 
-    <!-- Children's Corner Section -->
-    <section class="children-section">
+    <!-- Competitive Exam Books Section -->
+    <section class="exam-books-section" style="padding: 40px 0;">
         <div class="container">
             <div class="section-header-fancy">
                 <div class="header-line"></div>
-                <h2><i class="fas fa-child"></i> Children's Corner</h2>
+                <h2><i class="fas fa-graduation-cap"></i> Competitive Exam Books</h2>
                 <div class="header-line"></div>
             </div>
-            <div class="children-books-slider">
-                <button class="slider-arrow prev children-prev"><i class="fas fa-chevron-left"></i></button>
-                <div class="children-books-track" id="childrenBooks">
+            <div class="section-slider" style="position: relative;">
+                <button class="slider-arrow prev exam-books-prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="exam-books-track" id="examBooksBooks" style="display: flex; gap: 15px; width: 100%;">
                     <!-- Books loaded dynamically -->
                 </div>
-                <button class="slider-arrow next children-next"><i class="fas fa-chevron-right"></i></button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Fiction Favorites Section -->
-    <section class="fiction-section">
-        <div class="container">
-            <div class="section-header-fancy">
-                <div class="header-line"></div>
-                <h2><i class="fas fa-book-open"></i> Fiction Favorites</h2>
-                <div class="header-line"></div>
-            </div>
-            <div class="fiction-books-grid" id="fictionBooks">
-                <!-- Books loaded dynamically -->
+                <button class="slider-arrow next exam-books-next"><i class="fas fa-chevron-right"></i></button>
             </div>
         </div>
     </section>

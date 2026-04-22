@@ -5,197 +5,42 @@ async function renderHeroBooks() {
     // Function kept for compatibility but logic removed to prioritize static illustration
 }
 
-// ===== Islamic Books Section =====
-async function renderIslamicBooks() {
-    const islamicBooks = await getBooksForSection('islamicBooks');
-    const islamicContainer = document.getElementById('islamicBooksGrid');
-
-    if (islamicContainer && islamicBooks.length > 0) {
-        // Limit to 8 books for the grid display
-        const booksToShow = islamicBooks.slice(0, 8);
-        islamicContainer.innerHTML = booksToShow.map(book => createBookCard(book)).join('');
-        console.log('✅ Islamic books grid rendered:', booksToShow.length);
-    } else {
-        console.warn('⚠️ No Islamic books container found or no books');
-    }
-}
-
-// ===== Kashmiri Books Section =====
-async function renderKashmiriBooks() {
-    // Try to get by section first, then fallback to language filter
-    let kashmiriBooks = await getBooksForSection('kashmiri');
-    
-    if (kashmiriBooks.length === 0) {
-        if (typeof API !== 'undefined' && API.Books) {
-            try {
-                const response = await API.Books.getAll({ language: 'Kashmiri' });
-                kashmiriBooks = response.books || [];
-            } catch (err) {
-                console.warn('Failed to fetch Kashmiri books by language');
+// ===== Dynamic Homepage Sections =====
+async function renderHomePageSections() {
+    const safeRenderSection = async (sectionKey, containerId) => {
+        try {
+            const books = await getBooksForSection(sectionKey);
+            const container = document.getElementById(containerId);
+            if (container && books.length > 0) {
+                container.innerHTML = books.map(book => createBookCard(book)).join('');
+            } else if (container) {
+                container.innerHTML = '<p class="no-data" style="text-align: center; width: 100%; color: #888; padding: 20px;">No books available in this section yet.</p>';
             }
+        } catch (error) {
+            console.warn(`Failed to render ${sectionKey}:`, error);
         }
-    }
+    };
 
-    const container = document.getElementById('kashmiriBooksGrid');
+    await Promise.allSettled([
+        safeRenderSection('newArrivals', 'newArrivalsBooks'),
+        safeRenderSection('bestSellers', 'bestSellersBooks'),
+        safeRenderSection('editorsChoice', 'editorsChoiceBooks'),
+        safeRenderSection('childrenCorner', 'childrenCornerBooks'),
+        safeRenderSection('comicBooks', 'comicBooksBooks'),
+        safeRenderSection('boxSets', 'boxSetsBooks'),
+        safeRenderSection('examBooks', 'examBooksBooks')
+    ]);
 
-    if (container && kashmiriBooks.length > 0) {
-        const booksToShow = kashmiriBooks.slice(0, 8);
-        container.innerHTML = booksToShow.map(book => createBookCard(book)).join('');
-        console.log('✅ Kashmiri books grid rendered:', booksToShow.length);
-    } else if (container) {
-        container.innerHTML = '<p class="no-data" style="grid-column: 1/-1; text-align: center; padding: 40px; color: #999;">Kashmiri books are coming soon!</p>';
-    }
+    // Initialize all sliders!
+    setupSlider('.new-arrivals-track', '.new-arrivals-prev', '.new-arrivals-next');
+    setupSlider('.best-sellers-track', '.best-sellers-prev', '.best-sellers-next');
+    setupSlider('.editors-choice-track', '.editors-choice-prev', '.editors-choice-next');
+    setupSlider('.children-corner-track', '.children-corner-prev', '.children-corner-next');
+    setupSlider('.comic-books-track', '.comic-books-prev', '.comic-books-next');
+    setupSlider('.box-sets-track', '.box-sets-prev', '.box-sets-next');
+    setupSlider('.exam-books-track', '.exam-books-prev', '.exam-books-next');
 }
 
-// ===== Editor's Choice Banner =====
-async function renderFeaturedBooks() {
-    const featuredBooks = await getBooksForSection('featured');
-    const featuredContainer = document.getElementById('featuredBooks');
-
-    if (featuredContainer && featuredBooks.length > 0) {
-        featuredContainer.innerHTML = featuredBooks.map(book => createBookCard(book)).join('');
-    }
-}
-
-// Render trending books
-async function renderTrendingBooks() {
-    const trendingBooks = await getBooksForSection('trending');
-    const trendingContainer = document.getElementById('trendingBooks');
-
-    if (trendingContainer && trendingBooks.length > 0) {
-        trendingContainer.innerHTML = trendingBooks.map(book => createBookCard(book)).join('');
-        initializeTrendingSlider();
-    }
-}
-
-// Render new releases (uses all books if no specific data)
-async function renderNewReleases() {
-    const newReleases = await getBooksForSection('newReleases');
-    const releasesContainer = document.getElementById('newReleasesBooks');
-
-    if (releasesContainer && newReleases.length > 0) {
-        releasesContainer.innerHTML = newReleases.map(book => createBookCard(book)).join('');
-        initializeReleasesSlider();
-    }
-}
-
-// Render Indian authors section
-async function renderIndianAuthors() {
-    const indianBooks = await getBooksForSection('indianAuthors');
-    const indianContainer = document.getElementById('indianAuthorsBooks');
-
-    if (indianContainer && indianBooks.length > 0) {
-        indianContainer.innerHTML = indianBooks.map(book => createBookCard(book)).join('');
-    }
-}
-
-// Render box sets
-async function renderBoxSets() {
-    const boxSets = await getBooksForSection('boxSets');
-    const boxContainer = document.getElementById('boxSetsBooks');
-
-    if (boxContainer && boxSets.length > 0) {
-        boxContainer.innerHTML = boxSets.map(book => createBookCard(book)).join('');
-    }
-}
-
-// Render children's books
-async function renderChildrenBooks() {
-    const childrenBooks = await getBooksForSection('children');
-    const childrenContainer = document.getElementById('childrenBooks');
-
-    if (childrenContainer && childrenBooks.length > 0) {
-        childrenContainer.innerHTML = childrenBooks.map(book => createBookCard(book)).join('');
-        initializeChildrenSlider();
-    }
-}
-
-// Render fiction books
-async function renderFictionBooks() {
-    const fictionBooks = await getBooksForSection('fiction');
-    const fictionContainer = document.getElementById('fictionBooks');
-
-    if (fictionContainer && fictionBooks.length > 0) {
-        fictionContainer.innerHTML = fictionBooks.map(book => createBookCard(book)).join('');
-    }
-}
-
-// Render sidebar books
-// Render sidebar books
-async function renderSidebarBooks() {
-    // 1. Author Spotlight - Use Featured books
-    const featuredBooks = await getBooksForSection('featured');
-    const authorContainer = document.getElementById('authorBooks');
-    if (authorContainer && featuredBooks.length > 0) {
-        authorContainer.innerHTML = featuredBooks.slice(0, 3).map(book => `
-            <div class="author-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
-                <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
-                <div class="book-details">
-                    <h4>${book.title}</h4>
-                    <span class="price">₹${book.price}</span>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // 2. Academic books - Use Academic specific section
-    const academicBooks = await getBooksForSection('academic');
-    const academicContainer = document.getElementById('academicBooks');
-    if (academicContainer && academicBooks.length > 0) {
-        academicContainer.innerHTML = academicBooks.slice(0, 3).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
-                <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
-            </div>
-        `).join('');
-    }
-
-    // 3. Exam books (Master CTET & CSAT) - Use Exam specific section
-    const examBooks = await getBooksForSection('exam');
-    const examContainer = document.getElementById('examBooks');
-    if (examContainer && examBooks.length > 0) {
-        examContainer.innerHTML = examBooks.slice(0, 3).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
-                <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
-            </div>
-        `).join('');
-    }
-
-    // 4. Book crushes (use more featured books)
-    const crushContainer = document.getElementById('crushBooks');
-    if (crushContainer && featuredBooks.length > 3) {
-        crushContainer.innerHTML = featuredBooks.slice(3, 6).map(book => `
-            <div class="promo-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
-                <img src="${book.image}" alt="${book.title}" onerror="this.onerror=null;this.style.background='#eee';this.alt='No Image'">
-            </div>
-        `).join('');
-    }
-}
-
-// Render Top 100 Modal
-async function renderTop100Books() {
-    const top100Books = await getBooksForSection('top100');
-    const top100Container = document.getElementById('top100Books');
-
-    if (top100Container && top100Books.length > 0) {
-        top100Container.innerHTML = top100Books.map((book, index) => {
-            const bookJSON = JSON.stringify(book).replace(/'/g, "\\'").replace(/"/g, '&quot;');
-            return `
-            <div class="top100-book-item" onclick="viewBookDetail('${book.id}', '${book.db_source || book.language || ''}')" style="cursor: pointer;">
-                <span class="book-rank">#${index + 1}</span>
-                <img src="${book.image}" alt="${book.title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%22 height=%22100%22%3E%3Crect fill=%22%23f0f0f0%22 width=%22100%22 height=%22100%22/%3E%3C/svg%3E'">
-                <div class="book-info">
-                    <h4>${book.title}</h4>
-                    <p>${book.author}</p>
-                    <div class="price-row">
-                        <span class="price">₹${book.price}</span>
-                        ${book.originalPrice ? `<span class="original-price">₹${book.originalPrice}</span>` : ''}
-                    </div>
-                </div>
-                <button class="btn-add-cart" onclick="addToCartCard('${book.id}', '${bookJSON}')"><i class="fas fa-shopping-cart"></i></button>
-            </div>
-        `}).join('');
-    }
-}
 
 // ===== Slider Functions =====
 
@@ -721,46 +566,21 @@ async function initializeWebsite() {
     showLoading();
 
     try {
-        // Helper to safely run each render function independently
-        const safeRender = (fn, name) => fn().catch(err => {
-            console.warn(`⚠️ Failed to render ${name}:`, err.message);
-            return null;
-        });
-
-        // 1. Load CRITICAL sections first (Hero/Featured)
-        const criticalLoad = Promise.allSettled([
-            safeRender(renderHeroBooks, 'Hero Books'),
-            safeRender(renderFeaturedBooks, 'Featured Books'),
-            safeRender(renderIslamicBooks, 'Islamic Books'),
-            safeRender(renderKashmiriBooks, 'Kashmiri Collection')
-        ]);
-
-        // 2. RACE: Hide loader when critical data is ready OR after 1.5s (UI feedback)
-        await Promise.race([
-            criticalLoad,
-            new Promise(resolve => setTimeout(resolve, 1500))
-        ]);
+        // 1. Render all homepage sections correctly
+        await renderHomePageSections();
+        
+        // 2. Load other modal sections in background (Non-blocking)
+        if (typeof renderTop100Books === 'function') {
+            renderTop100Books().then(() => {
+                initializeTop100Modal();
+            }).catch(console.warn);
+        }
 
         // 3. Hide loader and enable UI
         hideLoading();
         initializeSearch();
         initializeInteractions();
-
-        // 3. Load other sections in background (Non-blocking)
-        Promise.allSettled([
-            safeRender(renderTrendingBooks, 'Trending Books'),
-            safeRender(renderNewReleases, 'New Releases'),
-            safeRender(renderBoxSets, 'Box Sets'),
-            safeRender(renderChildrenBooks, 'Children Books'),
-            safeRender(renderFictionBooks, 'Fiction Books'),
-            safeRender(renderSidebarBooks, 'Sidebar Books'),
-            safeRender(renderTop100Books, 'Top 100')
-        ]).then(() => {
-            // Initialize content-dependent UI after everything is done
-            initializeCategoryStrip();
-            initializeTop100Modal();
-            console.log('✅ All background sections loaded!');
-        });
+        initializeCategoryStrip();
 
         // Initialize Modern Hero Animations
         const heroText = document.querySelector('.hero-text');

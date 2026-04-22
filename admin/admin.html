@@ -96,41 +96,37 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span>Orders</span>
                 </a>
-                <a href="#" class="nav-item" data-section="hero">
-                    <i class="fas fa-star"></i>
-                    <span>Hero Section</span>
+                <a href="#" class="nav-item" data-section="newArrivals">
+                    <i class="fas fa-calendar-plus"></i>
+                    <span>New Arrivals</span>
                 </a>
-                <a href="#" class="nav-item" data-section="editors">
+                <a href="#" class="nav-item" data-section="bestSellers">
+                    <i class="fas fa-crown"></i>
+                    <span>Best Sellers</span>
+                </a>
+                <a href="#" class="nav-item" data-section="editorsChoice">
                     <i class="fas fa-award"></i>
                     <span>Editor's Choice</span>
                 </a>
-                <a href="#" class="nav-item" data-section="featured">
-                    <i class="fas fa-fire"></i>
-                    <span>Featured Books</span>
-                </a>
-                <a href="#" class="nav-item" data-section="trending">
-                    <i class="fas fa-trending-up"></i>
-                    <span>Trending Now</span>
-                </a>
-                <a href="#" class="nav-item" data-section="newReleases">
-                    <i class="fas fa-calendar-plus"></i>
-                    <span>New Releases</span>
-                </a>
-                <a href="#" class="nav-item" data-section="children">
+                <a href="#" class="nav-item" data-section="childrenCorner">
                     <i class="fas fa-child"></i>
-                    <span>Children's Books</span>
+                    <span>Children Corner</span>
                 </a>
-                <a href="#" class="nav-item" data-section="bestseller">
-                    <i class="fas fa-crown"></i>
-                    <span>Bestsellers</span>
+                <a href="#" class="nav-item" data-section="comicBooks">
+                    <i class="fas fa-mask"></i>
+                    <span>Popular Comic Books</span>
+                </a>
+                <a href="#" class="nav-item" data-section="boxSets">
+                    <i class="fas fa-boxes"></i>
+                    <span>Box Sets</span>
+                </a>
+                <a href="#" class="nav-item" data-section="examBooks">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Competitive Exam Books</span>
                 </a>
                 <a href="#" class="nav-item" data-section="urdu">
-                    <i class="fas fa-language"></i>
+                    <i class="fas fa-book-open"></i>
                     <span>Urdu Books</span>
-                </a>
-                <a href="#" class="nav-item" data-section="indianAuthors">
-                    <i class="fas fa-star-and-crescent"></i>
-                    <span>Popular Urdu</span>
                 </a>
                 <a href="#" class="nav-item" data-section="english">
                     <i class="fas fa-language"></i>
@@ -420,88 +416,81 @@
                         </table>
                     </div>
                 </section>
-                <!-- Hero Section Management -->
-                <section id="heroSection" class="content-section">
+                <!-- New Arrivals -->
+                <section id="newArrivalsSection" class="content-section">
                     <div class="section-header">
-                        <h2>Hero Section Books</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('hero')">
-                            <i class="fas fa-plus"></i>
-                            Add to Hero
+                        <h2>New Arrivals</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('newArrivals')">
+                            <i class="fas fa-plus"></i> Add to New Arrivals
                         </button>
                     </div>
-                    <div id="heroBooks" class="books-grid"></div>
+                    <div id="newArrivalsBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Editor's Choice Management -->
-                <section id="editorsSection" class="content-section">
+                <!-- Best Sellers -->
+                <section id="bestSellersSection" class="content-section">
                     <div class="section-header">
-                        <h2>Editor's Choice Books</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('editors')">
-                            <i class="fas fa-plus"></i>
-                            Add to Editor's Choice
+                        <h2>Best Sellers</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('bestSellers')">
+                            <i class="fas fa-plus"></i> Add to Best Sellers
                         </button>
                     </div>
-                    <div id="editorsBooks" class="books-grid"></div>
+                    <div id="bestSellersBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Featured Books Management -->
-                <section id="featuredSection" class="content-section">
+                <!-- Editor's Choice -->
+                <section id="editorsChoiceSection" class="content-section">
                     <div class="section-header">
-                        <h2>Featured Books</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('featured')">
-                            <i class="fas fa-plus"></i>
-                            Add to Featured
+                        <h2>Editor's Choice</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('editorsChoice')">
+                            <i class="fas fa-plus"></i> Add to Editor's Choice
                         </button>
                     </div>
-                    <div id="featuredBooks" class="books-grid"></div>
+                    <div id="editorsChoiceBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Trending Books Management -->
-                <section id="trendingSection" class="content-section">
+                <!-- Children Corner -->
+                <section id="childrenCornerSection" class="content-section">
                     <div class="section-header">
-                        <h2>Trending Books</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('trending')">
-                            <i class="fas fa-plus"></i>
-                            Add to Trending
+                        <h2>Children Corner</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('childrenCorner')">
+                            <i class="fas fa-plus"></i> Add to Children Corner
                         </button>
                     </div>
-                    <div id="trendingBooks" class="books-grid"></div>
+                    <div id="childrenCornerBooks" class="books-grid"></div>
                 </section>
 
-                <!-- New Releases Books Management -->
-                <section id="newReleasesSection" class="content-section">
+                <!-- Popular Comic Books -->
+                <section id="comicBooksSection" class="content-section">
                     <div class="section-header">
-                        <h2>New Releases</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('newReleases')">
-                            <i class="fas fa-plus"></i>
-                            Add to New Releases
+                        <h2>Popular Comic Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('comicBooks')">
+                            <i class="fas fa-plus"></i> Add to Comic Books
                         </button>
                     </div>
-                    <div id="newReleasesBooks" class="books-grid"></div>
+                    <div id="comicBooksBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Children's Books Management -->
-                <section id="childrenSection" class="content-section">
+                <!-- Box Sets -->
+                <section id="boxSetsSection" class="content-section">
                     <div class="section-header">
-                        <h2>Children's Corner</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('children')">
-                            <i class="fas fa-plus"></i>
-                            Add to Children
+                        <h2>Box Sets</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('boxSets')">
+                            <i class="fas fa-plus"></i> Add to Box Sets
                         </button>
                     </div>
-                    <div id="childrenBooks" class="books-grid"></div>
+                    <div id="boxSetsBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Bestsellers Management -->
-                <section id="bestsellerSection" class="content-section">
+                <!-- Competitive Exam Books -->
+                <section id="examBooksSection" class="content-section">
                     <div class="section-header">
-                        <h2>Bestseller Books</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('bestseller')">
-                            <i class="fas fa-plus"></i>
-                            Add to Bestsellers
+                        <h2>Competitive Exam Books</h2>
+                        <button class="btn-primary" onclick="showAddToSectionModal('examBooks')">
+                            <i class="fas fa-plus"></i> Add to Exam Books
                         </button>
                     </div>
-                    <div id="bestsellerBooks" class="books-grid"></div>
+                    <div id="examBooksBooks" class="books-grid"></div>
                 </section>
 
                 <!-- Urdu Books Management -->
@@ -516,17 +505,7 @@
                     <div id="urduBooks" class="books-grid"></div>
                 </section>
 
-                <!-- Popular Urdu Books (Indian Authors Section) -->
-                <section id="indianAuthorsSection" class="content-section">
-                    <div class="section-header">
-                        <h2>Popular Urdu Books (Section)</h2>
-                        <button class="btn-primary" onclick="showAddToSectionModal('indianAuthors')">
-                            <i class="fas fa-plus"></i>
-                            Add to Popular Urdu
-                        </button>
-                    </div>
-                    <div id="indianAuthorsBooks" class="books-grid"></div>
-                </section>
+
 
                 <!-- English Books Management -->
                 <section id="englishSection" class="content-section">
@@ -894,36 +873,32 @@
                     <label>Add to Sections</label>
                     <div class="checkbox-group">
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="hero">
-                            <span>Hero Section</span>
+                            <input type="checkbox" name="sections" value="newArrivals">
+                            <span>New Arrivals</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="editors">
+                            <input type="checkbox" name="sections" value="bestSellers">
+                            <span>Best Sellers</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="sections" value="editorsChoice">
                             <span>Editor's Choice</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="featured">
-                            <span>Featured Books</span>
+                            <input type="checkbox" name="sections" value="childrenCorner">
+                            <span>Children Corner</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="indianAuthors">
-                            <span>Popular Urdu Books</span>
+                            <input type="checkbox" name="sections" value="comicBooks">
+                            <span>Popular Comic Books</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="trending">
-                            <span>Trending Now</span>
+                            <input type="checkbox" name="sections" value="boxSets">
+                            <span>Box Sets</span>
                         </label>
                         <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="newReleases">
-                            <span>New Releases</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="children">
-                            <span>Children's Corner</span>
-                        </label>
-                        <label class="checkbox-label">
-                            <input type="checkbox" name="sections" value="bestseller">
-                            <span>Bestsellers</span>
+                            <input type="checkbox" name="sections" value="examBooks">
+                            <span>Competitive Exam Books</span>
                         </label>
                     </div>
                 </div>
