@@ -10,7 +10,7 @@ let _cachedBooks = null;
 let _cacheTimestamp = 0;
 let _fetchPromise = null; // Prevent redundant simultaneous fetches
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes (RAM)
-const PERSISTENT_CACHE_KEY = 'abc_books_data_cache';
+const PERSISTENT_CACHE_KEY = 'abc_books_data_cache_v2';
 const PERSISTENT_CACHE_TTL = 30 * 60 * 1000; // 30 minutes (Storage)
 
 // ===== Fetch All Books from Database API =====
