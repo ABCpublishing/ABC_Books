@@ -966,6 +966,10 @@ async function handleBookFormSubmit(e) {
 
         closeBookModal();
         loadDashboardData();
+        
+        // Bust the persistent and RAM caches so edits reflect immediately on the storefront
+        localStorage.removeItem('abc_books_data_cache');
+        localStorage.removeItem('abc_books_data_cache_v2');
 
         // Reload current section if applicable
         const activeSection = document.querySelector('.nav-item.active')?.getAttribute('data-section');
@@ -986,6 +990,10 @@ async function deleteBook(bookId, lang) {
         await API.Books.delete(bookId, { language: lang });
         logActivity(`Deleted book ID: ${bookId}`);
         alert('Book deleted successfully!');
+
+        // Bust the persistent and RAM caches so deletions reflect immediately on the storefront
+        localStorage.removeItem('abc_books_data_cache');
+        localStorage.removeItem('abc_books_data_cache_v2');
 
         loadDashboardData();
         const activeSection = document.querySelector('.nav-item.active')?.getAttribute('data-section');
