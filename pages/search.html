@@ -319,14 +319,7 @@
                         continue with</span>
                 </div>
                 <!-- Google Sign-In Button Container -->
-                <div id="googleSignInBtnLogin" style="display: flex; justify-content: center; margin-bottom: 20px;">
-                    <button type="button" class="btn-google"
-                        onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
-                        style="margin-bottom: 0;">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                        <span>Continue with Google</span>
-                    </button>
-                </div>
+                <div id="googleSignInBtnLogin" style="display: flex; justify-content: center; margin-bottom: 20px;"></div>
             </form>
             <div class="auth-footer">
                 <p>Don't have an account? <a href="#" onclick="switchToSignup()">Sign Up</a></p>
@@ -422,14 +415,7 @@
                         sign up with</span>
                 </div>
                 <!-- Google Sign-Up Button Container -->
-                <div id="googleSignInBtnSignup" style="display: flex; justify-content: center; margin-bottom: 20px;">
-                    <button type="button" class="btn-google"
-                        onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
-                        style="margin-bottom: 0;">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                        <span>Sign up with Google</span>
-                    </button>
-                </div>
+                <div id="googleSignInBtnSignup" style="display: flex; justify-content: center; margin-bottom: 20px;"></div>
             </form>
             <div class="auth-footer">
                 <p>Already have an account? <a href="#" onclick="switchToLogin()">Login</a></p>

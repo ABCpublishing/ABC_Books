@@ -212,17 +212,6 @@
                     <h1 class="book-title" id="bookTitle">Loading...</h1>
                     <p class="book-author" id="bookAuthor">by <span>Author Name</span></p>
 
-                    <div class="book-rating">
-                        <div class="stars" id="bookStars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                        </div>
-                        <span class="rating-text" id="ratingText">4.5 (128 reviews)</span>
-                    </div>
-
                     <div class="book-price-section">
                         <div class="price-row">
                             <span class="current-price" id="currentPrice">₹0</span>
@@ -285,7 +274,6 @@
                 <div class="tabs-header">
                     <button class="tab-btn active" data-tab="description">Description</button>
                     <button class="tab-btn" data-tab="details">Details</button>
-                    <button class="tab-btn" data-tab="reviews">Reviews <span id="reviewCount">(0)</span></button>
                 </div>
 
                 <div class="tabs-content">
@@ -322,32 +310,6 @@
                         </table>
                     </div>
 
-                    <!-- Reviews Tab -->
-                    <div class="tab-panel" id="reviewsPanel">
-                        <div class="reviews-summary">
-                            <div class="overall-rating">
-                                <span class="rating-big" id="overallRating">4.5</span>
-                                <div class="stars-container" id="overallStars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
-                                </div>
-                                <span class="total-reviews">Based on <span id="totalReviews">0</span> reviews</span>
-                            </div>
-                            <button class="btn-write-review" onclick="showReviewForm()">
-                                <i class="fas fa-pen"></i> Write a Review
-                            </button>
-                        </div>
-
-                        <div class="reviews-list" id="reviewsList">
-                            <div class="no-reviews">
-                                <i class="fas fa-comment-slash"></i>
-                                <p>No reviews yet. Be the first to review this book!</p>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -457,14 +419,7 @@
                     <p style="text-align: center; color: #666; font-size: 13px; margin-bottom: 12px; font-weight: 500;">
                         <i class="fas fa-magic"></i> Recommended for quick access:
                     </p>
-                    <div id="googleSignInBtnLogin" style="display: flex; justify-content: center;">
-                        <button type="button" class="btn-google"
-                            onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
-                            style="margin-bottom: 0;">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                            <span>Continue with Google</span>
-                        </button>
-                    </div>
+                    <div id="googleSignInBtnLogin" style="display: flex; justify-content: center;"></div>
                 </div>
 
                 <div class="google-auth-separator"
@@ -520,14 +475,7 @@
                     <p style="text-align: center; color: #666; font-size: 13px; margin-bottom: 12px; font-weight: 500;">
                         <i class="fas fa-bolt"></i> One-click signup:
                     </p>
-                    <div id="googleSignInBtnSignup" style="display: flex; justify-content: center;">
-                        <button type="button" class="btn-google"
-                            onclick="if(typeof google!=='undefined' && google.accounts) { google.accounts.id.prompt(); } else { alert('Google Sign-In is initializing...'); }"
-                            style="margin-bottom: 0;">
-                            <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
-                            <span>Sign up with Google</span>
-                        </button>
-                    </div>
+                    <div id="googleSignInBtnSignup" style="display: flex; justify-content: center;"></div>
                 </div>
 
                 <div class="google-auth-separator"

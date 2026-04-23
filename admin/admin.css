@@ -1324,8 +1324,8 @@ body {
         visibility: visible;
     }
 
-    #orderModal .modal-header h2 {
-        visibility: visible;
+    #orderModal .modal-header {
+        display: none !important;
     }
 
     #orderModal .modal-content {
@@ -1337,10 +1337,30 @@ body {
         box-shadow: none;
         border: none;
         overflow: visible;
+        padding: 0 !important;
+        background-color: transparent !important;
     }
 
     #orderModal .modal-footer,
-    #orderModal .close-modal {
+    #orderModal .close-modal,
+    .order-management-controls,
+    .no-print {
         display: none !important;
+    }
+    
+    .print-invoice-header,
+    .print-invoice-footer {
+        display: block !important;
+    }
+
+    #orderModalBody {
+        padding: 20px !important;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+    
+    * {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
     }
 }

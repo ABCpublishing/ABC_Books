@@ -132,17 +132,16 @@ function populateBookDetails() {
     const bookAuthorElem = document.getElementById('bookAuthor');
     if (bookAuthorElem) bookAuthorElem.innerHTML = `by <span>${currentBook.author}</span>`;
 
-    // Rating
-    const rating = currentBook.rating || 4.5;
-    const starsElem = document.getElementById('bookStars');
-    if (starsElem) starsElem.innerHTML = generateStars(rating);
-
-    const ratingTextElem = document.getElementById('ratingText');
-    if (ratingTextElem) ratingTextElem.textContent = `${rating} (${Math.floor(Math.random() * 200 + 50)} reviews)`;
-
     // Price
     const currentPriceElem = document.getElementById('currentPrice');
     if (currentPriceElem) currentPriceElem.textContent = `₹${currentBook.price}`;
+
+    const price = parseFloat(currentBook.price) || 0;
+    const ogPrice = currentBook.originalPrice || currentBook.original_price;
+    const originalPrice = parseFloat(ogPrice) || price;
+    const discount = originalPrice > price
+        ? Math.floor(((originalPrice - price) / originalPrice) * 100)
+        : 0;
 
     const originalPriceElem = document.getElementById('originalPrice');
     const discountPercentElem = document.getElementById('discountPercent');
@@ -167,13 +166,6 @@ function populateBookDetails() {
 
     const detailAuthor = document.getElementById('detailAuthor');
     if (detailAuthor) detailAuthor.textContent = currentBook.author;
-
-    // Overall rating in reviews
-    const overallRatingElem = document.getElementById('overallRating');
-    if (overallRatingElem) overallRatingElem.textContent = rating;
-
-    const overallStarsElem = document.getElementById('overallStars');
-    if (overallStarsElem) overallStarsElem.innerHTML = generateStars(rating);
 
     // Check wishlist status
     checkWishlistStatus();

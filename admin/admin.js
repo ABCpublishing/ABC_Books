@@ -635,7 +635,24 @@ async function viewOrderDetails(orderId) {
         const modalDate = new Date(order.created_at).toLocaleString('en-IN', { dateStyle: 'long', timeStyle: 'short' });
 
         body.innerHTML = `
-            <div style="margin-bottom: 20px;">
+            <!-- PRINT ONLY INVOICE HEADER -->
+            <div class="print-invoice-header" style="display: none; border-bottom: 2px solid #333; padding-bottom: 15px; margin-bottom: 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h1 style="margin: 0; color: #333; font-size: 28px; font-weight: bold;">INVOICE</h1>
+                        <p style="margin: 5px 0; color: #666; font-size: 16px;"><strong>ABC Books</strong></p>
+                        <p style="margin: 0; color: #666; font-size: 12px;">Premium Online Bookstore</p>
+                        <p style="margin: 0; color: #666; font-size: 12px;">Email: support@abcbooks.com</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h2 style="margin: 0; color: #333; font-size: 16px;">Order #: ${order.order_id}</h2>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Date: ${new Date(order.created_at).toLocaleDateString()}</p>
+                        <p style="margin: 5px 0 0 0; color: #666; font-size: 14px;">Status: <strong>${order.status.toUpperCase()}</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="no-print" style="margin-bottom: 20px;">
                 <h3 style="margin: 0; color: #2c3e50; font-size: 24px;">ORDER #${order.order_id}</h3>
                 <span style="display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 13px; font-weight: bold; background-color: #f1f5f9; color: #64748b; margin-top: 5px;">Status: ${order.status.toUpperCase()}</span>
                 <p style="color: #7f8c8d; font-size: 14px; margin: 5px 0 0 0;"><i class="fas fa-calendar-alt"></i> ${modalDate}</p>
@@ -643,13 +660,21 @@ async function viewOrderDetails(orderId) {
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; background: #f8fbff; padding: 15px; border-radius: 8px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
                 <div>
-                    <h4 style="margin: 0 0 10px 0; color: #34495e; font-size: 16px;"><i class="fas fa-user"></i> Customer Info</h4>
+                    <h4 style="margin: 0 0 10px 0; color: #34495e; font-size: 16px;">
+                        <i class="fas fa-user no-print"></i> 
+                        <span class="print-invoice-header" style="display:none; font-weight:bold; color:#333; font-size:14px;">Bill To / Customer</span>
+                        <span class="no-print">Customer Info</span>
+                    </h4>
                     <p style="margin: 0;"><strong>Name:</strong> ${order.shipping_first_name} ${order.shipping_last_name}</p>
                     <p style="margin: 5px 0 0 0;"><strong>Email:</strong> ${order.shipping_email}</p>
                     <p style="margin: 5px 0 0 0;"><strong>Phone:</strong> ${order.shipping_phone || 'N/A'}</p>
                 </div>
                 <div>
-                    <h4 style="margin: 0 0 10px 0; color: #34495e; font-size: 16px;"><i class="fas fa-shipping-fast"></i> Shipping Details</h4>
+                    <h4 style="margin: 0 0 10px 0; color: #34495e; font-size: 16px;">
+                        <i class="fas fa-shipping-fast no-print"></i> 
+                        <span class="print-invoice-header" style="display:none; font-weight:bold; color:#333; font-size:14px;">Ship To</span>
+                        <span class="no-print">Shipping Details</span>
+                    </h4>
                     <p style="margin: 0;">${order.shipping_address1}</p>
                     ${order.shipping_address2 ? `<p style="margin: 0;">${order.shipping_address2}</p>` : ''}
                     <p style="margin: 0;">${order.shipping_city}, ${order.shipping_state} - ${order.shipping_pincode}</p>
@@ -658,26 +683,61 @@ async function viewOrderDetails(orderId) {
 
             <div style="margin-bottom: 20px;">
                 <h4 style="margin: 0 0 10px 0; color: #34495e; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 5px;">Order Items</h4>
-                ${itemsList}
-                <div style="text-align: right; margin-top: 15px; background: #fffaf0; padding: 15px; border-radius: 8px; border: 1px solid #fbd38d;">
-                    <div style="display: flex; justify-content: flex-end; gap: 20px;">
-                        <div style="text-align: left;">
-                            <p style="margin: 0 0 5px 0;">Subtotal:</p>
-                            <h3 style="margin: 5px 0 0 0; color: #2c3e50;">Total:</h3>
-                        </div>
-                        <div style="text-align: right;">
-                            <p style="margin: 0 0 5px 0;">₹${order.subtotal || order.total}</p>
-                            <h3 style="margin: 5px 0 0 0; color: #27ae60;">₹${order.total}</h3>
-                        </div>
-                    </div>
+                
+                <!-- Print Friendly Table -->
+                <table style="width: 100%; border-collapse: collapse; margin-top: 10px; text-align: left;">
+                    <thead>
+                        <tr style="background-color: #f1f5f9; border-bottom: 2px solid #cbd5e1;">
+                            <th style="padding: 10px; font-size: 14px; color: #334155;">Item Description</th>
+                            <th style="padding: 10px; font-size: 14px; color: #334155; text-align: center;">Qty</th>
+                            <th style="padding: 10px; font-size: 14px; color: #334155; text-align: right;">Price</th>
+                            <th style="padding: 10px; font-size: 14px; color: #334155; text-align: right;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${(order.items || []).map(item => `
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 12px 10px;">
+                                <strong style="display: block; color: #1e293b; margin-bottom: 3px;">${item.title || item.book_title}</strong>
+                                <small style="color: #64748b;">By: ${item.author || item.book_author || 'N/A'}</small>
+                            </td>
+                            <td style="padding: 12px 10px; text-align: center; color: #475569;">${item.quantity}</td>
+                            <td style="padding: 12px 10px; text-align: right; color: #475569;">₹${item.price}</td>
+                            <td style="padding: 12px 10px; text-align: right; font-weight: bold; color: #1e293b;">₹${item.price * item.quantity}</td>
+                        </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+                
+                <div style="display: flex; justify-content: flex-end; margin-top: 15px; padding: 15px; border-radius: 8px; border: 1px solid #fbd38d; background: #fffaf0;">
+                    <table style="width: 250px; border-collapse: collapse;">
+                        <tr>
+                            <td style="padding: 5px 10px; text-align: right; color: #64748b;">Subtotal:</td>
+                            <td style="padding: 5px 10px; text-align: right; font-weight: bold; color: #2c3e50;">₹${order.subtotal || order.total}</td>
+                        </tr>
+                        <tr style="border-bottom: 2px solid #cbd5e1;">
+                            <td style="padding: 5px 10px; text-align: right; color: #64748b;">Shipping:</td>
+                            <td style="padding: 5px 10px; text-align: right; font-weight: bold; color: #2c3e50;">₹0</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 10px; text-align: right; font-size: 16px; font-weight: bold; color: #0f172a;">Total:</td>
+                            <td style="padding: 10px 10px; text-align: right; font-size: 18px; font-weight: bold; color: #16a34a;">₹${order.total}</td>
+                        </tr>
+                    </table>
                 </div>
             </div>
 
-            <div style="margin-top: 25px;">
+            <div class="no-print" style="margin-top: 25px;">
                 <h4 style="margin-bottom: 15px; color: #333; border-bottom: 2px solid #eee; padding-bottom: 5px;">Order Timeline</h4>
                 <div class="timeline" style="margin-top: 10px;">
                     ${historyHtml || '<p style="color: #999;">No history records found</p>'}
                 </div>
+            </div>
+            
+            <!-- PRINT FOOTER -->
+            <div class="print-invoice-footer" style="display: none; margin-top: 40px; text-align: center; color: #666; font-size: 12px; border-top: 1px solid #ddd; padding-top: 15px;">
+                <p style="margin: 0 0 5px 0;">Thank you for shopping with ABC Books!</p>
+                <p style="margin: 0;">This is a computer-generated invoice and does not require a physical signature.</p>
             </div>
         `;
 
