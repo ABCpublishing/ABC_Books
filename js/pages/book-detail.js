@@ -384,8 +384,8 @@ async function checkWishlistStatus() {
         } catch(e) {}
     }
     
-    const btn = document.getElementById('detailWishlistBtn');
-    if (btn) {
+    const btns = document.querySelectorAll('.btn-wishlist');
+    btns.forEach(btn => {
         if (inWishlist) {
             btn.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i>';
             btn.classList.add('active');
@@ -393,7 +393,7 @@ async function checkWishlistStatus() {
             btn.innerHTML = '<i class="far fa-heart"></i>';
             btn.classList.remove('active');
         }
-    }
+    });
 }
 
 // Toggle wishlist status
@@ -420,13 +420,15 @@ async function toggleWishlistDetail(btn) {
         const list = checkRes.wishlist || checkRes || [];
         const existing = list.find(w => w.book_id == currentBook.id);
         
+        const btns = document.querySelectorAll('.btn-wishlist');
+        
         if (existing) {
             // Remove
             await API.Wishlist.remove(existing.id);
-            if (btn) {
-                btn.innerHTML = '<i class="far fa-heart"></i>';
-                btn.classList.remove('active');
-            }
+            btns.forEach(b => {
+                b.innerHTML = '<i class="far fa-heart"></i>';
+                b.classList.remove('active');
+            });
             if (typeof showNotification === 'function') showNotification('Removed from wishlist');
         } else {
             // Add
@@ -439,10 +441,10 @@ async function toggleWishlistDetail(btn) {
                 db_source: currentBook.db_source || currentBook.language
             };
             await addToWishlist(currentBook.id, bookData);
-            if (btn) {
-                btn.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i>';
-                btn.classList.add('active');
-            }
+            btns.forEach(b => {
+                b.innerHTML = '<i class="fas fa-heart" style="color: #e74c3c;"></i>';
+                b.classList.add('active');
+            });
         }
         await checkWishlistStatus();
     } catch(e) {

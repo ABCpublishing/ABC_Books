@@ -96,8 +96,21 @@ function viewBook(bookId, lang) {
 }
 
 // Remove from wishlist
-function removeFromWishlist(itemId) {
-    wishlistItems = wishlistItems.filter(item => item.id !== itemId);
+async function removeFromWishlist(itemId) {
+    // If user is logged in and API is available, use API
+    if (typeof getCurrentUser === 'function' && typeof API !== 'undefined') {
+        try {
+            const user = await getCurrentUser();
+            if (user && user.id && user.id !== -1) {
+                await API.Wishlist.remove(itemId);
+                if (typeof updateWishlistCount === 'function') updateWishlistCount();
+            }
+        } catch (error) {
+            console.error('Failed to remove from wishlist via API', error);
+        }
+    }
+
+    wishlistItems = wishlistItems.filter(item => String(item.id) !== String(itemId));
     localStorage.setItem('abc_books_wishlist', JSON.stringify(wishlistItems));
 
     // Animate removal
@@ -115,18 +128,49 @@ function removeFromWishlist(itemId) {
 }
 
 // Move item to cart
-function moveToCart(itemId) {
-    const item = wishlistItems.find(i => i.id === itemId);
+async function moveToCart(itemId) {
+    const item = wishlistItems.find(i => String(i.id) === String(itemId));
     if (!item) return;
 
-    // Add to cart
+    // If user is logged in and API is available, use API
+    if (typeof getCurrentUser === 'function' && typeof API !== 'undefined') {
+        try {
+            const user = await getCurrentUser();
+            if (user && user.id && user.id !== -1) {
+                // Add to API Cart
+                await API.Cart.add({
+                    user_id: user.id,
+                    book_id: item.book_id || item.id,
+                    quantity: 1
+                });
+
+                // Remove from API Wishlist
+                await API.Wishlist.remove(item.id);
+
+                // Update UI
+                wishlistItems = wishlistItems.filter(i => String(i.id) !== String(itemId));
+                renderWishlist();
+                if (typeof updateCartCount === 'function') updateCartCount();
+                if (typeof updateWishlistCount === 'function') updateWishlistCount();
+
+                showNotification('Item moved to cart!', 'success');
+                return;
+            }
+        } catch (error) {
+            console.error('Failed to move to cart via API', error);
+            showNotification('Failed to add to cart: ' + (error.message || 'Unknown error'), 'error');
+            return;
+        }
+    }
+
+    // Fallback to local storage
     let cart = JSON.parse(localStorage.getItem('abc_books_cart') || '[]');
-    const existingIndex = cart.findIndex(c => c.id === itemId);
+    const existingIndex = cart.findIndex(c => String(c.id) === String(item.book_id || item.id));
 
     if (existingIndex >= 0) {
         cart[existingIndex].quantity = (cart[existingIndex].quantity || 1) + 1;
     } else {
-        cart.push({ ...item, quantity: 1 });
+        cart.push({ ...item, id: item.book_id || item.id, quantity: 1 });
     }
 
     localStorage.setItem('abc_books_cart', JSON.stringify(cart));

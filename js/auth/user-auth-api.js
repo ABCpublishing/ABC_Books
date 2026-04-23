@@ -849,7 +849,8 @@ async function addToWishlist(bookId, bookData) {
     try {
         await API.Wishlist.add({
             user_id: userObj.id,
-            book_id: bookId
+            book_id: bookId,
+            book_source: bookData?.db_source || bookData?.language
         });
 
         await updateWishlistCount();
