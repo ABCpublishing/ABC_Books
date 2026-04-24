@@ -561,11 +561,93 @@ function hideLoading() {
     }
 }
 
+// ===== Dynamic Menus =====
+async function renderDynamicMenus() {
+    try {
+        if (!window.API || !window.API.Categories) return;
+        
+        const res = await API.Categories.getAll();
+        const categories = res.categories;
+        
+        if (!categories || categories.length === 0) return;
+
+        // 1. Desktop Menu
+        const desktopMenu = document.querySelector('.nav-list .has-mega .mega-grid');
+        if (desktopMenu) {
+            desktopMenu.innerHTML = categories.map(lang => {
+                const icon = lang.icon || 'fa-book';
+                let color = '#333';
+                if (lang.name.toLowerCase() === 'urdu') color = '#8B0000';
+                if (lang.name.toLowerCase() === 'english') color = '#2c3e50';
+                if (lang.name.toLowerCase() === 'arabic') color = '#27ae60';
+                if (lang.name.toLowerCase() === 'kashmiri') color = '#8e44ad';
+
+                const subHTML = (lang.subcategories && lang.subcategories.length > 0)
+                    ? lang.subcategories.map(sub => `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${sub.name}</a></li>`).join('')
+                    : '';
+
+                return `
+                    <div class="mega-col">
+                        <h4><i class="fas ${icon}" style="color:${color}"></i> ${lang.name} Books</h4>
+                        <ul>
+                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name} Books</a></li>
+                            ${subHTML}
+                        </ul>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // 2. Mobile Menu
+        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
+        let mobileCategoriesLink = null;
+        mobileNavLinks.forEach(link => {
+            if (link.textContent.includes('Categories')) {
+                mobileCategoriesLink = link;
+            }
+        });
+
+        if (mobileCategoriesLink && mobileCategoriesLink.nextElementSibling && mobileCategoriesLink.nextElementSibling.classList.contains('mobile-submenu')) {
+            const mobileMenu = mobileCategoriesLink.nextElementSibling;
+            
+            mobileMenu.innerHTML = categories.map(lang => {
+                const icon = lang.icon || 'fa-book';
+                let color = '#333';
+                if (lang.name.toLowerCase() === 'urdu') color = '#8B0000';
+                if (lang.name.toLowerCase() === 'english') color = '#2c3e50';
+                if (lang.name.toLowerCase() === 'arabic') color = '#27ae60';
+                if (lang.name.toLowerCase() === 'kashmiri') color = '#8e44ad';
+
+                const subHTML = (lang.subcategories && lang.subcategories.length > 0)
+                    ? lang.subcategories.map(sub => `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${sub.name}</a></li>`).join('')
+                    : '';
+
+                return `
+                    <li class="mobile-has-submenu">
+                        <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: ${color}; font-weight: bold;">
+                            <i class="fas ${icon}"></i> ${lang.name} Books <i class="fas fa-chevron-down"></i>
+                        </a>
+                        <ul class="mobile-submenu">
+                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name} Books</a></li>
+                            ${subHTML}
+                        </ul>
+                    </li>
+                `;
+            }).join('');
+        }
+    } catch (e) {
+        console.error('Failed to render dynamic menus:', e);
+    }
+}
+
 // ===== Initialize Everything =====
 async function initializeWebsite() {
     showLoading();
 
     try {
+        // 0. Render dynamic menus from database
+        await renderDynamicMenus();
+
         // 1. Render all homepage sections correctly
         await renderHomePageSections();
         
