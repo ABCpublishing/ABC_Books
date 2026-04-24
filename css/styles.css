@@ -3932,3 +3932,10 @@ textarea {
     color: var(--primary) !important;
     font-weight: 700 !important;
 }
+/* Simple Dropdown Menu */
+.nav-dropdown-item { position: relative; }
+.nav-dropdown-menu { position: absolute; top: 100%; left: 0; min-width: 220px; background: #fff; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 8px; opacity: 0; visibility: hidden; transform: translateY(10px); transition: all 0.3s ease; z-index: 1000; padding: 10px 0; }
+.nav-dropdown-item:hover .nav-dropdown-menu { opacity: 1; visibility: visible; transform: translateY(0); }
+.nav-dropdown-menu a { display: block; padding: 10px 20px; color: #333; font-size: 14px; text-decoration: none; transition: all 0.2s ease; border-bottom: 1px solid #f9f9f9; }
+.nav-dropdown-menu a:last-child { border-bottom: none; }
+.nav-dropdown-menu a:hover { background: #f8f9fa; color: #8B0000; padding-left: 25px; }

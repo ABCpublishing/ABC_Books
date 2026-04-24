@@ -154,55 +154,8 @@
                 <li><a href="/index.html" class="mobile-nav-link active"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/pages/top-100.html" class="mobile-nav-link"><i class="fas fa-crown"></i> Top 100 Books</a>
                 </li>
-                <li class="mobile-has-submenu">
-                    <a href="#" class="mobile-nav-link"
-                        onclick="event.preventDefault(); toggleMobileSubmenu(this)">Categories <i
-                            class="fas fa-chevron-down"></i></a>
-                    <ul class="mobile-submenu">
-                        <li class="mobile-has-submenu">
-                            <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: #8B0000; font-weight: bold;"><i class="fas fa-book-open"></i> Urdu Books <i class="fas fa-chevron-down"></i></a>
-                            <ul class="mobile-submenu">
-                                <li><a href="/pages/search.html?language=Urdu">All Urdu Books</a></li>
-                                <li><a href="/pages/search.html?language=Urdu&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
-                                <li><a href="/pages/search.html?language=Urdu&subcategory=Hadith">Hadith</a></li>
-                                <li><a href="/pages/search.html?language=Urdu&subcategory=Biography">Biography</a></li>
-                                <li><a href="/pages/search.html?language=Urdu&subcategory=Creed+%26+Fiqh">Creed & Fiqh</a></li>
-                                <li><a href="/pages/search.html?language=Urdu&subcategory=Literature+%26+Fiction">Literature & Fiction</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li class="mobile-has-submenu">
-                            <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: #2c3e50; font-weight: bold;"><i class="fas fa-language"></i> English Books <i class="fas fa-chevron-down"></i></a>
-                            <ul class="mobile-submenu">
-                                <li><a href="/pages/search.html?language=English">All English Books</a></li>
-                                <li><a href="/pages/search.html?language=English&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
-                                <li><a href="/pages/search.html?language=English&subcategory=Hadith">Hadith</a></li>
-                                <li><a href="/pages/search.html?language=English&subcategory=Academic">Academic</a></li>
-                                <li><a href="/pages/search.html?language=English&subcategory=Literature+%26+Fiction">Literature & Fiction</a></li>
-                                <li><a href="/pages/search.html?language=English&subcategory=Biography">Biographies</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li class="mobile-has-submenu">
-                            <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: #27ae60; font-weight: bold;"><i class="fas fa-quran"></i> Arabic Books <i class="fas fa-chevron-down"></i></a>
-                            <ul class="mobile-submenu">
-                                <li><a href="/pages/search.html?language=Arabic">All Arabic Books</a></li>
-                                <li><a href="/pages/search.html?language=Arabic&subcategory=Quran+%26+Tafsir">Quran & Tafsir</a></li>
-                                <li><a href="/pages/search.html?language=Arabic&subcategory=Hadith">Hadith</a></li>
-                                <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Grammar">Arabic Grammar</a></li>
-                                <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Literature">Arabic Literature</a></li>
-                                <li><a href="/pages/search.html?language=Arabic&subcategory=Dictionaries">Dictionaries</a></li>
-                            </ul>
-                        </li>
-                        
-                        <li class="mobile-has-submenu">
-                            <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: #8e44ad; font-weight: bold;"><i class="fas fa-mountain"></i> Kashmiri Books <i class="fas fa-chevron-down"></i></a>
-                            <ul class="mobile-submenu">
-                                <li><a href="/pages/search.html?language=Kashmiri">All Kashmiri Books</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
+                <!-- Dynamic Mobile Categories Injected Here -->
+                <div id="dynamicMobileCategories" style="display: contents;"></div>
                 <li><a href="/pages/search.html?section=bestseller" class="mobile-nav-link"><i class="fas fa-star"></i>
                         Bestsellers</a></li>
                 <li><a href="/pages/search.html?q=new" class="mobile-nav-link"><i class="fas fa-bolt"></i> New
@@ -224,68 +177,8 @@
             <ul class="nav-list">
                 <li><a href="/index.html" class="nav-link active"><i class="fas fa-home"></i> Home</a></li>
                 <li><a href="/pages/top-100.html" class="nav-link"><i class="fas fa-crown"></i> Top 100</a></li>
-                <li class="has-mega">
-                    <a href="#" class="nav-link">Categories <i class="fas fa-chevron-down"></i></a>
-                    <div class="mega-dropdown">
-                        <div class="mega-grid">
-                            <div class="mega-col">
-                                <h4><i class="fas fa-book-open" style="color:#8B0000"></i> Urdu Books</h4>
-                                <ul>
-                                    <li><a href="/pages/search.html?language=Urdu">All Urdu Books</a></li>
-                                    <li><a href="/pages/search.html?language=Urdu&subcategory=Quran+%26+Tafsir">Quran &
-                                            Tafsir</a></li>
-                                    <li><a href="/pages/search.html?language=Urdu&subcategory=Hadith">Hadith</a></li>
-                                    <li><a href="/pages/search.html?language=Urdu&subcategory=Biography">Biography</a>
-                                    </li>
-                                    <li><a href="/pages/search.html?language=Urdu&subcategory=Creed+%26+Fiqh">Creed &
-                                            Fiqh</a></li>
-                                    <li><a href="/pages/search.html?language=Urdu&subcategory=Literature+%26+Fiction">Literature
-                                            & Fiction</a></li>
-                                </ul>
-                            </div>
-                            <div class="mega-col">
-                                <h4><i class="fas fa-language" style="color:#2c3e50"></i> English Books</h4>
-                                <ul>
-                                    <li><a href="/pages/search.html?language=English">All English Books</a></li>
-                                    <li><a href="/pages/search.html?language=English&subcategory=Quran+%26+Tafsir">Quran
-                                            & Tafsir</a></li>
-                                    <li><a href="/pages/search.html?language=English&subcategory=Hadith">Hadith</a></li>
-                                    <li><a href="/pages/search.html?language=English&subcategory=Academic">Academic</a>
-                                    </li>
-                                    <li><a
-                                            href="/pages/search.html?language=English&subcategory=Literature+%26+Fiction">Literature
-                                            & Fiction</a></li>
-                                    <li><a
-                                            href="/pages/search.html?language=English&subcategory=Biography">Biographies</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="mega-col">
-                                <h4><i class="fas fa-quran" style="color:#27ae60"></i> Arabic Books</h4>
-                                <ul>
-                                    <li><a href="/pages/search.html?language=Arabic">All Arabic Books</a></li>
-                                    <li><a href="/pages/search.html?language=Arabic&subcategory=Quran+%26+Tafsir">Quran
-                                            &
-                                            Tafsir</a></li>
-                                    <li><a href="/pages/search.html?language=Arabic&subcategory=Hadith">Hadith</a></li>
-                                    <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Grammar">Arabic
-                                            Grammar</a></li>
-                                    <li><a href="/pages/search.html?language=Arabic&subcategory=Arabic+Literature">Arabic
-                                            Literature</a></li>
-                                    <li><a
-                                            href="/pages/search.html?language=Arabic&subcategory=Dictionaries">Dictionaries</a>
-                                    </li>
-                                </ul>
-                            </div>
-                            <div class="mega-col">
-                                <h4><i class="fas fa-mountain" style="color:#8e44ad"></i> Kashmiri Books</h4>
-                                <ul>
-                                    <li><a href="/pages/search.html?language=Kashmiri">All Kashmiri Books</a></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </li>
+                <!-- Dynamic Categories Injected Here -->
+                <div id="dynamicDesktopCategories" style="display: contents;"></div>
                 <li><a href="/pages/search.html?section=bestseller" class="nav-link">Bestsellers</a></li>
                 <li><a href="/pages/search.html?q=new" class="nav-link">New Arrivals</a></li>
                 <li><a href="/pages/search.html" class="nav-link highlight"><i class="fas fa-fire"></i> All Books</a>
@@ -945,7 +838,7 @@
     <script src="js/services/api.js?v=2.5"></script>
     <script src="js/auth/user-auth-api.js?v=2.5"></script>
     <script src="js/data/books-data.js?v=2.5"></script>
-    <script src="js/script.js?v=2.6"></script>
+    <script src="js/script.js?v=2.7"></script>
     <script src="js/mobile-menu.js?v=2.5"></script>
 </body>
 

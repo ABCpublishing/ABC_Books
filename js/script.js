@@ -572,9 +572,9 @@ async function renderDynamicMenus() {
         if (!categories || categories.length === 0) return;
 
         // 1. Desktop Menu
-        const desktopMenu = document.querySelector('.nav-list .has-mega .mega-grid');
-        if (desktopMenu) {
-            desktopMenu.innerHTML = categories.map(lang => {
+        const desktopAnchor = document.getElementById('dynamicDesktopCategories');
+        if (desktopAnchor) {
+            desktopAnchor.innerHTML = categories.map(lang => {
                 const icon = lang.icon || 'fa-book';
                 let color = '#333';
                 if (lang.name.toLowerCase() === 'urdu') color = '#8B0000';
@@ -587,30 +587,21 @@ async function renderDynamicMenus() {
                     : '';
 
                 return `
-                    <div class="mega-col">
-                        <h4><i class="fas ${icon}" style="color:${color}"></i> ${lang.name} Books</h4>
-                        <ul>
-                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name} Books</a></li>
+                    <li class="nav-dropdown-item">
+                        <a href="#" class="nav-link">${lang.name} <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i></a>
+                        <div class="nav-dropdown-menu">
+                            <a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="font-weight: bold; color: ${color};"><i class="fas ${icon}"></i> All ${lang.name}</a>
                             ${subHTML}
-                        </ul>
-                    </div>
+                        </div>
+                    </li>
                 `;
             }).join('');
         }
 
         // 2. Mobile Menu
-        const mobileNavLinks = document.querySelectorAll('.mobile-nav-link');
-        let mobileCategoriesLink = null;
-        mobileNavLinks.forEach(link => {
-            if (link.textContent.includes('Categories')) {
-                mobileCategoriesLink = link;
-            }
-        });
-
-        if (mobileCategoriesLink && mobileCategoriesLink.nextElementSibling && mobileCategoriesLink.nextElementSibling.classList.contains('mobile-submenu')) {
-            const mobileMenu = mobileCategoriesLink.nextElementSibling;
-            
-            mobileMenu.innerHTML = categories.map(lang => {
+        const mobileAnchor = document.getElementById('dynamicMobileCategories');
+        if (mobileAnchor) {
+            mobileAnchor.innerHTML = categories.map(lang => {
                 const icon = lang.icon || 'fa-book';
                 let color = '#333';
                 if (lang.name.toLowerCase() === 'urdu') color = '#8B0000';
@@ -625,10 +616,10 @@ async function renderDynamicMenus() {
                 return `
                     <li class="mobile-has-submenu">
                         <a href="#" class="mobile-nav-link" onclick="event.preventDefault(); toggleMobileSubmenu(this)" style="color: ${color}; font-weight: bold;">
-                            <i class="fas ${icon}"></i> ${lang.name} Books <i class="fas fa-chevron-down"></i>
+                            <i class="fas ${icon}"></i> ${lang.name} <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="mobile-submenu">
-                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name} Books</a></li>
+                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name}</a></li>
                             ${subHTML}
                         </ul>
                     </li>
