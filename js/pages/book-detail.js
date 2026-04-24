@@ -136,12 +136,7 @@ function populateBookDetails() {
     const currentPriceElem = document.getElementById('currentPrice');
     if (currentPriceElem) currentPriceElem.textContent = `₹${currentBook.price}`;
 
-    const price = parseFloat(currentBook.price) || 0;
-    const ogPrice = currentBook.originalPrice || currentBook.original_price;
-    const originalPrice = parseFloat(ogPrice) || price;
-    const discount = originalPrice > price
-        ? Math.floor(((originalPrice - price) / originalPrice) * 100)
-        : 0;
+    // Use previously calculated price values
 
     const originalPriceElem = document.getElementById('originalPrice');
     const discountPercentElem = document.getElementById('discountPercent');
