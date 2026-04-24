@@ -568,6 +568,7 @@ async function renderDynamicMenus() {
         
         const res = await API.Categories.getAll();
         const categories = res.categories;
+        const allCategories = res.all || [];
         
         if (!categories || categories.length === 0) return;
 
@@ -582,15 +583,29 @@ async function renderDynamicMenus() {
                 if (lang.name.toLowerCase() === 'arabic') color = '#27ae60';
                 if (lang.name.toLowerCase() === 'kashmiri') color = '#8e44ad';
 
-                const subHTML = (lang.subcategories && lang.subcategories.length > 0)
-                    ? lang.subcategories.map(sub => `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${sub.name}</a></li>`).join('')
-                    : '';
+                let mySubcats = lang.subcategories || [];
+                // Fallback for flat categories created without parent_id in admin panel
+                if (mySubcats.length === 0) {
+                    mySubcats = allCategories.filter(c => !c.is_language && c.name.toLowerCase().includes(lang.name.toLowerCase()));
+                }
+
+                let subHTML = '';
+                if (mySubcats.length > 0) {
+                    subHTML = mySubcats.map(sub => {
+                        let displayName = sub.name.replace(new RegExp(`^${lang.name}\\s*`, 'i'), '').trim();
+                        displayName = displayName.replace(new RegExp(`\\s*${lang.name}$`, 'i'), '').trim();
+                        if (displayName === '') displayName = sub.name;
+                        
+                        return `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${displayName}</a>`;
+                    }).join('');
+                } else {
+                    subHTML = `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="color: #888; font-style: italic;">No subcategories</a>`;
+                }
 
                 return `
                     <li class="nav-dropdown-item">
-                        <a href="#" class="nav-link">${lang.name} <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i></a>
+                        <a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" class="nav-link">${lang.name} <i class="fas fa-chevron-down" style="font-size: 10px; margin-left: 4px;"></i></a>
                         <div class="nav-dropdown-menu">
-                            <a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="font-weight: bold; color: ${color};"><i class="fas ${icon}"></i> All ${lang.name}</a>
                             ${subHTML}
                         </div>
                     </li>
@@ -609,9 +624,23 @@ async function renderDynamicMenus() {
                 if (lang.name.toLowerCase() === 'arabic') color = '#27ae60';
                 if (lang.name.toLowerCase() === 'kashmiri') color = '#8e44ad';
 
-                const subHTML = (lang.subcategories && lang.subcategories.length > 0)
-                    ? lang.subcategories.map(sub => `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${sub.name}</a></li>`).join('')
-                    : '';
+                let mySubcats = lang.subcategories || [];
+                if (mySubcats.length === 0) {
+                    mySubcats = allCategories.filter(c => !c.is_language && c.name.toLowerCase().includes(lang.name.toLowerCase()));
+                }
+
+                let subHTML = '';
+                if (mySubcats.length > 0) {
+                    subHTML = mySubcats.map(sub => {
+                        let displayName = sub.name.replace(new RegExp(`^${lang.name}\\s*`, 'i'), '').trim();
+                        displayName = displayName.replace(new RegExp(`\\s*${lang.name}$`, 'i'), '').trim();
+                        if (displayName === '') displayName = sub.name;
+                        
+                        return `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${displayName}</a></li>`;
+                    }).join('');
+                } else {
+                    subHTML = `<li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="color: #888; font-style: italic;">No subcategories</a></li>`;
+                }
 
                 return `
                     <li class="mobile-has-submenu">
@@ -619,7 +648,6 @@ async function renderDynamicMenus() {
                             <i class="fas ${icon}"></i> ${lang.name} <i class="fas fa-chevron-down"></i>
                         </a>
                         <ul class="mobile-submenu">
-                            <li><a href="/pages/search.html?language=${encodeURIComponent(lang.name)}">All ${lang.name}</a></li>
                             ${subHTML}
                         </ul>
                     </li>
