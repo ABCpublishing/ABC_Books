@@ -860,7 +860,7 @@ async function addToWishlist(bookId, bookData) {
             alert('Book added to wishlist!');
         }
     } catch (error) {
-        if (error.message.includes('already exists')) {
+        if (error.message.toLowerCase().includes('already exists') || error.message.toLowerCase().includes('already in wishlist')) {
             if (typeof showNotification === 'function') {
                 showNotification('This book is already in your wishlist', 'info');
             } else {
