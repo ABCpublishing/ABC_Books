@@ -301,22 +301,53 @@ async function addToWishlistCard(btn, bookId, bookData) {
     const book = typeof bookData === 'string' ? JSON.parse(bookData.replace(/&quot;/g, '"')) : bookData;
 
     try {
-        // Call the API-integrated addToWishlist function
-        if (typeof addToWishlist === 'function') {
-            // Use bookId directly (no need to fetch from DB again as bookId IS the DB id)
-            await addToWishlist(bookId, book);
+        const user = await getCurrentUser();
+        if (!user || user.id === -1) return;
+
+        // Check current wishlist status
+        const checkRes = await API.Wishlist.get(user.id);
+        const list = checkRes.wishlist || checkRes || [];
+        const existing = list.find(w => String(w.book_id) === String(bookId));
+
+        if (existing) {
+            // Remove from wishlist
+            if (typeof removeFromWishlist === 'function') {
+                await removeFromWishlist(existing.id);
+            } else {
+                await API.Wishlist.remove(existing.id);
+                if (typeof updateWishlistCount === 'function') await updateWishlistCount();
+            }
 
             // Update button visual state
             const icon = btn.querySelector('i');
             if (icon) {
-                icon.classList.remove('far');
-                icon.classList.add('fas');
+                icon.classList.remove('fas');
+                icon.classList.add('far');
             }
-            btn.classList.add('active');
+            btn.classList.remove('active');
+            
+            if (typeof showNotification === 'function') {
+                showNotification('Removed from wishlist', 'info');
+            }
+        } else {
+            // Add to wishlist
+            if (typeof addToWishlist === 'function') {
+                await addToWishlist(bookId, book);
+
+                // Update button visual state
+                const icon = btn.querySelector('i');
+                if (icon) {
+                    icon.classList.remove('far');
+                    icon.classList.add('fas');
+                }
+                btn.classList.add('active');
+            }
         }
     } catch (error) {
-        console.error('Error adding to wishlist:', error);
-        showNotification('Error adding to wishlist. Please try again.', 'error');
+        console.error('Error toggling wishlist:', error);
+        if (typeof showNotification === 'function') {
+            showNotification('Error updating wishlist. Please try again.', 'error');
+        }
     }
 }
 
