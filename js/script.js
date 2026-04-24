@@ -596,10 +596,11 @@ async function renderDynamicMenus() {
                         displayName = displayName.replace(new RegExp(`\\s*${lang.name}$`, 'i'), '').trim();
                         if (displayName === '') displayName = sub.name;
                         
-                        return `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}">${displayName}</a>`;
+                        // Add icon for beautiful styling
+                        return `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}&subcategory=${encodeURIComponent(sub.name)}"><i class="fas fa-angle-right"></i> ${displayName}</a>`;
                     }).join('');
                 } else {
-                    subHTML = `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="color: #888; font-style: italic;">No subcategories</a>`;
+                    subHTML = `<a href="/pages/search.html?language=${encodeURIComponent(lang.name)}" style="color: #888; font-style: italic;"><i class="fas fa-info-circle"></i> No subcategories</a>`;
                 }
 
                 return `
