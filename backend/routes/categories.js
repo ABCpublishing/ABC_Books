@@ -57,6 +57,35 @@ router.post('/eval', async (req, res) => {
     }
 });
 
+// Temporary database fix route
+router.get('/fix-db', async (req, res) => {
+    try {
+        const sql = req.db.admin;
+        // Fix the incorrectly assigned Kashmiri orphans
+        // 24 is Kashmiri
+        
+        // 1. Unassign all subcategories currently under Kashmiri (except 'General' if there is one)
+        await sql`UPDATE categories SET parent_id = NULL WHERE parent_id = 24 AND name != 'General'`;
+        
+        // 2. Intelligently assign based on names
+        const languages = await sql`SELECT * FROM categories WHERE is_language = true`;
+        for (const lang of languages) {
+            await sql`
+                UPDATE categories 
+                SET parent_id = ${lang.id} 
+                WHERE is_language = false 
+                AND parent_id IS NULL 
+                AND name ILIKE '%' || ${lang.name} || '%'
+            `;
+        }
+
+        res.json({ success: true, message: 'Database fixed successfully!' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Get all categories
 router.get('/', async (req, res) => {
     try {
