@@ -334,7 +334,7 @@ const CategoriesAPI = {
     },
 
     async getSubcategories(languageSlug) {
-        return await apiRequest(`/categories/language/${languageSlug}`);
+        return await apiRequest(`/categories/language/${languageSlug}?t=${Date.now()}`);
     },
 
     async getById(id) {
