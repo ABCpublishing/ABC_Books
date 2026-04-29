@@ -123,20 +123,10 @@ router.get('/language/:languageSlug', async (req, res) => {
 
         const subcategories = await sql`
             SELECT * FROM categories 
-            WHERE (parent_id = ${language.id} OR (parent_id IS NULL AND is_language = false AND name ILIKE '%' || ${language.name} || '%'))
+            WHERE (parent_id = ${language.id} OR (parent_id IS NULL AND is_language = false))
             AND visible = true
             ORDER BY display_order ASC
         `;
-
-        // Update the subcategories to have the correct parent_id (optional cleanup on read)
-        if (subcategories.some(s => s.parent_id === null)) {
-            const orphanIds = subcategories.filter(s => s.parent_id === null).map(s => s.id);
-            if (orphanIds.length > 0) {
-                for (const oid of orphanIds) {
-                    await sql`UPDATE categories SET parent_id = ${language.id} WHERE id = ${oid}`;
-                }
-            }
-        }
 
         res.json({ language, subcategories });
     } catch (error) {
