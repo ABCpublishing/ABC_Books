@@ -37,23 +37,28 @@ function handleCategoryTypeChange() {
     const subcategoriesGroup = document.getElementById('subcategoriesGroup');
     const bookCountGroup = document.getElementById('bookCountGroup');
     const parentCategoryGroup = document.getElementById('parentCategoryGroup');
+    const parentSelect = document.getElementById('categoryParentId');
 
     if (type === 'dropdown') {
         if(subcategoriesGroup) subcategoriesGroup.style.display = 'block';
         if(bookCountGroup) bookCountGroup.style.display = 'none';
         if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
+        if(parentSelect) parentSelect.required = false;
     } else if (type === 'showcase') {
         if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
         if(bookCountGroup) bookCountGroup.style.display = 'block';
         if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
+        if(parentSelect) parentSelect.required = false;
     } else if (type === 'strip') {
         if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
         if(bookCountGroup) bookCountGroup.style.display = 'none';
         if(parentCategoryGroup) parentCategoryGroup.style.display = 'block';
+        if(parentSelect) parentSelect.required = true;
     } else {
         if(subcategoriesGroup) subcategoriesGroup.style.display = 'none';
         if(bookCountGroup) bookCountGroup.style.display = 'none';
         if(parentCategoryGroup) parentCategoryGroup.style.display = 'none';
+        if(parentSelect) parentSelect.required = false;
     }
 }
 
@@ -117,6 +122,11 @@ async function saveCategory() {
     const baseSlug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
     const isSubcategory = type === 'strip';
     
+    if (isSubcategory && !parentId) {
+        alert('Please select a parent language/category for this subcategory.');
+        return;
+    }
+    
     const categoryData = {
         name,
         icon,
@@ -136,6 +146,9 @@ async function saveCategory() {
         }
         closeCategoryModal();
         loadCategoriesTable();
+        if (window.initializeCategoriesForBooks) {
+            window.initializeCategoriesForBooks();
+        }
     } catch (error) {
         console.error('Error saving category:', error);
         alert('Error saving category: ' + error.message);

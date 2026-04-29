@@ -1319,17 +1319,36 @@ async function loadSubcategories() {
 
         subcategorySelect.innerHTML = '<option value="">-- Select Subcategory --</option>';
 
-        if (subcategories.length === 0) {
-            // Fallback to legacy categories if none found in DB for this language
-            loadFallbackSubcategories(language, subcategorySelect);
-        } else {
-            subcategories.forEach(sub => {
+        // Get legacy subcategories for merging
+        const legacySub = SUBCATEGORIES_BY_LANGUAGE[language.toLowerCase()] || [];
+        const existingNames = new Set(subcategories.map(s => s.name.toLowerCase()));
+
+        // Add DB subcategories
+        subcategories.forEach(sub => {
+            const option = document.createElement('option');
+            option.value = sub.name;
+            option.textContent = sub.name;
+            subcategorySelect.appendChild(option);
+        });
+
+        // Add missing legacy subcategories
+        legacySub.forEach(sub => {
+            if (!existingNames.has(sub.label.toLowerCase()) && !existingNames.has(sub.value.toLowerCase())) {
                 const option = document.createElement('option');
-                option.value = sub.name;
-                option.textContent = sub.name;
+                option.value = sub.value;
+                option.textContent = sub.label;
                 subcategorySelect.appendChild(option);
-            });
+            }
+        });
+
+        // Fallback if both are empty
+        if (subcategorySelect.options.length === 1) {
+             const option = document.createElement('option');
+             option.value = "General";
+             option.textContent = "General";
+             subcategorySelect.appendChild(option);
         }
+
     } catch (error) {
         console.warn('DB categories not found, using fallback. Error:', error.message);
         subcategorySelect.innerHTML = '<option value="">-- Select Subcategory --</option>';

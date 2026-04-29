@@ -109,6 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const isLang = type === 'dropdown';
             const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
+            if (type === 'strip' && !parentId) {
+                alert('Please select a parent language/category for this subcategory.');
+                return;
+            }
+
             const data = {
                 name,
                 slug,
