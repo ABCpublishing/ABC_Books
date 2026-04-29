@@ -3938,13 +3938,18 @@ textarea {
 }
 
 /* Invisible bridge so mouse doesn't fall off */
-.nav-dropdown-item::after {
+.nav-dropdown-menu::after {
     content: '';
     position: absolute;
-    bottom: -15px;
+    top: -15px;
     left: 0;
     width: 100%;
     height: 15px;
+    background: transparent;
+}
+
+.nav-dropdown-item:hover .nav-link {
+    background: rgba(0, 0, 0, 0.15);
 }
 
 .nav-dropdown-menu {

@@ -1342,7 +1342,7 @@ async function loadSubcategories() {
 
 // Helper for fallback loading
 function loadFallbackSubcategories(language, selectElement) {
-    const legacySub = SUBCATEGORIES_BY_LANGUAGE[language] || [
+    const legacySub = SUBCATEGORIES_BY_LANGUAGE[language.toLowerCase()] || [
         { value: 'General', label: 'General' }
     ];
     legacySub.forEach(sub => {

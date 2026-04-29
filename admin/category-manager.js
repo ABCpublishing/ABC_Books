@@ -48,59 +48,128 @@ async function loadCategoriesTable() {
 window.loadCategoriesTable = loadCategoriesTable;
 
 // Show Add Modal
-window.showAddCategoryModal = function() {
-    // Basic prompt implementation for now, ideally an HTML modal
-    const name = prompt('Enter Category Name: (e.g. Urdu, Academic, Literature)');
-    if (!name) return;
+window.showAddCategoryModal = async function() {
+    document.getElementById('categoryForm').reset();
+    document.getElementById('categoryId').value = '';
+    document.getElementById('categoryModalTitle').textContent = 'Add New Category';
     
-    const slug = prompt('Enter Category Slug (e.g. urdu, academic-books):', name.toLowerCase().replace(/\\s+/g, '-'));
-    if (!slug) return;
-
-    const isLang = confirm('Is this a Main Language Category? (OK for Yes, Cancel for Subcategory)');
+    // Load parent categories for the dropdown
+    await loadParentCategories();
     
-    let parentId = null;
-    if (!isLang) {
-        let parentIdStr = prompt('Enter Parent Language Category ID (Leave blank if none):');
-        parentId = parseInt(parentIdStr) || null;
-    }
-
-    createCategory({
-        name: name,
-        slug: slug,
-        icon: 'fa-book',
-        is_language: isLang,
-        parent_id: parentId,
-        visible: true
-    });
+    document.getElementById('categoryModal').classList.add('active');
 };
 
-async function createCategory(data) {
+window.closeCategoryModal = function() {
+    document.getElementById('categoryModal').classList.remove('active');
+};
+
+window.handleCategoryTypeChange = function() {
+    const type = document.getElementById('categoryType').value;
+    const parentGroup = document.getElementById('parentCategoryGroup');
+    if (type === 'strip') {
+        parentGroup.style.display = 'block';
+        document.getElementById('categoryParentId').required = true;
+    } else {
+        parentGroup.style.display = 'none';
+        document.getElementById('categoryParentId').required = false;
+    }
+};
+
+async function loadParentCategories() {
+    const parentSelect = document.getElementById('categoryParentId');
+    parentSelect.innerHTML = '<option value="">Loading...</option>';
     try {
-        await API.Categories.create(data);
-        alert('Category created successfully!');
-        loadCategoriesTable();
-    } catch (error) {
-        alert('Error creating category: ' + error.message);
+        const res = await API.Categories.getLanguages();
+        const languages = res.languages || [];
+        parentSelect.innerHTML = '<option value="">-- Select Parent Language/Category --</option>';
+        languages.forEach(lang => {
+            const option = document.createElement('option');
+            option.value = lang.id;
+            option.textContent = lang.name;
+            parentSelect.appendChild(option);
+        });
+    } catch (e) {
+        parentSelect.innerHTML = '<option value="">Error loading</option>';
     }
 }
 
+// Handle form submission
+document.addEventListener('DOMContentLoaded', () => {
+    const categoryForm = document.getElementById('categoryForm');
+    if (categoryForm) {
+        categoryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('categoryId').value;
+            const name = document.getElementById('categoryName').value;
+            const type = document.getElementById('categoryType').value;
+            const parentId = document.getElementById('categoryParentId').value;
+            const icon = document.getElementById('categoryIcon')?.value || 'fa-folder';
+            const visible = document.getElementById('categoryVisible')?.checked ?? true;
+            
+            const isLang = type === 'dropdown';
+            const slug = name.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+            const data = {
+                name,
+                slug,
+                icon,
+                is_language: isLang,
+                parent_id: type === 'strip' ? (parseInt(parentId) || null) : null,
+                visible,
+                type: type || 'dropdown'
+            };
+
+            try {
+                if (id) {
+                    await API.Categories.update(id, data);
+                    alert('Category updated successfully!');
+                } else {
+                    await API.Categories.create(data);
+                    alert('Category created successfully!');
+                }
+                closeCategoryModal();
+                loadCategoriesTable();
+                if (window.initializeCategoriesForBooks) window.initializeCategoriesForBooks();
+            } catch (error) {
+                alert('Error saving category: ' + error.message);
+            }
+        });
+    }
+});
+
 window.editCategory = async function(id) {
-    const name = prompt('Enter new name for this category:');
-    if (!name) return;
     try {
-        await API.Categories.update(id, { name: name, slug: name.toLowerCase().replace(/\\s+/g, '-') });
-        loadCategoriesTable();
-    } catch(e) {
-        alert('Error: ' + e.message);
+        const res = await API.Categories.getById(id);
+        const cat = res.category;
+        if (!cat) return;
+
+        document.getElementById('categoryModalTitle').textContent = 'Edit Category';
+        document.getElementById('categoryId').value = cat.id;
+        document.getElementById('categoryName').value = cat.name;
+        document.getElementById('categoryType').value = cat.is_language ? 'dropdown' : 'strip';
+        if (document.getElementById('categoryIcon')) document.getElementById('categoryIcon').value = cat.icon || 'fa-folder';
+        if (document.getElementById('categoryVisible')) document.getElementById('categoryVisible').checked = cat.visible;
+
+        await loadParentCategories();
+        handleCategoryTypeChange();
+
+        if (!cat.is_language && cat.parent_id) {
+            document.getElementById('categoryParentId').value = cat.parent_id;
+        }
+
+        document.getElementById('categoryModal').classList.add('active');
+    } catch (e) {
+        alert('Error loading category details: ' + e.message);
     }
 };
 
 window.deleteCategory = async function(id) {
     if (!confirm('Are you sure you want to delete this category?')) return;
     try {
-        const res = await API.Categories.delete(id);
+        await API.Categories.delete(id);
         alert('Category deleted!');
         loadCategoriesTable();
+        if (window.initializeCategoriesForBooks) window.initializeCategoriesForBooks();
     } catch (error) {
         alert('Error deleting category: ' + (error.message || 'Unknown error'));
     }
